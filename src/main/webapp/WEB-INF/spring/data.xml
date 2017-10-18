@@ -10,7 +10,7 @@
     <context:property-placeholder location="classpath:hibernate.properties" />
 
     <!-- Настраивает управление транзакциями с помощью аннотации @Transactional -->
-    <!--<tx:annotation-driven transaction-manager="transactionManager"/>-->
+    <tx:annotation-driven/>
 
     <!-- Менеджер транзакций -->
     <bean id="transactionManager"
@@ -33,7 +33,7 @@
     </bean>
 
 
-    <!-- Настройки фабрики сессий Хибернейта -->
+    <!-- SessionFactory settings for Hibernate -->
     <bean id="sessionFactory"
           class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
         <property name="dataSource" ref="dataSource"/>
@@ -52,6 +52,5 @@
 <!--TODO: Do we need this postprocessor (expesially for Hib-te 5.x?) ?-->
     <bean id="persistenceExceptionTranslationPostProcessor"
           class="org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor"/>
-
 
 </beans>

@@ -1,19 +1,37 @@
 package ru.mera.sergeynazin.model;
 
+import javax.persistence.*;
 import java.util.Set;
 
+@Entity
+@Table(name = "order")
 public class Order {
 
-    private Long orderNumber;
+    @Id
+    @Column(
+        length = 32,
+        unique = true,
+        nullable = false,
+        insertable = false,
+        updatable = false
+    )
+    private String orderNumber;
+
+    @org.hibernate.annotations.Type(type = "big_decimal")
+    @Column(precision = 7, scale = 2)
     private Double totalCost;
+
+
+    // TODO: TypeConverter from String to int
+    @ManyToMany(cascade = { CascadeType.ALL })
+    @JoinTable(
+        name = "order_has_shaurma",
+        joinColumns = { @JoinColumn(name = "order_orderNumber", referencedColumnName = "id") },
+        inverseJoinColumns = { @JoinColumn(name = "shaurma_id", referencedColumnName = "id") }
+    )
     private Set<Shaurma> shaurmaSet;
 
-    public Long getOrderNumber() {
-        return orderNumber;
-    }
-
-    public void setOrderNumber(Long orderNumber) {
-        this.orderNumber = orderNumber;
+    public Order() {
     }
 
     public Double getTotalCost() {
@@ -23,6 +41,15 @@ public class Order {
     public void setTotalCost(Double totalCost) {
         this.totalCost = totalCost;
     }
+
+    public String getOrderNumber() {
+        return orderNumber;
+    }
+
+    public void setOrderNumber(String orderNumber) {
+        this.orderNumber = orderNumber;
+    }
+
 
     public Set<Shaurma> getShaurmaSet() {
         return shaurmaSet;

@@ -1,14 +1,33 @@
 package ru.mera.sergeynazin.model;
 
+import javax.persistence.*;
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.atomic.DoubleAdder;
 
+@Entity
+@Table(name = "shaurma")
 public class Shaurma {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(unique = true, nullable = false, insertable = false, updatable = false)
     private Long id;
+
+    @Column(length = 256)
     private String name;
+
+    @ManyToMany(cascade = { CascadeType.ALL })
+    @JoinTable(
+        name = "ingredient_has_shaurma",
+        joinColumns = { @JoinColumn(name = "shaurma_id", referencedColumnName = "id") },
+        inverseJoinColumns = { @JoinColumn(name = "ingredient_id", referencedColumnName = "id") }
+    )
     private Set<Ingredient> ingredientSet;
+
+    public Shaurma() {
+    }
 
     public Long getId() {
         return id;
@@ -36,11 +55,11 @@ public class Shaurma {
 
     public Double getCost() {
         DoubleAdder doubleAdder = new DoubleAdder();
+
         //TODO ifNeeded to avoid unboxing + boxing as listed below
 //        ingredientSet.parallelStream()
 //                .forEach(ingredient -> doubleAdder.add(ingredient.getCost()));
 //        return doubleAdder.doubleValue();
-
 
         ingredientSet.parallelStream()
                 .mapToDouble(Ingredient::getCost)

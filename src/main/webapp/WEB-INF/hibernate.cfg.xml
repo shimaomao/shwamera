@@ -7,7 +7,7 @@
     <session-factory>
         <mapping class="ru.mera.sergeynazin.model.Ingredient" />
         <mapping class="ru.mera.sergeynazin.model.Shaurma" />
-        <mapping class="ru.mera.sergeynazin.model.Menu" />
+        <mapping class="ru.mera.sergeynazin.model.MenuEntry" /> <!-- TODO: __MenuEntry  -->
         <mapping class="ru.mera.sergeynazin.model.Order" />
     </session-factory>
 </hibernate-configuration>

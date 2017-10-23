@@ -4,7 +4,7 @@
          xsi:schemaLocation="
          http://xmlns.jcp.org/xml/ns/javaee;
          http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd"
-         version="4.0">
+         version="4.0" >
 
     <!--xmlns="http://java.sun.com/xml/ns/javaee" old deployment descriptor todo see if new will work-->
 
@@ -24,12 +24,12 @@
     </listener>
 
 
-    <!-- Создаёт контейнер Spring, разделяемый всеми сервлетами и фильтрами -->
+    <!-- Creates Spring cont shared bettween all servlets and filters -->
     <listener>
         <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
     </listener>
 
-    <!-- Базовый сервлет, обрабатывает все запросы к приложению -->
+    <!-- Main servlet -->
     <servlet>
         <servlet-name>spring</servlet-name>
         <servlet-class>
@@ -47,7 +47,7 @@
         <url-pattern>/</url-pattern>
     </servlet-mapping>
 
-    <!-- Фильтр для перекодировки в utf8 -->
+    <!-- UTF-8 conserns -->
     <filter>
         <filter-name>charsetFilter</filter-name>
         <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>

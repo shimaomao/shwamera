@@ -18,7 +18,7 @@ public class IRepositoryImpl implements IRepository {
         this.sessionFactory = sessionFactory;
     }
 
-    // TODO: 10/21/17 Annotations needed!!!! for injecting GENERICS (...I guess)
+    // TODO: 10/20/17 Annotations more suitable when injecting GENERICS (...I guess)
     /**
      * for educational purposes MAY set through constructor but then extending would become non-trivial
      */

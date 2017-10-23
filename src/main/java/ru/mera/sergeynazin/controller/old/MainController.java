@@ -1,4 +1,4 @@
-package ru.mera.sergeynazin.controller;
+package ru.mera.sergeynazin.controller.old;
 
 
 import org.springframework.stereotype.Controller;

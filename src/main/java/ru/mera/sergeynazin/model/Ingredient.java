@@ -2,7 +2,7 @@ package ru.mera.sergeynazin.model;
 
 import javax.persistence.*;
 
-// FIXME: 10/22/17 hashCode + equals
+// FIXME: 10/20/17 hashCode + equals
 @Entity
 @Table(name = "ingredient")
 public class Ingredient {

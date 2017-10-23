@@ -9,14 +9,6 @@ import javax.persistence.criteria.Root;
 import java.util.List;
 import java.util.Optional;
 
-/**
- * Again, for educational purposes different approach is used here
- * IT COULD BE GENERIFIED AS WELL AS
- * @see IRepository
- *
- * @author sergeynazin
- * */
-
 public class ShaurmaServiceImpl implements ShaurmaService {
 
     private IRepository repository;

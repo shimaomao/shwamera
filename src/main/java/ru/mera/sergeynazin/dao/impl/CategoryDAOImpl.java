@@ -1,7 +1,7 @@
 package ru.mera.sergeynazin.dao.impl;
 
 import ru.mera.sergeynazin.dao.CategoryDAO;
-import ru.mera.sergeynazin.model.Category;
+import ru.mera.sergeynazin.model.old.Category;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Repository;

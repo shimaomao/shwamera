@@ -1,7 +1,7 @@
 package ru.mera.sergeynazin.dao.impl;
 
 import ru.mera.sergeynazin.dao.NoteDAO;
-import ru.mera.sergeynazin.model.Note;
+import ru.mera.sergeynazin.model.old.Note;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Repository;

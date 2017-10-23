@@ -31,6 +31,7 @@ public class Order {
     )
     private Set<Shaurma> shaurmaSet;
 
+    // TODO: 10/23/17 Do I need it empty constructor?
     public Order() {
     }
 

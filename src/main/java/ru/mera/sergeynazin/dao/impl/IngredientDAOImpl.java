@@ -2,7 +2,6 @@ package ru.mera.sergeynazin.dao.impl;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import ru.mera.sergeynazin.dao.IngredientDAO;
 import ru.mera.sergeynazin.model.Ingredient;
 
 import javax.persistence.criteria.CriteriaBuilder;

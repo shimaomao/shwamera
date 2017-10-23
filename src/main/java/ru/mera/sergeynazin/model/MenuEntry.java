@@ -1,5 +1,7 @@
 package ru.mera.sergeynazin.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 
 @Entity
@@ -11,6 +13,7 @@ public class MenuEntry {
     @Column(name = "id", unique = true, nullable = false, insertable = false, updatable = false)
     private Long id;
 
+    @JsonIgnore
     @OneToOne(cascade = CascadeType.ALL, optional = false)
     @PrimaryKeyJoinColumn(name = "shaurma_id", referencedColumnName = "id")
     private Shaurma shaurma;
@@ -19,6 +22,7 @@ public class MenuEntry {
     @Column(precision = 7, scale = 2, nullable = false)
     private Double price;
 
+    // TODO: 10/23/17 Do I need it empty constructor?
     public MenuEntry() {
     }
 

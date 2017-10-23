@@ -12,6 +12,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<spring.version>4.3.12.RELEASE</spring.version>
 		<spring.security.version>4.2.3.RELEASE</spring.security.version>
+        <jackson.version>2.9.2</jackson.version>
 	</properties>
 
 	<build>
@@ -38,10 +39,36 @@
 				<artifactId>maven-surefire-plugin</artifactId>
 				<version>2.20.1</version>
  			</plugin>
+            <!-- todo Do we ?? -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <configuration>
+                    <failOnMissingWebXml>false</failOnMissingWebXml>
+                </configuration>
+            </plugin>
 		</plugins>
 	</build>
+
 	
 	<dependencies>
+
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+        <!-- TODO: Delete if no transitive dependencies here! -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
 
 		<!-- Logging -->
 
@@ -51,11 +78,23 @@
 			<version>1.2.3</version>
 		</dependency>
 
-		<dependency>
+        <!--
+        FIXME: A more common choice amongst SLF4J users, which uses fewer
+        FIXME: step sand generates fewer dependencies, is to bind directly to Logback.
+        FIXME: This removes the extra binding step because Logback implements SLF4J directly,
+        FIXME: so you only need to depend on two libaries not four (jcl-over-slf4j and logback).
+        FIXME: If you do that you might also need to exclude the slf4j-api dependency from
+        FIXME: other external dependencies (not Spring)
+        27 Jul 2016
+        -->
+
+		<!--<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>jcl-over-slf4j</artifactId>
 			<version>1.7.25</version>
-		</dependency>
+		</dependency>-->
+
+
 
 		<!-- DB -->
 		
@@ -95,6 +134,7 @@
 			<artifactId>spring-context</artifactId>
 			<version>${spring.version}</version>
 			<exclusions>
+                <!-- For slf4j they say )-->
 				<exclusion>
          				<groupId>commons-logging</groupId>
          				<artifactId>commons-logging</artifactId>

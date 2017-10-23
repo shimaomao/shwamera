@@ -1,6 +1,6 @@
 package ru.mera.sergeynazin.dao;
 
-import ru.mera.sergeynazin.model.Category;
+import ru.mera.sergeynazin.model.old.Category;
 
 import java.util.List;
 

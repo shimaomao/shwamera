@@ -2,6 +2,7 @@ package ru.mera.sergeynazin.model;
 
 import javax.persistence.*;
 
+// FIXME: 10/22/17 hashCode + equals
 @Entity
 @Table(name = "ingredient")
 public class Ingredient {
@@ -18,6 +19,8 @@ public class Ingredient {
     @Column(precision = 7, scale = 2)
     private Double cost;
 
+
+    // TODO: 10/23/17 Do I need it empty constructor?
     public Ingredient() {
     }
 

@@ -1,6 +1,6 @@
 package ru.mera.sergeynazin.dao;
 
-import ru.mera.sergeynazin.model.Note;
+import ru.mera.sergeynazin.model.old.Note;
 
 import java.util.List;
 

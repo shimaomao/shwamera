@@ -1,11 +1,11 @@
 package ru.mera.sergeynazin.repos;
 
-import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.CriteriaQuery;
 import java.util.List;
 
 public interface ICRUDRepository {
     <T> void createItem(T item);
-    <T> void deleteItem(T item);
+    <T> List readItems(CriteriaQuery<T> criteriaQuery);
     <T> void updateItem(T item);
-    List read(Predicate predicate);
+    <T> void deleteItem(T item);
 }

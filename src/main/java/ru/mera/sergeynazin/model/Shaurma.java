@@ -1,7 +1,6 @@
 package ru.mera.sergeynazin.model;
 
 import javax.persistence.*;
-import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.atomic.DoubleAdder;
@@ -26,6 +25,7 @@ public class Shaurma {
     )
     private Set<Ingredient> ingredientSet;
 
+    // TODO: 10/23/17 Do I need it empty constructor?
     public Shaurma() {
     }
 

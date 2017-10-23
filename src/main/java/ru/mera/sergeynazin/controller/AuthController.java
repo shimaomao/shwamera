@@ -14,7 +14,7 @@ public class AuthController {
     public ModelAndView panelPage(){
 
         ModelAndView model = new ModelAndView();
-        model.addObject("title", "Admin Panel");
+        model.addObject(" ", "Admin Panel");
         model.addObject("msg", "Role ADMIN only!");
         model.setViewName("panel");
         return model;

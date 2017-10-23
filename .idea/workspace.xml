@@ -2,44 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="064da2b6-3cdf-428d-87da-4f9e02451d5a" name="Default" comment="">
-      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_slf4j_jcl_over_slf4j_1_7_25.xml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/main/java/ru/mera/sergeynazin/dao/IngredientDAO.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/main/java/ru/mera/sergeynazin/dao/IngredientHasShaurmaDAO.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/main/java/ru/mera/sergeynazin/dao/MenuDAO.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/main/java/ru/mera/sergeynazin/dao/OrderDAO.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/main/java/ru/mera/sergeynazin/dao/OrderHasShaurmaDAO.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/main/java/ru/mera/sergeynazin/dao/ShaurmaDAO.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/main/java/ru/mera/sergeynazin/service/CategoryService.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/main/java/ru/mera/sergeynazin/service/NoteService.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/main/java/ru/mera/sergeynazin/service/impl/CategoryServiceImpl.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/main/java/ru/mera/sergeynazin/service/impl/NoteServiceImpl.java" afterPath="" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/ru/mera/sergeynazin/model/Category.java" afterPath="$PROJECT_DIR$/src/main/java/ru/mera/sergeynazin/model/old/Category.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/ru/mera/sergeynazin/model/Note.java" afterPath="$PROJECT_DIR$/src/main/java/ru/mera/sergeynazin/model/old/Note.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/ru/mera/sergeynazin/model/__Menu.java" afterPath="$PROJECT_DIR$/src/main/java/ru/mera/sergeynazin/model/old/__Menu.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/ru/mera/sergeynazin/model/__MenuEntry.java" afterPath="$PROJECT_DIR$/src/main/java/ru/mera/sergeynazin/model/old/__MenuEntry.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/ru/mera/sergeynazin/repos/AbstractRepository.java" afterPath="$PROJECT_DIR$/src/main/java/ru/mera/sergeynazin/repository/AbstractRepository.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pom.xml" afterPath="$PROJECT_DIR$/pom.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/shwamera.iml" afterPath="$PROJECT_DIR$/shwamera.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/ru/mera/sergeynazin/controller/AuthController.java" afterPath="$PROJECT_DIR$/src/main/java/ru/mera/sergeynazin/controller/AuthController.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/ru/mera/sergeynazin/controller/ShaurmaController.java" afterPath="$PROJECT_DIR$/src/main/java/ru/mera/sergeynazin/controller/ShaurmaController.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/ru/mera/sergeynazin/dao/CategoryDAO.java" afterPath="$PROJECT_DIR$/src/main/java/ru/mera/sergeynazin/dao/CategoryDAO.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/ru/mera/sergeynazin/dao/NoteDAO.java" afterPath="$PROJECT_DIR$/src/main/java/ru/mera/sergeynazin/dao/NoteDAO.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/ru/mera/sergeynazin/dao/impl/CategoryDAOImpl.java" afterPath="$PROJECT_DIR$/src/main/java/ru/mera/sergeynazin/dao/impl/CategoryDAOImpl.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/ru/mera/sergeynazin/dao/impl/IngredientDAOImpl.java" afterPath="$PROJECT_DIR$/src/main/java/ru/mera/sergeynazin/dao/impl/IngredientDAOImpl.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/ru/mera/sergeynazin/dao/impl/NoteDAOImpl.java" afterPath="$PROJECT_DIR$/src/main/java/ru/mera/sergeynazin/dao/impl/NoteDAOImpl.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/ru/mera/sergeynazin/model/Ingredient.java" afterPath="$PROJECT_DIR$/src/main/java/ru/mera/sergeynazin/model/Ingredient.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/ru/mera/sergeynazin/model/MenuEntry.java" afterPath="$PROJECT_DIR$/src/main/java/ru/mera/sergeynazin/model/MenuEntry.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/ru/mera/sergeynazin/model/Order.java" afterPath="$PROJECT_DIR$/src/main/java/ru/mera/sergeynazin/model/Order.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/ru/mera/sergeynazin/model/Shaurma.java" afterPath="$PROJECT_DIR$/src/main/java/ru/mera/sergeynazin/model/Shaurma.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/ru/mera/sergeynazin/repos/ICRUDRepository.java" afterPath="$PROJECT_DIR$/src/main/java/ru/mera/sergeynazin/repos/ICRUDRepository.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/ru/mera/sergeynazin/repos/IRepository.java" afterPath="$PROJECT_DIR$/src/main/java/ru/mera/sergeynazin/repos/IRepository.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/resources/hibernate.properties" afterPath="$PROJECT_DIR$/src/main/resources/hibernate.properties" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/webapp/WEB-INF/hibernate.cfg.xml" afterPath="$PROJECT_DIR$/src/main/webapp/WEB-INF/hibernate.cfg.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/webapp/WEB-INF/spring/applicationContext.xml" afterPath="$PROJECT_DIR$/src/main/webapp/WEB-INF/spring/applicationContext.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/webapp/WEB-INF/spring/controllers.xml" afterPath="$PROJECT_DIR$/src/main/webapp/WEB-INF/spring/controllers.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/webapp/WEB-INF/spring/data.xml" afterPath="$PROJECT_DIR$/src/main/webapp/WEB-INF/spring/data.xml" />
     </list>
     <ignored path="$PROJECT_DIR$/target/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -92,8 +55,8 @@
       <file leaf-file-name="ShaurmaController.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/ru/mera/sergeynazin/controller/ShaurmaController.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="540">
-              <caret line="54" column="59" lean-forward="true" selection-start-line="54" selection-start-column="59" selection-end-line="54" selection-end-column="59" />
+            <state relative-caret-position="188">
+              <caret line="55" column="56" lean-forward="true" selection-start-line="55" selection-start-column="56" selection-end-line="55" selection-end-column="56" />
               <folding>
                 <element signature="imports" expanded="true" />
                 <element signature="e#517#518#0" expanded="true" />
@@ -102,14 +65,14 @@
                 <element signature="e#1303#1304#0" expanded="true" />
                 <element signature="e#1463#1464#0" expanded="true" />
                 <element signature="e#1509#1510#0" expanded="true" />
-                <element signature="e#2097#2098#0" expanded="true" />
-                <element signature="e#2143#2144#0" expanded="true" />
-                <element signature="e#2345#2346#0" expanded="true" />
-                <element signature="e#2391#2392#0" expanded="true" />
-                <element signature="e#2597#2598#0" expanded="true" />
-                <element signature="e#2641#2642#0" expanded="true" />
-                <element signature="e#2845#2846#0" expanded="true" />
-                <element signature="e#2889#2890#0" expanded="true" />
+                <element signature="e#2335#2336#0" expanded="true" />
+                <element signature="e#2381#2382#0" expanded="true" />
+                <element signature="e#2583#2584#0" expanded="true" />
+                <element signature="e#2629#2630#0" expanded="true" />
+                <element signature="e#2835#2836#0" expanded="true" />
+                <element signature="e#2879#2880#0" expanded="true" />
+                <element signature="e#3083#3084#0" expanded="true" />
+                <element signature="e#3127#3128#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -717,12 +680,12 @@
       <workItem from="1508596425963" duration="2194000" />
       <workItem from="1508604418692" duration="25248000" />
       <workItem from="1508665469102" duration="5957000" />
-      <workItem from="1508703956339" duration="13199000" />
+      <workItem from="1508703956339" duration="13914000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="66051000" />
+    <option name="totallyTimeSpent" value="66766000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -789,13 +752,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="jar://$MAVEN_REPOSITORY$/org/hibernate/hibernate-core/5.2.11.Final/hibernate-core-5.2.11.Final.jar!/org/hibernate/Criteria.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="75">
-          <caret line="6" column="17" lean-forward="false" selection-start-line="6" selection-start-column="17" selection-end-line="6" selection-end-column="17" />
-        </state>
-      </provider>
-    </entry>
     <entry file="jar://$MAVEN_REPOSITORY$/org/hibernate/hibernate-core/5.2.11.Final/hibernate-core-5.2.11.Final-sources.jar!/org/hibernate/Criteria.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-450">
@@ -1209,10 +1165,18 @@
         </state>
       </provider>
     </entry>
+    <entry file="jar:///usr/lib/jvm/java-8-oracle/src.zip!/java/lang/Iterable.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="313">
+          <caret line="71" column="17" lean-forward="false" selection-start-line="71" selection-start-column="17" selection-end-line="71" selection-end-column="17" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/ru/mera/sergeynazin/controller/ShaurmaController.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="540">
-          <caret line="54" column="59" lean-forward="true" selection-start-line="54" selection-start-column="59" selection-end-line="54" selection-end-column="59" />
+        <state relative-caret-position="188">
+          <caret line="55" column="56" lean-forward="true" selection-start-line="55" selection-start-column="56" selection-end-line="55" selection-end-column="56" />
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="e#517#518#0" expanded="true" />
@@ -1221,14 +1185,14 @@
             <element signature="e#1303#1304#0" expanded="true" />
             <element signature="e#1463#1464#0" expanded="true" />
             <element signature="e#1509#1510#0" expanded="true" />
-            <element signature="e#2097#2098#0" expanded="true" />
-            <element signature="e#2143#2144#0" expanded="true" />
-            <element signature="e#2345#2346#0" expanded="true" />
-            <element signature="e#2391#2392#0" expanded="true" />
-            <element signature="e#2597#2598#0" expanded="true" />
-            <element signature="e#2641#2642#0" expanded="true" />
-            <element signature="e#2845#2846#0" expanded="true" />
-            <element signature="e#2889#2890#0" expanded="true" />
+            <element signature="e#2335#2336#0" expanded="true" />
+            <element signature="e#2381#2382#0" expanded="true" />
+            <element signature="e#2583#2584#0" expanded="true" />
+            <element signature="e#2629#2630#0" expanded="true" />
+            <element signature="e#2835#2836#0" expanded="true" />
+            <element signature="e#2879#2880#0" expanded="true" />
+            <element signature="e#3083#3084#0" expanded="true" />
+            <element signature="e#3127#3128#0" expanded="true" />
           </folding>
         </state>
       </provider>

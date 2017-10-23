@@ -51,8 +51,12 @@ public class ShaurmaController {
 
         return shaurmaService.optionalIsExist(shaurma.getId())
             .map(shaurma1 -> {
-
-                return ResponseEntity.created(URI.create())
+                shaurma1.getIngredientSet().forEach(ingredient -> {
+                    ingredientsService.checkOrThrow();
+                    ingredientsService.save(ingredient);
+                });
+                shaurmaService.save(shaurma1);
+                return ResponseEntity.ok(shaurma1);
 
             }).orElse(ResponseEntity.noContent().build());
     }

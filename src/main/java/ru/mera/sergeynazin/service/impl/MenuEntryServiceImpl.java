@@ -17,7 +17,7 @@ import java.util.Optional;
 
 public class MenuEntryServiceImpl implements MenuEntryService {
 
-    private static final Logger logger = LoggerFactory.getLogger(MenuEntryServiceImpl.class);
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private IRepository repository;
 

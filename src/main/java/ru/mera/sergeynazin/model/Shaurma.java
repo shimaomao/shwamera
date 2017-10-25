@@ -1,5 +1,7 @@
 package ru.mera.sergeynazin.model;
 
+import org.hibernate.annotations.Nationalized;
+
 import javax.persistence.*;
 import java.util.Objects;
 import java.util.Set;
@@ -11,10 +13,11 @@ public class Shaurma {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(unique = true, nullable = false, insertable = false, updatable = false)
+    @Column(unique = true, nullable = false, updatable = false)
     private Long id;
 
     @Column(length = 256)
+    @Nationalized
     private String name;
 
     @ManyToMany(cascade = { CascadeType.ALL })

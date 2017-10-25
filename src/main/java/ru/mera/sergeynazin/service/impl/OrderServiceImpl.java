@@ -9,6 +9,8 @@ import ru.mera.sergeynazin.service.OrderService;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,7 +19,7 @@ public class OrderServiceImpl implements OrderService {
     /**
      * Test
      */
-    private static final Logger logger = LoggerFactory.getLogger(OrderServiceImpl.class);
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private IRepository repository;
 
@@ -29,6 +31,25 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public void save(final Order order) {
         logger.info("OrderServiceImpl::save() called with: order = [" + order + "]");
+
+        final CriteriaBuilder criteriaBuilder = repository.getSession().getCriteriaBuilder();
+        final CriteriaQuery<Order> criteriaQuery = criteriaBuilder.createQuery(Order.class);
+        final Root<Order> ingredientRoot = criteriaQuery.from(Order.class);
+        criteriaQuery.select(ingredientRoot).where(criteriaBuilder.equal(ingredientRoot.get("orderNumber"), orderNumber));
+
+
+        repository.getSession().doWork(connection -> {
+
+        });
+
+        order.setOrderNumber(
+            String.valueOf(
+                LocalDate.now()
+                    .format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
+            )
+                + "_"
+                +
+        );
         repository.createItem(order);
     }
 

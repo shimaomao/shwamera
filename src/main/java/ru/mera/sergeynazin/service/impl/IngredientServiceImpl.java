@@ -14,7 +14,7 @@ import java.util.Optional;
 
 public class IngredientServiceImpl implements IngredientService {
 
-    private static final Logger logger = LoggerFactory.getLogger(IngredientServiceImpl.class);
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private IRepository repository;
 

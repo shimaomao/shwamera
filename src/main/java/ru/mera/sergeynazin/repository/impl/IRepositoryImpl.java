@@ -12,7 +12,7 @@ import ru.mera.sergeynazin.repository.IRepository;
 
 public class IRepositoryImpl implements IRepository {
 
-    private static final Logger logger = LoggerFactory.getLogger(IRepositoryImpl.class);
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private SessionFactory sessionFactory;
 

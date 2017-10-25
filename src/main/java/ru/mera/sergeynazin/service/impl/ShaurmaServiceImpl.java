@@ -16,7 +16,7 @@ public class ShaurmaServiceImpl implements ShaurmaService {
     /**
      * Test
      */
-    private static final Logger logger = LoggerFactory.getLogger(ShaurmaServiceImpl.class);
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private IRepository repository;
 

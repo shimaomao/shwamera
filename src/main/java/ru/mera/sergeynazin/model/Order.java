@@ -29,7 +29,7 @@ public class Order {
 
 
 
-    @Column(
+    @Column(        // TODO: Insertable seems to be redundant
         length = 32,
         unique = true,
         nullable = false,
@@ -54,6 +54,11 @@ public class Order {
 
     // TODO: 10/23/17 Do I need it empty constructor?
     public Order() {
+    }
+
+    @PrePersist
+    public void getIdFromGenerator() {
+
     }
 
     public Double getTotalCost() {
@@ -83,14 +88,12 @@ public class Order {
 
     public static class OrderIdGenerator extends SequenceStyleGenerator {
 
-
         @Override
         public Serializable generate(SharedSessionContractImplementor session, Object object)
             throws HibernateException {
+
             LocalDate localDate = LocalDate.now();
             String prefix = localDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) + "_";
-
-
             Connection connection = session.connection();
             try {
 

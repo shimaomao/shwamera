@@ -1,5 +1,7 @@
 package ru.mera.sergeynazin.model;
 
+import org.hibernate.annotations.Nationalized;
+
 import javax.persistence.*;
 import java.util.Objects;
 
@@ -10,10 +12,11 @@ public class Ingredient {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(unique = true, nullable = false, insertable = false, updatable = false)
+    @Column(unique = true, nullable = false, updatable = false)
     private Long id;
 
     @Column(length = 45)
+    @Nationalized
     private String name;
 
     @org.hibernate.annotations.Type(type = "big_decimal")

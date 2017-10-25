@@ -1,18 +1,10 @@
 package ru.mera.sergeynazin.model;
 
-import org.hibernate.HibernateException;
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.engine.spi.SessionImplementor;
-import org.hibernate.engine.spi.SharedSessionContractImplementor;
-import org.hibernate.id.IdentifierGenerator;
-import org.hibernate.id.enhanced.SequenceStyleGenerator;
+import org.hibernate.annotations.Generated;
+import org.hibernate.annotations.GenerationTime;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
-import java.io.Serializable;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Set;
@@ -24,19 +16,18 @@ public class Order {
     @Id
 
 
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "date_plus_sequence_generator")
-    @GenericGenerator(name = "date_plus_sequence_generator", )
-
-
-
+    @Generated(GenerationTime.INSERT)
     @Column(        // TODO: Insertable seems to be redundant
         length = 32,
         unique = true,
         nullable = false,
-        insertable = false,
-        updatable = false
+        updatable = false,
+        columnDefinition = "AS CONCAT( COALESCE(order_number.id, ' ', order_number.date)"
     )
-    private String orderNumber;
+    @Type(type = "string")
+    @Convert(converter = OrderNumberConverter.class)
+    @OneToOne(cascade = CascadeType.ALL, optional = false)
+    private OrderNumber orderNumber;
 
     @org.hibernate.annotations.Type(type = "big_decimal")
     @Column(precision = 7, scale = 2)
@@ -56,11 +47,6 @@ public class Order {
     public Order() {
     }
 
-    @PrePersist
-    public void getIdFromGenerator() {
-
-    }
-
     public Double getTotalCost() {
         return totalCost;
     }
@@ -69,14 +55,13 @@ public class Order {
         this.totalCost = totalCost;
     }
 
-    public String getOrderNumber() {
+    public OrderNumber getOrderNumber() {
         return orderNumber;
     }
 
-    public void setOrderNumber(String orderNumber) {
+    public void setOrderNumber(OrderNumber orderNumber) {
         this.orderNumber = orderNumber;
     }
-
 
     public Set<Shaurma> getShaurmaSet() {
         return shaurmaSet;
@@ -86,32 +71,59 @@ public class Order {
         this.shaurmaSet = shaurmaSet;
     }
 
-    public static class OrderIdGenerator extends SequenceStyleGenerator {
+    @Entity
+    @Table(name = "order_number")
+    public static class OrderNumber  {
 
-        @Override
-        public Serializable generate(SharedSessionContractImplementor session, Object object)
-            throws HibernateException {
+        @Id
+        @GeneratedValue(strategy = GenerationType.SEQUENCE)
+        @Column(name = "id", unique = true, nullable = false, updatable = false)
+        private Long id;
 
-            LocalDate localDate = LocalDate.now();
-            String prefix = localDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) + "_";
-            Connection connection = session.connection();
-            try {
+        @Column(
+            columnDefinition = "NOT NULL DEFAULT TO_CHAR(CURRENT_TIMESTAMP,'YYYY-MM-DD')",
+            name = "date",
+            nullable = false,
+            updatable = false
+        )
+        private LocalDate localDate;
 
-                PreparedStatement ps = connection
-                    .prepareStatement("SELECT MAX(vlaue) as vlaue from hibernate_tutorial.pk_table");
+        public Long getId() {
+            return id;
+        }
 
-                ResultSet rs = ps.executeQuery();
-                if (rs.next()) {
-                    int id = rs.getInt("vlaue");
-                    String code = prefix + new Integer(id).toString();
-                    System.out.println("Generated Stock Code: " + code);
-                    return code;
-                }
+        public void setId(Long id) {
+            this.id = id;
+        }
 
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-            return null;
+        public LocalDate getLocalDate() {
+            return localDate;
+        }
+
+        public void setLocalDate(LocalDate localDate) {
+            this.localDate = localDate;
         }
     }
+
+    @Converter
+    public static class OrderNumberConverter implements AttributeConverter<OrderNumber, String> {
+
+        @Override
+        public String convertToDatabaseColumn(OrderNumber attribute) {
+            return String.valueOf(attribute.getLocalDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")))
+                + "_" + attribute.getId();
+        }
+
+        @Override
+        public OrderNumber convertToEntityAttribute(String dbData) {
+            final OrderNumber orderNumber = new OrderNumber();
+            orderNumber
+                .setLocalDate(
+                    LocalDate.parse(dbData.substring(0,9),DateTimeFormatter.ofPattern("yyyy-MM-dd"))
+                );
+            orderNumber.setId(Long.valueOf(dbData.substring(11)));
+            return orderNumber;
+        }
+    }
+
 }

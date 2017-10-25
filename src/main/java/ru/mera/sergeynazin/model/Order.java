@@ -1,6 +1,20 @@
 package ru.mera.sergeynazin.model;
 
+import org.hibernate.HibernateException;
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.engine.spi.SessionImplementor;
+import org.hibernate.engine.spi.SharedSessionContractImplementor;
+import org.hibernate.id.IdentifierGenerator;
+import org.hibernate.id.enhanced.SequenceStyleGenerator;
+
 import javax.persistence.*;
+import java.io.Serializable;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Set;
 
 @Entity
@@ -8,6 +22,13 @@ import java.util.Set;
 public class Order {
 
     @Id
+
+
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "date_plus_sequence_generator")
+    @GenericGenerator(name = "date_plus_sequence_generator", )
+
+
+
     @Column(
         length = 32,
         unique = true,
@@ -58,5 +79,36 @@ public class Order {
 
     public void setShaurmaSet(Set<Shaurma> shaurmaSet) {
         this.shaurmaSet = shaurmaSet;
+    }
+
+    public static class OrderIdGenerator extends SequenceStyleGenerator {
+
+
+        @Override
+        public Serializable generate(SharedSessionContractImplementor session, Object object)
+            throws HibernateException {
+            LocalDate localDate = LocalDate.now();
+            String prefix = localDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) + "_";
+
+
+            Connection connection = session.connection();
+            try {
+
+                PreparedStatement ps = connection
+                    .prepareStatement("SELECT MAX(vlaue) as vlaue from hibernate_tutorial.pk_table");
+
+                ResultSet rs = ps.executeQuery();
+                if (rs.next()) {
+                    int id = rs.getInt("vlaue");
+                    String code = prefix + new Integer(id).toString();
+                    System.out.println("Generated Stock Code: " + code);
+                    return code;
+                }
+
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
     }
 }

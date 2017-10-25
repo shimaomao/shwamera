@@ -1,6 +1,7 @@
 package ru.mera.sergeynazin.model;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 // FIXME: 10/20/17 hashCode + equals
 @Entity
@@ -47,4 +48,26 @@ public class Ingredient {
     public void setCost(Double cost) {
         this.cost = cost;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || this.getClass() != o.getClass()) {
+            return false;
+        }
+
+        Ingredient ingredient = (Ingredient) o;
+
+        return Objects.equals(this.name, ingredient.name)
+            && Objects.equals(this.id, ingredient.id)
+            && Objects.equals(this.cost, ingredient.cost);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.name, this.id, this.cost);
+    }
+
 }

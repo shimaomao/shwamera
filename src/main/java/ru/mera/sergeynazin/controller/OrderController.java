@@ -1,5 +1,6 @@
 package ru.mera.sergeynazin.controller;
 
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.mera.sergeynazin.model.Order;
@@ -35,12 +36,12 @@ public class OrderController {
      * @param orderNumber orderNumber from session
      * @return 200 or 404 (don't know how to send 410)
      */
-    @GetMapping(value = "/{orderNumber}", produces = "application/json")
+    @GetMapping(value = "/{orderNumber}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getOrderInfoByOrderNumberInJSON(@PathVariable("orderNumber") final String orderNumber) {
         return getOrderInfoByOrderNumber(orderNumber);
     }
 
-    @GetMapping(value = "/{orderNumber}", produces = "application/xml")
+    @GetMapping(value = "/{orderNumber}", produces = MediaType.APPLICATION_XML_VALUE)
     public ResponseEntity<?> getOrderInfoByOrderNumberInXML(@PathVariable("orderNumber") final String orderNumber) {
         return getOrderInfoByOrderNumber(orderNumber);
     }
@@ -54,7 +55,7 @@ public class OrderController {
 
     // TODO: Do I need value = "/" ???
     // TODO: Aspect
-    @GetMapping(value = "/all", produces = "application/json")
+    @GetMapping(value = "/all", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Collection<Order>> getAllOrdersInJSON() {
         return ResponseEntity.ok(orderService.getAll());
     }
@@ -62,14 +63,14 @@ public class OrderController {
     // TODO: 10/20/17 XML
     // TODO: Do I need value = "/" ???
     // TODO: Aspect
-    @GetMapping(value = "/all", produces = "application/xml")
+    @GetMapping(value = "/all", produces = MediaType.APPLICATION_XML_VALUE)
     public ResponseEntity<Collection<Order>> getAllOrdersInXML() {
         return ResponseEntity.ok(orderService.getAll());
     }
 
     // TODO: Is that value = "/" we need here?
     // TODO: 10/20/17 Aspect
-    @PostMapping(value = "/", consumes = {"application/json" , "application/xml"})
+    @PostMapping(value = "/", consumes = {MediaType.APPLICATION_JSON_VALUE , MediaType.APPLICATION_XML_VALUE})
     public ResponseEntity<?> add(@RequestBody final Order order) {
         orderService.save(order);
         return ResponseEntity.ok(order);
@@ -77,13 +78,13 @@ public class OrderController {
 
     // TODO: Produces!!
     // TODO: 10/20/17 Aspect
-    @PutMapping(value = "/order/{orderid}/add/{shaurmaid}", produces = "application/json")
+    @PutMapping(value = "/order/{orderid}/add/{shaurmaid}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> updateOrderInJson(@PathVariable(value = "orderid") Long orderId,
                                                @PathVariable(value = "shaurmaid") Long shaurmaId) {
         return updateOrCreateOrder(orderId, shaurmaId);
     }
     // TODO: 10/20/17 Aspect
-    @PutMapping(value = "/order/{orderid}/add/{shaurmaid}", produces = "application/xml")
+    @PutMapping(value = "/order/{orderid}/add/{shaurmaid}", produces = MediaType.APPLICATION_XML_VALUE)
     public ResponseEntity<?> updateOrderInXML(@PathVariable(value = "orderid") Long orderId,
                                               @PathVariable(value = "shaurmaid") Long shaurmaId) {
         return updateOrCreateOrder(orderId, shaurmaId);
@@ -123,12 +124,12 @@ public class OrderController {
      * @param id order id from db
      * @return 200 or 404
      */
-    @DeleteMapping(value = "/{id}", produces = "application/json")
+    @DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> deleteOrderInJson(@PathVariable("id") final Long id) {
         return delete(id);
     }
 
-    @DeleteMapping(value = "/{id}", produces = "application/xml")
+    @DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_XML_VALUE)
     public ResponseEntity<?> deleteOrderInXML(@PathVariable("id") final Long id) {
         return delete(id);
     }
@@ -136,6 +137,11 @@ public class OrderController {
     // TODO: 10/20/17 Aspect
     private ResponseEntity<?> delete(Long id) {
 
+//        return orderService.tryDelete(id)
+//            ? ResponseEntity.ok().build()
+//            : ResponseEntity.notFound().build();
+
+        // FIXME: I know it checks 3 times.
         checkOrThrowOrderById(id);
 
         return orderService.optionalIsExist(id)

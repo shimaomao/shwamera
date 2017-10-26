@@ -1,5 +1,6 @@
 package ru.mera.sergeynazin.controller;
 
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.mera.sergeynazin.model.MenuEntry;
@@ -25,13 +26,13 @@ public class MenuEntryController {
         this.shaurmaService = shaurmaService;
     }
 
-    @GetMapping(produces = "application/json")
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Collection<MenuEntry>> getAllMenuEntrysInJSON() {
         return ResponseEntity.ok(menuEntryService.getAll());
     }
 
     // TODO: 10/20/17 XML
-    @GetMapping(produces = "application/xml")
+    @GetMapping(produces = MediaType.APPLICATION_XML_VALUE)
     public ResponseEntity<Collection<MenuEntry>> getAllMenuEntrysInXML() {
         return ResponseEntity.ok(menuEntryService.getAll());
     }
@@ -41,7 +42,7 @@ public class MenuEntryController {
      * @param id shaurma unique id from db
      * @return error on Shaurma not found or 200 code with newly added to menu shaurma body
      */
-    @PostMapping(value = "/shaurma/add/{id}", produces = "application/json")
+    @PostMapping(value = "/shaurma/add/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> addAsJSON(@PathVariable("id") final Long id) {
         return add(id);
     }
@@ -63,17 +64,23 @@ public class MenuEntryController {
      * @param id MenuEntry id from db
      * @return error on MenuEntry not found or 200 code with newly added to menu shaurma body
      */
-    @DeleteMapping(value = "/delete/{id}", produces = "application/json")
+    @DeleteMapping(value = "/delete/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> deleteAsJSON(@PathVariable("id") final Long id) {
         return delete(id);
     }
 
-    @DeleteMapping(value = "/delete/{id}", produces = "application/xml")
+    @DeleteMapping(value = "/delete/{id}", produces = MediaType.APPLICATION_XML_VALUE)
     public ResponseEntity<?> deleteAsXML(@PathVariable("id") final Long id) {
         return delete(id);
     }
     // TODO: 10/20/17 Aspect
     private ResponseEntity<?> delete(Long id) {
+
+//        return menuEntryService.tryDelete(id)
+//            ? ResponseEntity.ok().build()
+//            : ResponseEntity.notFound().build();
+
+        // FIXME: I know it checks 3 times.
         checkOrThrowMenuEntry(id);
 
         return menuEntryService.optionalIsExist(id)

@@ -7,6 +7,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 public interface IRepository extends ICRUDRepository {
 
@@ -19,7 +20,6 @@ public interface IRepository extends ICRUDRepository {
     default <T> void createItem(final T item) {
         getSession().save(item);
     }
-
 
     @Override
     default <T> void deleteItem(final T item) {
@@ -38,8 +38,9 @@ public interface IRepository extends ICRUDRepository {
             .getResultList();
     }
 
-    default <T> void persist(final T item) {
-        getSession().persist(item);
+    @SuppressWarnings("unchecked")
+    default <T> T mergeStateWithDbEntity(T item) {
+        return (T) getSession().merge(item);
     }
 
     default <T> T uniqueRead(final CriteriaQuery<T> criteriaQuery) {
@@ -48,8 +49,25 @@ public interface IRepository extends ICRUDRepository {
             .getResultList());
     }
 
+    default <T> void persist(final T item) {
+        getSession().persist(item);
+        // TODO: As I understood the getCurrentSession flushes the session, if not then getSession().flush() here
+    }
+
     default <T> T get(final Serializable id) {
-        return getSession().get(getClazz(),Objects.requireNonNull(id));
+        return getSession().get(getClazz(), Objects.requireNonNull(id));
+    }
+
+    /**
+     * Hibernate 5.2.x providing support of Optional so we switch to that
+     * otherwise can uncomment lines below
+     * @param id Primary Key
+     * @return Optional.of(Managed_instance)
+     */
+    @SuppressWarnings("unchecked")
+    default <T> Optional<T> getOptional(final Serializable id) {
+        return (Optional<T>) getSession().byId(getClazz()).loadOptional(id);
+                // Optional.of(getSession().get(getClazz(),Objects.requireNonNull(id)));
     }
 
     default <T> T load(final Serializable id) {

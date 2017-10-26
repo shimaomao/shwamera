@@ -8,6 +8,7 @@ import ru.mera.sergeynazin.service.ShaurmaService;
 
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
+import java.io.Serializable;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,14 +26,20 @@ public class ShaurmaServiceImpl implements ShaurmaService {
         this.repository = repository;
     }
 
+    /**
+     * For educational purposes this is done not directly, like repository.getSession().save(shaurma)
+      * @param shaurma transient newly created entity
+     * @return newly assigned primary key of entity after making it managed by calling getId() straight after persist()
+     */
     @Override
-    public void save(final Shaurma shaurma) {
+    public Serializable save(final Shaurma shaurma) {
         logger.info("ShaurmaServiceImpl::save() called with: shaurma = [" + shaurma + "]");
-        repository.createItem(shaurma);
+        repository.persist(shaurma);
+        return shaurma.getId();
     }
 
     @Override
-    public Shaurma loadAsPersistent(final Long id) {
+    public Shaurma loadAsPersistent(final Serializable id) {
         logger.info("loadAsPersistent() called with: id = [" + id + "]");
         return repository.load(id);
     }
@@ -55,25 +62,41 @@ public class ShaurmaServiceImpl implements ShaurmaService {
     }
 
     @Override
+    public Shaurma updateShaurmaStateInDb(final Long idGuarantiedIsInDb,
+                                          final Shaurma detachedNewStatefulEntityWithoutId) {
+        detachedNewStatefulEntityWithoutId.setId(idGuarantiedIsInDb);
+        return repository.mergeStateWithDbEntity(detachedNewStatefulEntityWithoutId);
+    }
+
+    @Override
     public void delete(final Shaurma persistentShaurma) {
         logger.info("ShaurmaServiceImpl::delete() called with: persistentShaurma = [" + persistentShaurma + "]");
         repository.deleteItem(persistentShaurma);
     }
 
+    /**
+     * @see ShaurmaServiceImpl#optionalIsExist(Long)
+     */
     @Override
     public boolean tryDelete(final Long id) {
         logger.info("ShaurmaServiceImpl::tryDelete() called with: id = [" + id + "]");
-        final Shaurma shaurma = repository.get(id);
-        if (shaurma != null) {
-            repository.deleteItem(shaurma);
-            return true;
-        }
-        else return false;
+        return repository.getOptional(id)
+            .map(shaurma -> {
+                repository.deleteItem(shaurma);
+                return true;
+            }).orElse(false);
     }
 
+    /**
+     * Hibernate 5.2.x providing support of Optional so we switch to that
+     * otherwise can uncomment lines below
+     * @param id Primary Key
+     * @return Optional.of(Shaurma_managed_instance)
+     */
     @Override
     public Optional<Shaurma> optionalIsExist(final Long id) {
         logger.info("ShaurmaServiceImpl::optionalIsExist() called with: id = [" + id + "]");
-        return Optional.of(repository.get(id));
+        return repository.getOptional(id);
+            //Optional.of(repository.getOptional(id));
     }
 }

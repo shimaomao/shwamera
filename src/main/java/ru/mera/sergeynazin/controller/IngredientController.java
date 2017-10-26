@@ -1,5 +1,6 @@
 package ru.mera.sergeynazin.controller;
 
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.mera.sergeynazin.model.Ingredient;
@@ -18,13 +19,13 @@ public class IngredientController {
     public void setIngredientService(IngredientService ingredientService) {
         this.ingredientService = ingredientService;
     }
-    @GetMapping(produces = "application/json")
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Collection<Ingredient>> getAllIngredientsInJSON() {
         return ResponseEntity.ok(ingredientService.getAll());
     }
 
     // TODO: 10/20/17 XML
-    @GetMapping(produces = "application/xml")
+    @GetMapping(produces = MediaType.APPLICATION_XML_VALUE)
     public ResponseEntity<List<Ingredient>> getAllIngredientsInXML() {
         return ResponseEntity.ok(ingredientService.getAll());
     }
@@ -37,7 +38,7 @@ public class IngredientController {
 
     // FIXME: Does this one meant to be a CREATING and SAVE newly created ingredient by shaurmamaker???
     // TODO: 10/20/17 Aspect
-    @PostMapping(value = "/ingredients/create/{ingredientName}", consumes = {"application/json" , "application/xml"})
+    @PostMapping(value = "/ingredients/create/{ingredientName}", consumes = {MediaType.APPLICATION_JSON_VALUE , MediaType.APPLICATION_XML_VALUE})
     public ResponseEntity<?> createNew(@PathVariable("ingredientName") final String ingredientName, @RequestBody final Ingredient ingredient) {
 
         return ingredientService.optionalIsExist(ingredientName)
@@ -48,7 +49,7 @@ public class IngredientController {
             });
     }
 
-    @PostMapping(value = "/ingredients/add/{ingredientName}", consumes = {"application/json" , "application/xml"})
+    @PostMapping(value = "/ingredients/add/{ingredientName}", consumes = {MediaType.APPLICATION_JSON_VALUE , MediaType.APPLICATION_XML_VALUE})
     public ResponseEntity<?> add(@PathVariable("ingredientName") final String ingredientName, @RequestBody final Ingredient ingredient) {
 
         checkOrThrowByName(ingredientName);
@@ -60,8 +61,12 @@ public class IngredientController {
     @DeleteMapping(value = "/ingredients/remove/{id}")
     public ResponseEntity<?> deleteIngredient(@PathVariable("id") final Long id) {
 
-        checkOrThrowById(id);
+//        return ingredientService.tryDelete(id)
+//            ? ResponseEntity.ok().build()
+//            : ResponseEntity.notFound().build();
 
+        // FIXME: I know it checks 3 times.
+        checkOrThrowById(id);
         return ingredientService.optionalIsExist(id)
             .map(ingredient -> {
                 ingredientService.tryDelete(id);

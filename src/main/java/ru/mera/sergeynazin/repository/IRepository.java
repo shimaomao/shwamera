@@ -17,37 +17,42 @@ public interface IRepository extends ICRUDRepository {
     <T> Class<T> getClazz();
 
     @Override
-    default <T> void createItem(final T item) {
-        getSession().save(item);
+    default <T> void create(final T entityWithoutPrimaryKey) {
+        getSession().save(entityWithoutPrimaryKey);
     }
 
     @Override
-    default <T> void deleteItem(final T item) {
-        getSession().delete(item);
+    default <T> void delete(final T entityWithPrimaryKey) {
+        getSession().delete(entityWithPrimaryKey);
     }
 
     @Override
-    default <T> void updateItem(final T item) {
-        getSession().update(item);
+    default <T> void update(final T entityWithPrimaryKey) {
+        getSession().update(entityWithPrimaryKey);
     }
 
     @Override
-    default <T> List readItems(final CriteriaQuery<T> criteriaQuery) {
+    default <T> List read(final CriteriaQuery<T> criteriaQuery) {
         return getSession()
             .createQuery(Objects.requireNonNull(criteriaQuery))
             .getResultList();
     }
 
-    @SuppressWarnings("unchecked")
-    default <T> T mergeStateWithDbEntity(T item) {
-        return (T) getSession().merge(item);
+    default <T> T uniqueRead(final CriteriaQuery<T> criteriaQuery) {
+        return AbstractProducedQuery.uniqueElement(
+            getSession().createQuery( Objects.requireNonNull(criteriaQuery) ).getResultList());
     }
 
-    default <T> T uniqueRead(final CriteriaQuery<T> criteriaQuery) {
-        return AbstractProducedQuery.uniqueElement(getSession()
-            .createQuery(Objects.requireNonNull(criteriaQuery))
-            .getResultList());
+    /**
+     * @param newStatefulEntityWithPrimaryKey new Stateful Entity With PrimaryKey
+     * @param <T> entity type
+     * @return updated managed Entity
+     */
+    @SuppressWarnings("unchecked")
+    default <T> T mergeStateWithDbEntity(T newStatefulEntityWithPrimaryKey) {
+        return (T) getSession().merge(newStatefulEntityWithPrimaryKey);
     }
+
 
     default <T> void persist(final T item) {
         getSession().persist(item);
@@ -66,7 +71,7 @@ public interface IRepository extends ICRUDRepository {
      */
     @SuppressWarnings("unchecked")
     default <T> Optional<T> getOptional(final Serializable id) {
-        return (Optional<T>) getSession().byId(getClazz()).loadOptional(id);
+        return (Optional<T>) getSession().byId(getClazz()).loadOptional(Objects.requireNonNull(id));
                 // Optional.of(getSession().get(getClazz(),Objects.requireNonNull(id)));
     }
 

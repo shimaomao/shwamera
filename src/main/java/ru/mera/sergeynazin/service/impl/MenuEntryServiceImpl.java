@@ -29,7 +29,7 @@ public class MenuEntryServiceImpl implements MenuEntryService {
     @Override
     public void save(final MenuEntry menuEntry) {
         logger.info("MenuEntryServiceImpl::save() called with: menuEntry = [" + menuEntry + "]");
-        repository.createItem(menuEntry);
+        repository.create(menuEntry);
     }
 
     @Override
@@ -45,19 +45,19 @@ public class MenuEntryServiceImpl implements MenuEntryService {
         CriteriaQuery<MenuEntry>  criteriaQuery = repository.myCriteriaQuery();
         Root<MenuEntry> root = criteriaQuery.from(MenuEntry.class);
         criteriaQuery.select(root);
-        return repository.readItems(criteriaQuery);
+        return repository.read(criteriaQuery);
     }
 
     @Override
     public void update(final MenuEntry detachedEntity) {
         logger.info("MenuEntryServiceImpl::update() called with: detachedEntity = [" + detachedEntity + "]");
-        repository.updateItem(detachedEntity);
+        repository.update(detachedEntity);
     }
 
     @Override
     public void delete(final MenuEntry persistentMenuEntry) {
         logger.info("MenuEntryServiceImpl::delete() called with: persistentMenuEntry = [" + persistentMenuEntry + "]");
-        repository.deleteItem(persistentMenuEntry);
+        repository.delete(persistentMenuEntry);
     }
 
     /**
@@ -68,7 +68,7 @@ public class MenuEntryServiceImpl implements MenuEntryService {
         logger.info("MenuEntryServiceImpl::tryDelete() called with: id = [" + id + "]");
         return repository.getOptional(id)
             .map(menuEntry -> {
-                repository.deleteItem(menuEntry);
+                repository.delete(menuEntry);
                 return true;
             }).orElse(false);
     }

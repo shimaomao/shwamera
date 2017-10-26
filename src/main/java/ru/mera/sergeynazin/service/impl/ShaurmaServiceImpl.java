@@ -51,14 +51,14 @@ public class ShaurmaServiceImpl implements ShaurmaService {
         CriteriaQuery<Shaurma>  criteriaQuery = repository.myCriteriaQuery();
         Root<Shaurma> root = criteriaQuery.from(Shaurma.class);
         criteriaQuery.select(root);
-        return repository.readItems(criteriaQuery);
+        return repository.read(criteriaQuery);
     }
 
 
     @Override
     public void update(final Shaurma detachedEntity) {
         logger.info("ShaurmaServiceImpl::update() called with: detachedEntity = [" + detachedEntity + "]");
-        repository.updateItem(detachedEntity);
+        repository.update(detachedEntity);
     }
 
     @Override
@@ -71,7 +71,7 @@ public class ShaurmaServiceImpl implements ShaurmaService {
     @Override
     public void delete(final Shaurma persistentShaurma) {
         logger.info("ShaurmaServiceImpl::delete() called with: persistentShaurma = [" + persistentShaurma + "]");
-        repository.deleteItem(persistentShaurma);
+        repository.delete(persistentShaurma);
     }
 
     /**
@@ -82,7 +82,7 @@ public class ShaurmaServiceImpl implements ShaurmaService {
         logger.info("ShaurmaServiceImpl::tryDelete() called with: id = [" + id + "]");
         return repository.getOptional(id)
             .map(shaurma -> {
-                repository.deleteItem(shaurma);
+                repository.delete(shaurma);
                 return true;
             }).orElse(false);
     }

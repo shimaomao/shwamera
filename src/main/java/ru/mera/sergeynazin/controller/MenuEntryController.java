@@ -37,11 +37,6 @@ public class MenuEntryController {
         return ResponseEntity.ok(menuEntryService.getAll());
     }
 
-    /**
-     * Method for shaurmamaker. Supposedly this will add predefined shaurma to menu
-     * @param id shaurma unique id from db
-     * @return error on Shaurma not found or 200 code with newly added to menu shaurma body
-     */
     @PostMapping(value = "/shaurma/add/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> addAsJSON(@PathVariable("id") final Long id) {
         return add(id);
@@ -51,19 +46,18 @@ public class MenuEntryController {
     public ResponseEntity<?> addAsXML(@PathVariable("id") final Long id) {
         return add(id);
     }
+    /**
+     * Convenience method for shaurmamaker. Supposedly this will add predefined shaurma to menu
+     * @param id shaurma unique id from db
+     * @return error on Shaurma not found or 200 code with newly added to menu shaurma body todo maybe switch to MenuEntry body??
+     */
     // TODO: 10/20/17 Aspect
     private ResponseEntity<?> add(final Long id) {
-        checkOrThrowShaurma(id);
         return shaurmaService.optionalIsExist(id)
             .map(ResponseEntity ::ok)
             .orElse(ResponseEntity.notFound().build());
     }
 
-    /**
-     * Method for shaurmamaker. Supposedly this will delete predefined shaurma from menu
-     * @param id MenuEntry id from db
-     * @return error on MenuEntry not found or 200 code with newly added to menu shaurma body
-     */
     @DeleteMapping(value = "/delete/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> deleteAsJSON(@PathVariable("id") final Long id) {
         return delete(id);
@@ -73,19 +67,17 @@ public class MenuEntryController {
     public ResponseEntity<?> deleteAsXML(@PathVariable("id") final Long id) {
         return delete(id);
     }
+
+    /**
+     * Convenience method for shaurmamaker. Supposedly this will delete predefined shaurma from menu
+     * @param id MenuEntry id from db
+     * @return 404 or 200 code with deleted from menu menuEntry body
+     */
     // TODO: 10/20/17 Aspect
     private ResponseEntity<?> delete(Long id) {
-
-//        return menuEntryService.tryDelete(id)
-//            ? ResponseEntity.ok().build()
-//            : ResponseEntity.notFound().build();
-
-        // FIXME: I know it checks 3 times.
-        checkOrThrowMenuEntry(id);
-
         return menuEntryService.optionalIsExist(id)
             .map(menuEntry -> {
-                menuEntryService.tryDelete(id);
+                menuEntryService.delete(menuEntry);
                 return ResponseEntity.ok(menuEntry);
             }).orElse(ResponseEntity.notFound().build());
     }
@@ -94,12 +86,20 @@ public class MenuEntryController {
     // FIXME: There are methods in Hibernate API which looks up for entire DB by primary ke switch to them!
     // TODO: 10/23/17 WHY IGNORED ??? (...- No Handler ?? )witch to security with (also there is Principal)
     private void checkOrThrowShaurma(final Long id) {
-        shaurmaService.optionalIsExist(id)
-            .orElseThrow(() -> new NotFoundExeption(String.valueOf(id)));
+        try {
+            shaurmaService.optionalIsExist(id)
+                .orElseThrow(() -> new NotFoundExeption(String.valueOf(id)));
+        } catch (NotFoundExeption notFoundExeption) {
+            notFoundExeption.printStackTrace();
+        }
     }
 
     private void checkOrThrowMenuEntry(final Long id) {
-        menuEntryService.optionalIsExist(id)
-            .orElseThrow(() -> new NotFoundExeption(String.valueOf(id)));
+        try {
+            menuEntryService.optionalIsExist(id)
+                .orElseThrow(() -> new NotFoundExeption(String.valueOf(id)));
+        } catch (NotFoundExeption notFoundExeption) {
+            notFoundExeption.printStackTrace();
+        }
     }
 }

@@ -12,7 +12,6 @@ import java.net.URI;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.function.Function;
 
 @RestController
 @RequestMapping("/order")
@@ -22,6 +21,11 @@ public class OrderController {
 
     private ShaurmaService shaurmaService;
 
+    private Order currentOrder;
+
+    public void setCurrentOrder(Order currentOrder) {
+        this.currentOrder = currentOrder;
+    }
     public void setOrderService(OrderService orderService) {
         this.orderService = orderService;
     }
@@ -30,30 +34,29 @@ public class OrderController {
         this.shaurmaService = shaurmaService;
     }
 
+
+    @GetMapping(value = "/{orderNumber}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> getOrderInfoByOrderNumberInJSON(@PathVariable("orderNumber") final String orderNumber) {
+        return get(orderNumber);
+    }
+
+    @GetMapping(value = "/{orderNumber}", produces = MediaType.APPLICATION_XML_VALUE)
+    public ResponseEntity<?> getOrderInfoByOrderNumberInXML(@PathVariable("orderNumber") final String orderNumber) {
+        return get(orderNumber);
+    }
+
     /**
      * Just getting the order by
      * @see Order#orderNumber
      * @param orderNumber orderNumber from session
      * @return 200 or 404 (don't know how to send 410)
      */
-    @GetMapping(value = "/{orderNumber}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> getOrderInfoByOrderNumberInJSON(@PathVariable("orderNumber") final String orderNumber) {
-        return getOrderInfoByOrderNumber(orderNumber);
-    }
-
-    @GetMapping(value = "/{orderNumber}", produces = MediaType.APPLICATION_XML_VALUE)
-    public ResponseEntity<?> getOrderInfoByOrderNumberInXML(@PathVariable("orderNumber") final String orderNumber) {
-        return getOrderInfoByOrderNumber(orderNumber);
-    }
-
-    private ResponseEntity<?> getOrderInfoByOrderNumber(final String orderNumber) {
-        checkOrThrowOrderByName(orderNumber);
+    private ResponseEntity<?> get(final String orderNumber) {
         return orderService.optionalIsExist(orderNumber)
             .map(ResponseEntity::ok)
             .orElse(ResponseEntity.notFound().build());
     }
 
-    // TODO: Do I need value = "/" ???
     // TODO: Aspect
     @GetMapping(value = "/all", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Collection<Order>> getAllOrdersInJSON() {
@@ -61,7 +64,6 @@ public class OrderController {
     }
 
     // TODO: 10/20/17 XML
-    // TODO: Do I need value = "/" ???
     // TODO: Aspect
     @GetMapping(value = "/all", produces = MediaType.APPLICATION_XML_VALUE)
     public ResponseEntity<Collection<Order>> getAllOrdersInXML() {
@@ -69,11 +71,10 @@ public class OrderController {
     }
 
     // TODO: Is that value = "/" we need here?
-    // TODO: 10/20/17 Aspect
     @PostMapping(value = "/", consumes = {MediaType.APPLICATION_JSON_VALUE , MediaType.APPLICATION_XML_VALUE})
-    public ResponseEntity<?> add(@RequestBody final Order order) {
+    public ResponseEntity<?> createNewOrder(@RequestBody final Order order) {
         orderService.save(order);
-        return ResponseEntity.ok(order);
+        return ResponseEntity.created(URI.create("/" + order.getOrderNumber())).body(order);
     }
 
     // TODO: Produces!!
@@ -96,26 +97,27 @@ public class OrderController {
      * @param shaurmaId {@link Shaurma#getId()}
      * @return 200 or 201
      */
+    //TODO Migrate to session bean instead of new
     private ResponseEntity<?> updateOrCreateOrder(Long orderId, Long shaurmaId) {
-        checkOrThrowOrderById(orderId);
-        return orderService.optionalIsExist(orderId)
-            .map((Function<Order, ResponseEntity<?>>) order -> {
-                order.getShaurmaSet().add(shaurmaService.loadAsPersistent(shaurmaId));
-                return ResponseEntity.ok(order);
-            }).orElseGet(() -> {
-                //if no such Order then invoke new one
-                final Order order = new Order();
-                checkOrThrowShaurma(shaurmaId);
-                shaurmaService.optionalIsExist(shaurmaId)
-                    .ifPresent(shaurma -> {
-                        // if such shaurma present then add it to newly invoked Order
-                        Set<Shaurma> shaurmaSet = new HashSet<>();
-                        shaurmaSet.add(shaurma);
-                        order.setShaurmaSet(shaurmaSet);
+        return shaurmaService.optionalIsExist(shaurmaId)
+            .map(shaurma -> {
+                 final Order newOrder = orderService.optionalIsExist(orderId)
+                    .map(order -> {
+                        order.getShaurmaSet().add(shaurma);
+                        return order;
+                    }).orElseGet(() -> {
+                         if (currentOrder.getShaurmaSet() != null) {
+                             currentOrder.getShaurmaSet().add(shaurma);
+                         } else {
+                             final Set<Shaurma> shaurmaSet = new HashSet<>(1);
+                             shaurmaSet.add(shaurma);
+                             currentOrder.setShaurmaSet(shaurmaSet);
+                             orderService.save(currentOrder);
+                         }
+                        return currentOrder;
                     });
-                orderService.save(order);
-                return ResponseEntity.created(URI.create(order.getOrderNumber())).body(order);
-            });
+                return ResponseEntity.created(URI.create(newOrder.getOrderNumber())).body(newOrder);
+            }).orElse(ResponseEntity.notFound().build());
     }
 
 
@@ -136,23 +138,18 @@ public class OrderController {
 
     // TODO: 10/20/17 Aspect
     private ResponseEntity<?> delete(Long id) {
-
-//        return orderService.tryDelete(id)
-//            ? ResponseEntity.ok().build()
-//            : ResponseEntity.notFound().build();
-
-        // FIXME: I know it checks 3 times.
-        checkOrThrowOrderById(id);
-
         return orderService.optionalIsExist(id)
             .map(order -> {
-                orderService.tryDelete(id);
+                orderService.delete(order);
                 return ResponseEntity.ok(order);
             }).orElse(ResponseEntity.notFound().build());
     }
 
 
-
+    /**
+     * Helper methods
+     * @param id/orderNumber identifier
+     */
     // TODO: 10/23/17 WHY IGNORED ??? (...- No Handler ?? )witch to security with (also there is Principal)
     private void checkOrThrowShaurma(final Long id) {
         shaurmaService.optionalIsExist(id)

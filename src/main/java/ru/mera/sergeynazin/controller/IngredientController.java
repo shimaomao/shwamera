@@ -33,7 +33,6 @@ public class IngredientController {
     // TODO: 10/20/17 Aspect
     @PostMapping(value = "/ingredients/create/{ingredient_name}", consumes = { MediaType.APPLICATION_XML_VALUE }, produces = { MediaType.APPLICATION_XML_VALUE })
     public ResponseEntity<?> createNewIngredient(@PathVariable("ingredient_name") final String ingredientName, @RequestBody final Ingredient ingredient) {
-
         return ingredientService.optionalIsExist(ingredient.getId())
             .flatMap(i -> ingredientService.optionalIsExist(ingredientName))
             .map(i -> ResponseEntity.unprocessableEntity().body(ingredient))
@@ -44,7 +43,6 @@ public class IngredientController {
                 return ResponseEntity.created(URI.create("/"+ ingredient.getId())).body(ingredient);
             });
     }
-
 
     // FIXME:// FIXME:// FIXME:// FIXME:// FIXME:// FIXME:
     // FIXME:

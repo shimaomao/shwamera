@@ -1,44 +1,46 @@
 package ru.mera.sergeynazin.repository;
 
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.hibernate.query.internal.AbstractProducedQuery;
 
+import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-public interface IRepository extends ICRUDRepository {
+public interface HibernateRepository extends JpaRepository, GenericRepository {
 
-    Session getSession();
-
-    @SuppressWarnings("unchecked")
-    <T> Class<T> getClazz();
-
-    @Override
-    default <T> void create(final T entityWithoutPrimaryKey) {
-        getSession().save(entityWithoutPrimaryKey);
+    default <T> Session getSession() {
+        return getEntityManager().getEntityManagerFactory().unwrap( SessionFactory.class ).getCurrentSession();
     }
 
     @Override
-    default <T> void delete(final T entityWithPrimaryKey) {
-        getSession().delete(entityWithPrimaryKey);
+    default <T> Serializable create(final T transientEntity) {
+        return getSession().save(transientEntity);
     }
 
     @Override
-    default <T> void update(final T entityWithPrimaryKey) {
-        getSession().update(entityWithPrimaryKey);
+    default <T> void delete(final T persistentOrDetachedEntity) {
+        getSession().delete(persistentOrDetachedEntity);
     }
 
     @Override
-    default <T> List read(final CriteriaQuery<T> criteriaQuery) {
+    default <T> void update(final T detachedEntity) {
+        getSession().update(detachedEntity);
+    }
+
+    @Override
+    default <T> List getByCriteriaQuery(final CriteriaQuery<T> criteriaQuery) {
         return getSession()
             .createQuery(Objects.requireNonNull(criteriaQuery))
             .getResultList();
     }
 
-    default <T> T uniqueRead(final CriteriaQuery<T> criteriaQuery) {
+    @Override
+    default <T> T getUniqueByCriteriaQuery(final CriteriaQuery<T> criteriaQuery) {
         return AbstractProducedQuery.uniqueElement(
             getSession().createQuery( Objects.requireNonNull(criteriaQuery) ).getResultList());
     }
@@ -53,13 +55,8 @@ public interface IRepository extends ICRUDRepository {
         return (T) getSession().merge(newStatefulEntityWithPrimaryKey);
     }
 
-
-    default <T> void persist(final T item) {
-        getSession().persist(item);
-        // TODO: As I understood the getCurrentSession flushes the session, if not then getSession().flush() here
-    }
-
-    default <T> T get(final Serializable id) {
+    @Override
+    default <T> T getById(final Serializable id) {
         return getSession().get(getClazz(), Objects.requireNonNull(id));
     }
 
@@ -70,17 +67,19 @@ public interface IRepository extends ICRUDRepository {
      * @return Optional.of(Managed_instance)
      */
     @SuppressWarnings("unchecked")
-    default <T> Optional<T> getOptional(final Serializable id) {
+    default <T> Optional<T> getOptionalById(final Serializable id) {
         return (Optional<T>) getSession().byId(getClazz()).loadOptional(Objects.requireNonNull(id));
-                // Optional.of(getSession().get(getClazz(),Objects.requireNonNull(id)));
+        // Optional.of(getSession().get(getClazz(),Objects.requireNonNull(id)));
     }
 
-    default <T> T load(final Serializable id) {
-        return getSession().load(getClazz(),Objects.requireNonNull(id));
-    }
-
+    @Override
     default <T> CriteriaQuery<T> myCriteriaQuery() {
         return getSession().getCriteriaBuilder().createQuery(getClazz());
+    }
+
+    @Override
+    default CriteriaBuilder myCriteriaBuilder() {
+        return getSession().getCriteriaBuilder();
     }
 
 }

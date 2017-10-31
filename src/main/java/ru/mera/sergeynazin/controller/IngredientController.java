@@ -3,6 +3,8 @@ package ru.mera.sergeynazin.controller;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import ru.mera.sergeynazin.controller.advice.NotFoundExeption;
 import ru.mera.sergeynazin.model.Ingredient;
 import ru.mera.sergeynazin.service.IngredientService;
 
@@ -39,8 +41,11 @@ public class IngredientController {
             .orElseGet(() -> {
                 ingredient.setName(ingredientName);
                 ingredientService.save(ingredient);
-                //final Ingredient i = ingredientService.addEntityWithName(ingredientName, ingredient);
-                return ResponseEntity.created(URI.create("/"+ ingredient.getId())).body(ingredient);
+                final URI created = ServletUriComponentsBuilder
+                    .fromCurrentRequest()
+                    .replacePath("/{id}")
+                    .buildAndExpand(ingredient.getId()).toUri();
+                return ResponseEntity.created(created).body(ingredient);
             });
     }
 
@@ -59,6 +64,23 @@ public class IngredientController {
                 ingredientService
                 return ResponseEntity.noContent().build();
             });
+    }
+
+    @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> getShaurmaByIdInJSON(@PathVariable("id") final Long id) {
+        return get(id);
+    }
+
+    // TODO: 10/20/17 XML
+    @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_XML_VALUE)
+    public ResponseEntity<?> getShaurmaByIdInXML(@PathVariable("id") final Long id) {
+        return get(id);
+    }
+
+    private ResponseEntity<?> get(final Long id) {
+        return ingredientService.optionalIsExist(id)
+            .map(ResponseEntity::ok)
+            .orElse(ResponseEntity.notFound().build());
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
@@ -98,18 +120,12 @@ public class IngredientController {
      */
     // FIXME: 10/23/17 WHY "THE RESULT OF orElseThrough() is IGNORED" ???(...- No Handler ?? )witch to security with (also there is Principal)
     private void checkOrThrowByName(final String name) {
-        try {
-            ingredientService.optionalIsExist(name).orElseThrow(() -> new NotFoundExeption(name));
-        } catch (NotFoundExeption notFoundExeption) {
-            notFoundExeption.printStackTrace();
-        }
+            ingredientService.optionalIsExist(name)
+                .orElseThrow(() -> new NotFoundExeption(name));
     }
 
     private void checkOrThrowById(final Long id) {
-        try {
-            ingredientService.optionalIsExist(id).orElseThrow(() -> new NotFoundExeption(String.valueOf(id)));
-        } catch (NotFoundExeption notFoundExeption) {
-            notFoundExeption.printStackTrace();
-        }
+            ingredientService.optionalIsExist(id)
+                .orElseThrow(() -> new NotFoundExeption(String.valueOf(id)));
     }
 }

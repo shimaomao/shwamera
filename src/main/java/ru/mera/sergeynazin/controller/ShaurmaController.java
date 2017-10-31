@@ -3,7 +3,10 @@ package ru.mera.sergeynazin.controller;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import ru.mera.sergeynazin.controller.advice.NotFoundExeption;
 import ru.mera.sergeynazin.model.Shaurma;
+import ru.mera.sergeynazin.service.IngredientService;
 import ru.mera.sergeynazin.service.ShaurmaService;
 
 import java.net.URI;
@@ -14,6 +17,12 @@ import java.util.Collection;
 public class ShaurmaController {
 
     private ShaurmaService shaurmaService;
+
+    private IngredientService ingredientService;
+
+    public void setIngredientService(IngredientService ingredientService) {
+        this.ingredientService = ingredientService;
+    }
 
     public void setShaurmaService(ShaurmaService shaurmaService) {
         this.shaurmaService = shaurmaService;
@@ -68,7 +77,11 @@ public class ShaurmaController {
     // todo: maybe send the full URI with HttpRequest
     private ResponseEntity<?> add(final Shaurma shaurma) {
         shaurmaService.save(shaurma);
-        return ResponseEntity.created(URI.create("/" + shaurma.getId())).build();
+        final URI created = ServletUriComponentsBuilder
+            .fromCurrentRequest()
+            .path("/{id}")
+            .buildAndExpand(shaurma.getId()).toUri();
+        return ResponseEntity.created(created).build();
     }
 
     @PutMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -84,17 +97,26 @@ public class ShaurmaController {
      * проверяем сущ-ет ли шаурма с таким Id
      *      есди да то новый стейт из объекта копируем в старый и возвращаем новую шаурму
      *      если нет, то создаём новую шаурму итерируя по ингредиентам
+     *      {@see Session#save(String,Object)}
      */
     // TODO: 10/20/17 Aspect
     private ResponseEntity<?> update(final Long id, final Shaurma detached) {
         return shaurmaService.optionalIsExist(id)
             .map(persistentOldShaurma -> {
                 detached.setId(id);
+                /** TODO: Check if needs to be merged instead
+                 * @see org.hibernate.Session#merge(Object)
+                 * @see ru.mera.sergeynazin.repository.HibernateRepository#mergeStateWithDbEntity(Object)
+                 */
                 shaurmaService.update(detached);
                 return ResponseEntity.ok(detached);
             }).orElseGet(() -> {
+                if (detached.getIngredientSet()
+                    .parallelStream()
+                    .allMatch(ingredient -> ingredientService.optionalIsExist(ingredient.getId()).isPresent())) {
+                    return ResponseEntity.unprocessableEntity().body(detached);
+                }
                 shaurmaService.save(detached);
-                // FIXME: Iterate through ingredients
                 return ResponseEntity.created(URI.create("/" + detached.getId())).body(detached);
             });
     }
@@ -120,13 +142,8 @@ public class ShaurmaController {
      * Helper method
      * @param id identifier
      */
-    // TODO: 10/23/17 WHY "THE RESULT OF orElseThrough() is IGNORED" ???(...- No Handler ?? )witch to security with (also there is Principal)
     private void checkOrThrow(final Long id) {
-        try {
             shaurmaService.optionalIsExist(id)
                 .orElseThrow(() -> new NotFoundExeption(String.valueOf(id)));
-        } catch (NotFoundExeption notFoundExeption) {
-            notFoundExeption.printStackTrace();
-        }
     }
 }

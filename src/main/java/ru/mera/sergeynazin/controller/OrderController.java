@@ -3,6 +3,8 @@ package ru.mera.sergeynazin.controller;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import ru.mera.sergeynazin.controller.advice.NotFoundExeption;
 import ru.mera.sergeynazin.model.Order;
 import ru.mera.sergeynazin.model.Shaurma;
 import ru.mera.sergeynazin.service.OrderService;
@@ -71,7 +73,11 @@ public class OrderController {
     @PostMapping(value = "/", consumes = {MediaType.APPLICATION_JSON_VALUE , MediaType.APPLICATION_XML_VALUE})
     public ResponseEntity<?> createNewOrder(@RequestBody final Order order) {
         orderService.save(order);
-        return ResponseEntity.created(URI.create("/" + order.getOrderNumber())).body(order);
+        final URI created = ServletUriComponentsBuilder
+            .fromCurrentRequest()
+            .path("/{orderNumber}")
+            .buildAndExpand(order.getOrderNumber()).toUri();
+        return ResponseEntity.created(created).body(order);
     }
 
     // TODO: Produces!!
@@ -142,33 +148,18 @@ public class OrderController {
      * Helper methods
      * @param id/orderNumber identifier
      */
-    // TODO: 10/23/17 WHY "THE RESULT OF orElseThrough() is IGNORED" ??? (...- No Handler ?? )witch to security with (also there is Principal)
     private void checkOrThrowShaurma(final Long id) {
-        try {
             shaurmaService.optionalIsExist(id)
                 .orElseThrow(() -> new NotFoundExeption(String.valueOf(id)));
-        } catch (NotFoundExeption notFoundExeption) {
-            notFoundExeption.printStackTrace();
-        }
     }
 
-    // TODO: 10/23/17 WHY "THE RESULT OF orElseThrough() is IGNORED" ???(...- No Handler ?? )witch to security with (also there is Principal)
     private void checkOrThrowOrderById(final Long id) {
-        try {
             orderService.optionalIsExist(id)
                 .orElseThrow(() -> new NotFoundExeption(String.valueOf(id)));
-        } catch (NotFoundExeption notFoundExeption) {
-            notFoundExeption.printStackTrace();
-        }
     }
 
-    // TODO: 10/23/17 WHY "THE RESULT OF orElseThrough() is IGNORED" ???(...- No Handler ?? )witch to security with (also there is Principal)
     private void checkOrThrowOrderByName(final String orderNumber) {
-        try {
             orderService.optionalIsExist(orderNumber)
                 .orElseThrow(() -> new NotFoundExeption(orderNumber));
-        } catch (NotFoundExeption notFoundExeption) {
-            notFoundExeption.printStackTrace();
-        }
     }
 }

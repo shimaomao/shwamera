@@ -51,7 +51,8 @@
         <property name="configLocation" value="/WEB-INF/hibernate.cfg.xml" />
         <property name="hibernateProperties" >
             <props>
-                <!-- @author sergeynazin. Defines whether my getSession() in JpaRepository will return a local threaded Session or else -->
+                <!-- @author sergeynazin. Defines whether my getSession()
+                in JpaRepository will return a local threaded Session or else -->
                 <prop key="hibernate.current_session_context_class">thread</prop>
 
                 <!-- Print all SQL to stdout. -->

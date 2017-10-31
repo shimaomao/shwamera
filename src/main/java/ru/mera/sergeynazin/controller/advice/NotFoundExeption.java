@@ -1,4 +1,4 @@
-package ru.mera.sergeynazin.controller;
+package ru.mera.sergeynazin.controller.advice;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;

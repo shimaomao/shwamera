@@ -3,6 +3,7 @@ package ru.mera.sergeynazin.controller;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.mera.sergeynazin.controller.advice.NotFoundExeption;
 import ru.mera.sergeynazin.model.MenuEntry;
 import ru.mera.sergeynazin.service.MenuEntryService;
 import ru.mera.sergeynazin.service.ShaurmaService;
@@ -87,22 +88,13 @@ public class MenuEntryController {
      * @param id identifier
      */
     // FIXME: There are methods in Hibernate API which looks up for entire DB by primary ke switch to them!
-    // TODO: 10/23/17 WHY "THE RESULT OF orElseThrough() is IGNORED" ???(...- No Handler ?? )witch to security with (also there is Principal)
     private void checkOrThrowShaurma(final Long id) {
-        try {
             shaurmaService.optionalIsExist(id)
                 .orElseThrow(() -> new NotFoundExeption(String.valueOf(id)));
-        } catch (NotFoundExeption notFoundExeption) {
-            notFoundExeption.printStackTrace();
-        }
     }
 
     private void checkOrThrowMenuEntry(final Long id) {
-        try {
             menuEntryService.optionalIsExist(id)
                 .orElseThrow(() -> new NotFoundExeption(String.valueOf(id)));
-        } catch (NotFoundExeption notFoundExeption) {
-            notFoundExeption.printStackTrace();
-        }
     }
 }

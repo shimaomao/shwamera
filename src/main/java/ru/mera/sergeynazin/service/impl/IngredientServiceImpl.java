@@ -35,7 +35,7 @@ public class IngredientServiceImpl implements IngredientService {
         criteriaQuery.select(root);
         return repository.getByCriteriaQuery(criteriaQuery);
     }
-
+    
     @Override
     public void update(final Ingredient detachedEntity) {
         repository.update(detachedEntity);

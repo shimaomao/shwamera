@@ -14,9 +14,8 @@ import java.util.Collection;
 @RequestMapping("/menu")
 public class MenuEntryController {
 
-    // TODO: Inject
     private MenuEntryService menuEntryService;
-    // TODO: Inject
+
     private ShaurmaService shaurmaService;
 
     public void setMenuEntryService(MenuEntryService menuEntryService) {

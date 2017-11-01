@@ -15,7 +15,6 @@ import java.util.Collection;
 @RequestMapping("/ingredients")
 public class IngredientController {
 
-    // TODO: Inject
     private IngredientService ingredientService;
 
     public void setIngredientService(IngredientService ingredientService) {

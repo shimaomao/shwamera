@@ -56,7 +56,7 @@ public class IngredientController {
     // FIXME:// FIXME:// FIXME:// FIXME:// FIXME:// FIXME:
 
     @PostMapping(value = "/ingredients/add/{ingredient_name}", consumes = { MediaType.APPLICATION_JSON_VALUE }, produces = { MediaType.APPLICATION_JSON_VALUE })
-    public ResponseEntity<?> addIngredientToShaurma(@PathVariable("ingredient_name") final String ingredientName, @RequestBody final Ingredient ingredientWithPrimaryKey) {
+    public ResponseEntity<?> addIngredientToShaurma(@PathVariable("ingredient_name") final String ingredientName, @RequestBody final Ingredient ingredientWithId) {
 
         return ingredientService.optionalIsExist(ingredientName)
             .map() //FIXME: НЕПОНЯТНО!
@@ -118,7 +118,6 @@ public class IngredientController {
      * Helper methods
      * @param name/id identifier
      */
-    // FIXME: 10/23/17 WHY "THE RESULT OF orElseThrough() is IGNORED" ???(...- No Handler ?? )witch to security with (also there is Principal)
     private void checkOrThrowByName(final String name) {
             ingredientService.optionalIsExist(name)
                 .orElseThrow(() -> new NotFoundExeption(name));

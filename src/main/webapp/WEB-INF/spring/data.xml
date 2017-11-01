@@ -15,7 +15,7 @@
     <context:property-placeholder location="classpath:jdbc.properties" />
 
     <!-- Annotatopns like @Transactional -->
-    <!--<tx:annotation-driven/>-->
+    <tx:annotation-driven/>
 
     <!-- HibernateTransactionManager -->
     <bean id="transactionManager"
@@ -53,6 +53,7 @@
             <props>
                 <!-- @author sergeynazin. Defines whether my getSession()
                 in JpaRepository will return a local threaded Session or else -->
+                <!--FIXME: Some say this statement BREAKS Spring from setting proper session managment and only suitable for Hibernate solely-->
                 <prop key="hibernate.current_session_context_class">thread</prop>
 
                 <!-- Print all SQL to stdout. -->
@@ -100,8 +101,5 @@
 
     <bean id="order" class="ru.mera.sergeynazin.model.Order" />
     <bean id="shaurma" class="ru.mera.sergeynazin.model.Shaurma" />
-
-    <!--My Entities-->
-
 
 </beans>

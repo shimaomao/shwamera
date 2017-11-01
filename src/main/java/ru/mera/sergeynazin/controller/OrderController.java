@@ -69,8 +69,7 @@ public class OrderController {
         return ResponseEntity.ok(orderService.getAll());
     }
 
-    // TODO: Is that value = "/" we need here?
-    @PostMapping(value = "/", consumes = {MediaType.APPLICATION_JSON_VALUE , MediaType.APPLICATION_XML_VALUE})
+    @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE , MediaType.APPLICATION_XML_VALUE})
     public ResponseEntity<?> createNewOrder(@RequestBody final Order order) {
         orderService.save(order);
         final URI created = ServletUriComponentsBuilder

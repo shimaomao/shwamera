@@ -12,6 +12,7 @@ import java.util.Optional;
 
 public interface HibernateRepository extends JpaRepository, GenericRepository {
 
+
     default Session getSession() {
         return getEntityManager().unwrap(Session.class);
     }
@@ -26,6 +27,11 @@ public interface HibernateRepository extends JpaRepository, GenericRepository {
         getSession().delete(persistentOrDetachedEntity);
     }
 
+    // FIXME:  WTF???
+    // FIXME: Global non-understanding of {@link Session#update(Object)} need clearification becouse of
+    // FIXME: " Update the persistent instance with the identifier of the given detached
+    // FIXME: instance. If there is a persistent instance with the same identifier,
+    // FIXME: an exception is thrown "
     @Override
     default <T> void update(final T detachedEntity) {
         getSession().update(detachedEntity);
@@ -45,13 +51,13 @@ public interface HibernateRepository extends JpaRepository, GenericRepository {
     }
 
     /**
-     * @param newStatefulEntityWithPrimaryKey new Stateful Entity With PrimaryKey
+     * @param newStatefulEntityWithId new Stateful Entity With ID
      * @param <T> entity type
      * @return updated managed Entity
      */
     @SuppressWarnings({"unchecked"})
-    default <T> T mergeStateWithDbEntity(final T newStatefulEntityWithPrimaryKey) {
-        return (T) getSession().merge(newStatefulEntityWithPrimaryKey);
+    default <T> T mergeStateWithDbEntity(final T newStatefulEntityWithId) {
+        return (T) getSession().merge(newStatefulEntityWithId);
     }
 
     @Override

@@ -6,7 +6,7 @@
         http://www.springframework.org/schema/beans
         http://www.springframework.org/schema/beans/spring-beans.xsd
 	    http://www.springframework.org/schema/context
-	    http://www.springframework.org/schema/context/spring-context.xsd" >
+	    http://www.springframework.org/schema/context/spring-context.xsd">
 
     <!-- Spring MVC annotations(@RestController etc.) -->
     <context:component-scan base-package="ru.mera.sergeynazin.controller"/>
@@ -34,13 +34,7 @@
 
     <bean id="sessionOrder" class="ru.mera.sergeynazin.model.Order" scope="session" >
         <property name="shaurmaSet" >
-            <set>
-                <bean class="ru.mera.sergeynazin.model.Shaurma" >
-                    <property name="id"><null/></property>
-                    <property name="name"><null/></property>
-                    <property name="ingredientSet"><null/></property>
-                </bean>
-            </set>
+            <set value-type="ru.mera.sergeynazin.model.Shaurma"/>
         </property>
     </bean>
 

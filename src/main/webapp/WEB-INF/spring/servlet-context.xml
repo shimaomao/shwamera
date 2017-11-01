@@ -27,7 +27,7 @@
 
     <!-- TODO: Security  -->
     <!-- Файл с настройками Security -->
-    <!--<beans:import resource="security.xml"/>-->
+    <beans:import resource="security.xml"/>
 
     <!-- Localization -->
     <beans:import resource="local.xml"/>

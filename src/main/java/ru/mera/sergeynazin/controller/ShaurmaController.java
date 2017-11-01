@@ -1,5 +1,6 @@
 package ru.mera.sergeynazin.controller;
 
+import org.hibernate.Session;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -8,6 +9,7 @@ import ru.mera.sergeynazin.controller.advice.NotFoundExeption;
 import ru.mera.sergeynazin.model.Shaurma;
 import ru.mera.sergeynazin.service.IngredientService;
 import ru.mera.sergeynazin.service.ShaurmaService;
+import ru.mera.sergeynazin.repository.HibernateRepository;
 
 import java.net.URI;
 import java.util.Collection;
@@ -46,15 +48,13 @@ public class ShaurmaController {
     }
 
 
-    // TODO: Do I need value = "/" ???
-    @GetMapping(value = "/", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Collection<Shaurma>> getAllShaurmasInJSON() {
         return ResponseEntity.ok(shaurmaService.getAll());
     }
 
     // TODO: 10/20/17 XML
-    // TODO: Do I need value = "/" ???
-    @GetMapping(value = "/", produces = MediaType.APPLICATION_XML_VALUE)
+    @GetMapping(produces = MediaType.APPLICATION_XML_VALUE)
     public ResponseEntity<Collection<Shaurma>> getAllShaurmasInXML() {
         return ResponseEntity.ok(shaurmaService.getAll());
     }
@@ -97,7 +97,7 @@ public class ShaurmaController {
      * проверяем сущ-ет ли шаурма с таким Id
      *      есди да то новый стейт из объекта копируем в старый и возвращаем новую шаурму
      *      если нет, то создаём новую шаурму итерируя по ингредиентам
-     *      {@see Session#save(String,Object)}
+     *      @see Session#save(String,Object)
      */
     // TODO: 10/20/17 Aspect
     private ResponseEntity<?> update(final Long id, final Shaurma detached) {
@@ -105,8 +105,8 @@ public class ShaurmaController {
             .map(persistentOldShaurma -> {
                 detached.setId(id);
                 /** TODO: Check if needs to be merged instead
-                 * @see org.hibernate.Session#merge(Object)
-                 * @see ru.mera.sergeynazin.repository.HibernateRepository#mergeStateWithDbEntity(Object)
+                 * @see Session#merge(Object)
+                 * @see HibernateRepository#mergeStateWithDbEntity(Object)
                  */
                 shaurmaService.update(detached);
                 return ResponseEntity.ok(detached);

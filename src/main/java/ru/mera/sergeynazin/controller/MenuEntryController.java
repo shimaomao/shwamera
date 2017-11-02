@@ -8,6 +8,7 @@ import ru.mera.sergeynazin.model.MenuEntry;
 import ru.mera.sergeynazin.service.MenuEntryService;
 import ru.mera.sergeynazin.service.ShaurmaService;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 @RestController
@@ -53,9 +54,11 @@ public class MenuEntryController {
      */
     // TODO: 10/20/17 Aspect
     private ResponseEntity<?> add(final Long id) {
+        ArrayList<Object> arr = new ArrayList<Object>();
         return shaurmaService.optionalIsExist(id)
             .map(ResponseEntity ::ok)
             .orElse(ResponseEntity.notFound().build());
+        ;
     }
 
     @DeleteMapping(value = "/delete/{id}", produces = MediaType.APPLICATION_JSON_VALUE)

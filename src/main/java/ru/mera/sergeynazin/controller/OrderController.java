@@ -4,7 +4,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import ru.mera.sergeynazin.controller.advice.NotFoundExeption;
+import ru.mera.sergeynazin.controller.advice.NotFoundException;
 import ru.mera.sergeynazin.model.Order;
 import ru.mera.sergeynazin.model.Shaurma;
 import ru.mera.sergeynazin.service.OrderService;
@@ -149,16 +149,16 @@ public class OrderController {
      */
     private void checkOrThrowShaurma(final Long id) {
             shaurmaService.optionalIsExist(id)
-                .orElseThrow(() -> new NotFoundExeption(String.valueOf(id)));
+                .orElseThrow(() -> new NotFoundException(String.valueOf(id)));
     }
 
     private void checkOrThrowOrderById(final Long id) {
             orderService.optionalIsExist(id)
-                .orElseThrow(() -> new NotFoundExeption(String.valueOf(id)));
+                .orElseThrow(() -> new NotFoundException(String.valueOf(id)));
     }
 
     private void checkOrThrowOrderByName(final String orderNumber) {
             orderService.optionalIsExist(orderNumber)
-                .orElseThrow(() -> new NotFoundExeption(orderNumber));
+                .orElseThrow(() -> new NotFoundException(orderNumber));
     }
 }

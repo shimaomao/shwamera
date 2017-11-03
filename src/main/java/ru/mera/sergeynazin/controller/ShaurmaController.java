@@ -5,7 +5,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import ru.mera.sergeynazin.controller.advice.NotFoundExeption;
+import ru.mera.sergeynazin.controller.advice.NotFoundException;
 import ru.mera.sergeynazin.model.Shaurma;
 import ru.mera.sergeynazin.service.IngredientService;
 import ru.mera.sergeynazin.service.ShaurmaService;
@@ -144,6 +144,6 @@ public class ShaurmaController {
      */
     private void checkOrThrow(final Long id) {
             shaurmaService.optionalIsExist(id)
-                .orElseThrow(() -> new NotFoundExeption(String.valueOf(id)));
+                .orElseThrow(() -> new NotFoundException(String.valueOf(id)));
     }
 }

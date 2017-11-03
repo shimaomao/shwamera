@@ -3,7 +3,7 @@ package ru.mera.sergeynazin.controller;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.mera.sergeynazin.controller.advice.NotFoundExeption;
+import ru.mera.sergeynazin.controller.advice.NotFoundException;
 import ru.mera.sergeynazin.model.MenuEntry;
 import ru.mera.sergeynazin.service.MenuEntryService;
 import ru.mera.sergeynazin.service.ShaurmaService;
@@ -92,11 +92,11 @@ public class MenuEntryController {
     // FIXME: There are methods in Hibernate API which looks up for entire DB by primary ke switch to them!
     private void checkOrThrowShaurma(final Long id) {
             shaurmaService.optionalIsExist(id)
-                .orElseThrow(() -> new NotFoundExeption(String.valueOf(id)));
+                .orElseThrow(() -> new NotFoundException(String.valueOf(id)));
     }
 
     private void checkOrThrowMenuEntry(final Long id) {
             menuEntryService.optionalIsExist(id)
-                .orElseThrow(() -> new NotFoundExeption(String.valueOf(id)));
+                .orElseThrow(() -> new NotFoundException(String.valueOf(id)));
     }
 }

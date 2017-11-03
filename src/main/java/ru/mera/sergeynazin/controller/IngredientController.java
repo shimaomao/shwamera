@@ -4,7 +4,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import ru.mera.sergeynazin.controller.advice.NotFoundExeption;
+import ru.mera.sergeynazin.controller.advice.NotFoundException;
 import ru.mera.sergeynazin.model.Ingredient;
 import ru.mera.sergeynazin.service.IngredientService;
 
@@ -119,11 +119,11 @@ public class IngredientController {
      */
     private void checkOrThrowByName(final String name) {
             ingredientService.optionalIsExist(name)
-                .orElseThrow(() -> new NotFoundExeption(name));
+                .orElseThrow(() -> new NotFoundException(name));
     }
 
     private void checkOrThrowById(final Long id) {
             ingredientService.optionalIsExist(id)
-                .orElseThrow(() -> new NotFoundExeption(String.valueOf(id)));
+                .orElseThrow(() -> new NotFoundException(String.valueOf(id)));
     }
 }

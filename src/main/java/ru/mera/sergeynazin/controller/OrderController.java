@@ -2,8 +2,11 @@ package ru.mera.sergeynazin.controller;
 
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import ru.mera.sergeynazin.controller.advice.Admin;
 import ru.mera.sergeynazin.controller.advice.NotFoundException;
 import ru.mera.sergeynazin.model.Order;
 import ru.mera.sergeynazin.model.Shaurma;
@@ -12,7 +15,9 @@ import ru.mera.sergeynazin.service.ShaurmaService;
 
 import java.net.URI;
 import java.util.Collection;
+import java.util.concurrent.CompletableFuture;
 
+@EnableAsync
 @RestController
 @RequestMapping("/order")
 public class OrderController {
@@ -33,15 +38,18 @@ public class OrderController {
         this.shaurmaService = shaurmaService;
     }
 
-
+    @Admin
+    @Async
     @GetMapping(value = "/{orderNumber}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> getOrderInfoByOrderNumberInJSON(@PathVariable("orderNumber") final String orderNumber) {
-        return get(orderNumber);
+    public CompletableFuture<ResponseEntity<?>> getOrderInfoByOrderNumberInJSON(@PathVariable("orderNumber") final String orderNumber) {
+        return CompletableFuture.completedFuture(get(orderNumber));
     }
 
+    @Admin
+    @Async
     @GetMapping(value = "/{orderNumber}", produces = MediaType.APPLICATION_XML_VALUE)
-    public ResponseEntity<?> getOrderInfoByOrderNumberInXML(@PathVariable("orderNumber") final String orderNumber) {
-        return get(orderNumber);
+    public CompletableFuture<ResponseEntity<?>> getOrderInfoByOrderNumberInXML(@PathVariable("orderNumber") final String orderNumber) {
+        return CompletableFuture.completedFuture(get(orderNumber));
     }
 
     /**
@@ -56,41 +64,43 @@ public class OrderController {
             .orElse(ResponseEntity.notFound().build());
     }
 
-    // TODO: Aspect
+    @Admin
+    @Async
     @GetMapping(value = "/all", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Collection<Order>> getAllOrdersInJSON() {
-        return ResponseEntity.ok(orderService.getAll());
+    public CompletableFuture<ResponseEntity<Collection<Order>>> getAllOrdersInJSON() {
+        return CompletableFuture.completedFuture(ResponseEntity.ok(orderService.getAll()));
     }
 
     // TODO: 10/20/17 XML
-    // TODO: Aspect
+    @Admin
+    @Async
     @GetMapping(value = "/all", produces = MediaType.APPLICATION_XML_VALUE)
-    public ResponseEntity<Collection<Order>> getAllOrdersInXML() {
-        return ResponseEntity.ok(orderService.getAll());
+    public CompletableFuture<ResponseEntity<Collection<Order>>> getAllOrdersInXML() {
+        return CompletableFuture.completedFuture(ResponseEntity.ok(orderService.getAll()));
     }
 
     @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE , MediaType.APPLICATION_XML_VALUE})
-    public ResponseEntity<?> createNewOrder(@RequestBody final Order order) {
+    public CompletableFuture<ResponseEntity<?>> createNewOrder(@RequestBody final Order order) {
         orderService.save(order);
         final URI created = ServletUriComponentsBuilder
             .fromCurrentRequest()
             .path("/{orderNumber}")
             .buildAndExpand(order.getOrderNumber()).toUri();
-        return ResponseEntity.created(created).body(order);
+        return CompletableFuture.completedFuture(ResponseEntity.created(created).body(order));
     }
 
-    // TODO: Produces!!
-    // TODO: 10/20/17 Aspect
+    @Async
     @PutMapping(value = "/order/{orderid}/add/{shaurmaid}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> updateOrderInJson(@PathVariable(value = "orderid") Long orderId,
+    public CompletableFuture<ResponseEntity<?>> updateOrderInJSON(@PathVariable(value = "orderid") Long orderId,
                                                @PathVariable(value = "shaurmaid") Long shaurmaId) {
-        return updateOrCreateOrder(orderId, shaurmaId);
+        return CompletableFuture.completedFuture(updateOrCreateOrder(orderId, shaurmaId));
     }
-    // TODO: 10/20/17 Aspect
+
+    @Async
     @PutMapping(value = "/order/{orderid}/add/{shaurmaid}", produces = MediaType.APPLICATION_XML_VALUE)
-    public ResponseEntity<?> updateOrderInXML(@PathVariable(value = "orderid") Long orderId,
+    public CompletableFuture<ResponseEntity<?>> updateOrderInXML(@PathVariable(value = "orderid") Long orderId,
                                               @PathVariable(value = "shaurmaid") Long shaurmaId) {
-        return updateOrCreateOrder(orderId, shaurmaId);
+        return CompletableFuture.completedFuture(updateOrCreateOrder(orderId, shaurmaId));
     }
 
     /**
@@ -117,23 +127,25 @@ public class OrderController {
             }).orElse(ResponseEntity.notFound().build());
     }
 
+    @Admin
+    @Async
+    @DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public CompletableFuture<ResponseEntity<?>> deleteOrderInJSON(@PathVariable("id") final Long id) {
+        return CompletableFuture.completedFuture(delete(id));
+    }
+
+    @Admin
+    @Async
+    @DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_XML_VALUE)
+    public CompletableFuture<ResponseEntity<?>> deleteOrderInXML(@PathVariable("id") final Long id) {
+        return CompletableFuture.completedFuture(delete(id));
+    }
 
     /**
      * NOT NECESSARY METHOD As if the order is not supposed to be deleted???
      * @param id order id from db
      * @return 200 or 404
      */
-    @DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> deleteOrderInJson(@PathVariable("id") final Long id) {
-        return delete(id);
-    }
-
-    @DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_XML_VALUE)
-    public ResponseEntity<?> deleteOrderInXML(@PathVariable("id") final Long id) {
-        return delete(id);
-    }
-
-    // TODO: 10/20/17 Aspect
     private ResponseEntity<?> delete(final Long id) {
         return orderService.optionalIsExist(id)
             .map(order -> {
@@ -141,7 +153,6 @@ public class OrderController {
                 return ResponseEntity.ok(order);
             }).orElse(ResponseEntity.notFound().build());
     }
-
 
     /**
      * Helper methods

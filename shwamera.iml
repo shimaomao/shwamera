@@ -2,7 +2,18 @@
 <module org.jetbrains.idea.maven.project.MavenProjectsManager.isMavenModule="true" type="JAVA_MODULE" version="4">
   <component name="FacetManager">
     <facet type="Spring" name="Spring">
-      <configuration />
+      <configuration>
+        <fileset id="fileset" name="Spring Application Context" removed="false">
+          <file>file://$MODULE_DIR$/src/main/webapp/WEB-INF/spring/applicationContext.xml</file>
+          <file>file://$MODULE_DIR$/src/main/webapp/WEB-INF/spring/data.xml</file>
+        </fileset>
+        <fileset id="fileset2" name="Servlet Context" removed="false">
+          <file>file://$MODULE_DIR$/src/main/webapp/WEB-INF/spring/local.xml</file>
+          <file>file://$MODULE_DIR$/src/main/webapp/WEB-INF/spring/servlet-context.xml</file>
+          <file>file://$MODULE_DIR$/src/main/webapp/WEB-INF/spring/security.xml</file>
+          <file>file://$MODULE_DIR$/src/main/webapp/WEB-INF/spring/controllers.xml</file>
+        </fileset>
+      </configuration>
     </facet>
     <facet type="web" name="Web">
       <configuration>
@@ -17,6 +28,7 @@
     <facet type="hibernate" name="Hibernate">
       <configuration>
         <datasource-map>
+          <unit-entry name="sessionFactory" value="dataSource" />
           <unit-entry name="src:main:webapp:WEB-INF:hibernate.cfg.xml" />
         </datasource-map>
         <naming-strategy-map />
@@ -35,6 +47,7 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="glassfish5" level="application" />
+    <orderEntry type="library" name="Maven: org.springframework:spring-aspects:4.3.12.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: org.springframework:spring-aop:4.3.12.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: org.springframework:spring-beans:4.3.12.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: org.springframework:spring-core:4.3.12.RELEASE" level="project" />

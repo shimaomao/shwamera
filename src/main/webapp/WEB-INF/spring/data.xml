@@ -14,20 +14,16 @@
     <context:property-placeholder location="classpath:hibernate.properties" />
     <context:property-placeholder location="classpath:jdbc.properties" />
 
-    <!-- Annotatopns like @Transactional -->
+    <!-- Annotations like @Transactional -->
     <tx:annotation-driven/>
 
     <!-- HibernateTransactionManager -->
     <bean id="transactionManager"
           class="org.springframework.orm.hibernate5.HibernateTransactionManager">
         <property name="sessionFactory" ref="sessionFactory"/>
+        <property name="dataSource" ref="dataSource"/>
     </bean>
-    <!--FIXME: Delete !-->
-<!--    <bean id="messageSource"
-          class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
-        <property name="basename" value="classpath:messages" />
-        <property name="defaultEncoding" value="UTF-8" />
-    </bean>-->
+
 <!-- TODO: NON Production!   -->
 <!--    <bean id="dataSource"
           class="org.springframework.jdbc.datasource.DriverManagerDataSource">

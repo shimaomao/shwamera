@@ -2,7 +2,10 @@ package ru.mera.sergeynazin.controller;
 
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.web.bind.annotation.*;
+import ru.mera.sergeynazin.controller.advice.Admin;
 import ru.mera.sergeynazin.controller.advice.NotFoundException;
 import ru.mera.sergeynazin.model.MenuEntry;
 import ru.mera.sergeynazin.service.MenuEntryService;
@@ -10,7 +13,9 @@ import ru.mera.sergeynazin.service.ShaurmaService;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.concurrent.CompletableFuture;
 
+@EnableAsync
 @RestController
 @RequestMapping("/menu")
 public class MenuEntryController {
@@ -27,48 +32,56 @@ public class MenuEntryController {
         this.shaurmaService = shaurmaService;
     }
 
+    @Async
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Collection<MenuEntry>> getAllMenuEntrysInJSON() {
-        return ResponseEntity.ok(menuEntryService.getAll());
+    public CompletableFuture<ResponseEntity<Collection<MenuEntry>>> getAllMenuEntrysInJSON() {
+        return CompletableFuture.completedFuture(ResponseEntity.ok(menuEntryService.getAll()));
     }
 
     // TODO: 10/20/17 XML
+    @Async
     @GetMapping(produces = MediaType.APPLICATION_XML_VALUE)
-    public ResponseEntity<Collection<MenuEntry>> getAllMenuEntrysInXML() {
-        return ResponseEntity.ok(menuEntryService.getAll());
+    public CompletableFuture<ResponseEntity<Collection<MenuEntry>>> getAllMenuEntrysInXML() {
+        return CompletableFuture.completedFuture(ResponseEntity.ok(menuEntryService.getAll()));
     }
 
+    @Admin
+    @Async
     @PostMapping(value = "/shaurma/add/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> addAsJSON(@PathVariable("id") final Long id) {
-        return add(id);
+    public CompletableFuture<ResponseEntity<?>> addAsJSON(@PathVariable("id") final Long id) {
+        return CompletableFuture.completedFuture(add(id));
     }
 
+    @Admin
+    @Async
     @PostMapping(value = "/shaurma/add/{id}")
-    public ResponseEntity<?> addAsXML(@PathVariable("id") final Long id) {
-        return add(id);
+    public CompletableFuture<ResponseEntity<?>> addAsXML(@PathVariable("id") final Long id) {
+        return CompletableFuture.completedFuture(add(id));
     }
     /**
      * Convenience method for shaurmamaker. Supposedly this will add predefined shaurma to menu
      * @param id shaurma unique id from db
      * @return error on Shaurma not found or 200 code with newly added to menu shaurma body todo maybe switch to MenuEntry body??
      */
-    // TODO: 10/20/17 Aspect
     private ResponseEntity<?> add(final Long id) {
         ArrayList<Object> arr = new ArrayList<Object>();
         return shaurmaService.optionalIsExist(id)
             .map(ResponseEntity ::ok)
             .orElse(ResponseEntity.notFound().build());
-        ;
     }
 
+    @Admin
+    @Async
     @DeleteMapping(value = "/delete/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> deleteAsJSON(@PathVariable("id") final Long id) {
-        return delete(id);
+    public CompletableFuture<ResponseEntity<?>> deleteAsJSON(@PathVariable("id") final Long id) {
+        return CompletableFuture.completedFuture(delete(id));
     }
 
+    @Admin
+    @Async
     @DeleteMapping(value = "/delete/{id}", produces = MediaType.APPLICATION_XML_VALUE)
-    public ResponseEntity<?> deleteAsXML(@PathVariable("id") final Long id) {
-        return delete(id);
+    public CompletableFuture<ResponseEntity<?>> deleteAsXML(@PathVariable("id") final Long id) {
+        return CompletableFuture.completedFuture(delete(id));
     }
 
     /**
@@ -76,7 +89,6 @@ public class MenuEntryController {
      * @param id MenuEntry id from db
      * @return 404 or 200 code with deleted from menu menuEntry body
      */
-    // TODO: 10/20/17 Aspect
     private ResponseEntity<?> delete(final Long id) {
         return menuEntryService.optionalIsExist(id)
             .map(menuEntry -> {

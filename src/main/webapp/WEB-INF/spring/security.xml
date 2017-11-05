@@ -20,47 +20,20 @@
         <aop:aspect id = "securityAspect" ref = "securityManager">
 
             <aop:pointcut id = "check"
-                          expression = "execution(public ru.mera.sergeynazin.controller.*.*(..))
-                            &amp;&amp; args(java.security.Principal principal,..)
+                          expression = "execution(public * ru.mera.sergeynazin.controller.*Controller.*(..))
+                            &amp;&amp; args(java.security.Principal, ..)
                             &amp;&amp; @target(ru.mera.sergeynazin.controller.advice.Admin)" />
 
-            <aop:before pointcut-ref = "check"
+            <aop:before arg-names="principal"
+                        pointcut-ref = "check"
                         method = "checkPermissions"/>
+            <!--
             <aop:after-throwing pointcut-ref = "check"
                                 throwing = "ex"
-                                method = "notEnoughPermissions"/>
+                                method = "notEnoughPermissions"/>-->
         </aop:aspect>
     </aop:config>
 
-    <aop:aspectj-autoproxy />
+    <beans:bean id="securityManager" class="ru.mera.sergeynazin.controller.advice.CheckPermissions" />
 
-
-    <bean id="securityManager" class="ru.mera.sergeynazin.controller.advice.CheckPermissions" />
-
-
-
-    <http auto-config="true" use-expressions="true">
-        <intercept-url pattern="/panel**" access="hasRole('ROLE_ADMIN')" />
-        <access-denied-handler error-page="/403" />
-        <form-login
-            login-page="/login"
-            default-target-url="/panel"
-            authentication-failure-url="/login?error"
-            username-parameter="user_username"
-            password-parameter="user_password" />
-
-        <logout logout-success-url="/login?logout" />
-        <!-- Активация csfr защиты -->
-        <csrf/>
-    </http>
-
-    <authentication-manager>
-        <authentication-provider>
-            <jdbc-user-service data-source-ref="dataSource"
-                               users-by-username-query=
-                                       "SELECT username, password, enabled FROM user WHERE username =? "
-                               authorities-by-username-query=
-                                       "SELECT username, role FROM user_roles WHERE username =? " />
-        </authentication-provider>
-    </authentication-manager>
 </beans:beans>

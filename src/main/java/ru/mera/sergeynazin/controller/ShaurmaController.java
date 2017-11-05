@@ -3,17 +3,23 @@ package ru.mera.sergeynazin.controller;
 import org.hibernate.Session;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import ru.mera.sergeynazin.controller.advice.Admin;
 import ru.mera.sergeynazin.controller.advice.NotFoundException;
 import ru.mera.sergeynazin.model.Shaurma;
+import ru.mera.sergeynazin.repository.HibernateRepository;
 import ru.mera.sergeynazin.service.IngredientService;
 import ru.mera.sergeynazin.service.ShaurmaService;
-import ru.mera.sergeynazin.repository.HibernateRepository;
 
 import java.net.URI;
+import java.security.Principal;
 import java.util.Collection;
+import java.util.concurrent.CompletableFuture;
 
+@EnableAsync
 @RestController
 @RequestMapping("/shaurma")
 public class ShaurmaController {
@@ -30,15 +36,17 @@ public class ShaurmaController {
         this.shaurmaService = shaurmaService;
     }
 
+    @Async
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> getShaurmaByIdInJSON(@PathVariable("id") final Long id) {
-        return get(id);
+    public CompletableFuture<ResponseEntity<?>> getShaurmaByIdInJSON(@PathVariable("id") final Long id) {
+        return CompletableFuture.completedFuture(get(id));
     }
 
     // TODO: 10/20/17 XML
+    @Async
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_XML_VALUE)
-    public ResponseEntity<?> getShaurmaByIdInXML(@PathVariable("id") final Long id) {
-        return get(id);
+    public CompletableFuture<ResponseEntity<?>> getShaurmaByIdInXML(@PathVariable("id") final Long id) {
+        return CompletableFuture.completedFuture(get(id));
     }
 
     private ResponseEntity<?> get(final Long id) {
@@ -47,34 +55,38 @@ public class ShaurmaController {
             .orElse(ResponseEntity.notFound().build());
     }
 
-
+    @Async
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Collection<Shaurma>> getAllShaurmasInJSON() {
-        return ResponseEntity.ok(shaurmaService.getAll());
+    public CompletableFuture<ResponseEntity<Collection<Shaurma>>> getAllShaurmasInJSON() {
+        return CompletableFuture.completedFuture(ResponseEntity.ok(shaurmaService.getAll()));
     }
 
     // TODO: 10/20/17 XML
+    @Async
     @GetMapping(produces = MediaType.APPLICATION_XML_VALUE)
-    public ResponseEntity<Collection<Shaurma>> getAllShaurmasInXML() {
-        return ResponseEntity.ok(shaurmaService.getAll());
+    public CompletableFuture<ResponseEntity<Collection<Shaurma>>> getAllShaurmasInXML() {
+        return CompletableFuture.completedFuture(ResponseEntity.ok(shaurmaService.getAll()));
     }
 
+    // TODO: 10/20/17 Aspect
+    @Admin
+    @Async
     @PostMapping(consumes = { MediaType.APPLICATION_JSON_VALUE }, produces = { MediaType.APPLICATION_JSON_VALUE })
-    public ResponseEntity<?> addInJSON(@RequestBody final Shaurma shaurma) {
-        return add(shaurma);
+    public CompletableFuture<ResponseEntity<?>> addInJSON(final Principal principal, @RequestBody final Shaurma shaurma) {
+        return CompletableFuture.completedFuture(add(shaurma));
     }
-
+    // TODO: 10/20/17 Aspect
+    @Admin
+    @Async
     @PostMapping(consumes = { MediaType.APPLICATION_XML_VALUE }, produces = { MediaType.APPLICATION_XML_VALUE })
-    public ResponseEntity<?> addInXML(@RequestBody final Shaurma shaurma) {
-        return add(shaurma);
+    public CompletableFuture<ResponseEntity<?>> addInXML(final Principal principal, @RequestBody final Shaurma shaurma) {
+        return CompletableFuture.completedFuture(add(shaurma));
     }
 
     /**
      * Convenience method for shaurmamaker only for to add
      * new shaurma (if frontend would add functionality)
      */
-    // TODO: 10/20/17 Aspect
-    // todo: maybe send the full URI with HttpRequest
     private ResponseEntity<?> add(final Shaurma shaurma) {
         shaurmaService.save(shaurma);
         final URI created = ServletUriComponentsBuilder
@@ -84,13 +96,18 @@ public class ShaurmaController {
         return ResponseEntity.created(created).build();
     }
 
+    @Admin
+    @Async
     @PutMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> updateInJson(@PathVariable("id") final Long id, @RequestBody final Shaurma shaurma) {
-        return update(id, shaurma);
+    public CompletableFuture<ResponseEntity<?>> updateInJSON(@PathVariable("id") final Long id, @RequestBody final Shaurma shaurma) {
+        return CompletableFuture.completedFuture(update(id, shaurma));
     }
+
+    @Admin
+    @Async
     @PutMapping(value = "/{id}", produces = MediaType.APPLICATION_XML_VALUE, consumes = MediaType.APPLICATION_XML_VALUE)
-    public ResponseEntity<?> updateInXML(@PathVariable("id") final Long id, @RequestBody final Shaurma shaurma) {
-        return update(id, shaurma);
+    public CompletableFuture<ResponseEntity<?>> updateInXML(@PathVariable("id") final Long id, @RequestBody final Shaurma shaurma) {
+        return CompletableFuture.completedFuture(update(id, shaurma));
     }
 
     /**
@@ -99,7 +116,6 @@ public class ShaurmaController {
      *      если нет, то создаём новую шаурму итерируя по ингредиентам
      *      @see Session#save(String,Object)
      */
-    // TODO: 10/20/17 Aspect
     private ResponseEntity<?> update(final Long id, final Shaurma detached) {
         return shaurmaService.optionalIsExist(id)
             .map(persistentOldShaurma -> {
@@ -121,15 +137,20 @@ public class ShaurmaController {
             });
     }
 
+    @Admin
+    @Async
     @DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> deleteShaurmaInJson(@PathVariable("id") final Long id) {
-        return delete(id);
+    public CompletableFuture<ResponseEntity<?>> deleteShaurmaInJSON(@PathVariable("id") final Long id) {
+        return CompletableFuture.completedFuture(delete(id));
     }
+
+    @Admin
+    @Async
     @DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_XML_VALUE)
-    public ResponseEntity<?> deleteShaurmaInXML(@PathVariable("id") final Long id) {
-        return delete(id);
+    public CompletableFuture<ResponseEntity<?>> deleteShaurmaInXML(@PathVariable("id") final Long id) {
+        return CompletableFuture.completedFuture(delete(id));
     }
-    // TODO: 10/20/17 Aspect
+
     private ResponseEntity<?> delete(final Long id) {
         return shaurmaService.optionalIsExist(id)
             .map(shaurma -> {

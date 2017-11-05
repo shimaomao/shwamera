@@ -71,7 +71,7 @@ public class OrderController {
         return CompletableFuture.completedFuture(ResponseEntity.ok(orderService.getAll()));
     }
 
-    // TODO: 10/20/17 XML
+
     @Admin
     @Async
     @GetMapping(value = "/all", produces = MediaType.APPLICATION_XML_VALUE)

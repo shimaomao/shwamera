@@ -38,7 +38,7 @@ public class MenuEntryController {
         return CompletableFuture.completedFuture(ResponseEntity.ok(menuEntryService.getAll()));
     }
 
-    // TODO: 10/20/17 XML
+
     @Async
     @GetMapping(produces = MediaType.APPLICATION_XML_VALUE)
     public CompletableFuture<ResponseEntity<Collection<MenuEntry>>> getAllMenuEntrysInXML() {

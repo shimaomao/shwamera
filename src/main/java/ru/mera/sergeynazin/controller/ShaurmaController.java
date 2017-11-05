@@ -39,20 +39,20 @@ public class ShaurmaController {
     @Async
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public CompletableFuture<ResponseEntity<?>> getShaurmaByIdInJSON(@PathVariable("id") final Long id) {
-        return CompletableFuture.completedFuture(get(id));
+        return get(id);
     }
 
-    // TODO: 10/20/17 XML
     @Async
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_XML_VALUE)
     public CompletableFuture<ResponseEntity<?>> getShaurmaByIdInXML(@PathVariable("id") final Long id) {
-        return CompletableFuture.completedFuture(get(id));
+        return get(id);
     }
 
-    private ResponseEntity<?> get(final Long id) {
-        return shaurmaService.optionalIsExist(id)
+    private CompletableFuture<ResponseEntity<?>> get(final Long id) {
+        return CompletableFuture.completedFuture(
+            shaurmaService.optionalIsExist(id)
             .map(ResponseEntity::ok)
-            .orElse(ResponseEntity.notFound().build());
+            .orElse(ResponseEntity.notFound().build()));
     }
 
     @Async
@@ -61,39 +61,41 @@ public class ShaurmaController {
         return CompletableFuture.completedFuture(ResponseEntity.ok(shaurmaService.getAll()));
     }
 
-    // TODO: 10/20/17 XML
     @Async
     @GetMapping(produces = MediaType.APPLICATION_XML_VALUE)
     public CompletableFuture<ResponseEntity<Collection<Shaurma>>> getAllShaurmasInXML() {
         return CompletableFuture.completedFuture(ResponseEntity.ok(shaurmaService.getAll()));
     }
 
-    // TODO: 10/20/17 Aspect
     @Admin
     @Async
     @PostMapping(consumes = { MediaType.APPLICATION_JSON_VALUE }, produces = { MediaType.APPLICATION_JSON_VALUE })
     public CompletableFuture<ResponseEntity<?>> addInJSON(final Principal principal, @RequestBody final Shaurma shaurma) {
-        return CompletableFuture.completedFuture(add(shaurma));
+        return add(shaurma);
     }
-    // TODO: 10/20/17 Aspect
+
     @Admin
     @Async
     @PostMapping(consumes = { MediaType.APPLICATION_XML_VALUE }, produces = { MediaType.APPLICATION_XML_VALUE })
     public CompletableFuture<ResponseEntity<?>> addInXML(final Principal principal, @RequestBody final Shaurma shaurma) {
-        return CompletableFuture.completedFuture(add(shaurma));
+        return add(shaurma);
     }
 
     /**
      * Convenience method for shaurmamaker only for to add
      * new shaurma (if frontend would add functionality)
      */
-    private ResponseEntity<?> add(final Shaurma shaurma) {
-        shaurmaService.save(shaurma);
-        final URI created = ServletUriComponentsBuilder
-            .fromCurrentRequest()
-            .path("/{id}")
-            .buildAndExpand(shaurma.getId()).toUri();
-        return ResponseEntity.created(created).build();
+    private CompletableFuture<ResponseEntity<?>> add(final Shaurma shaurma) {
+        return CompletableFuture
+            .supplyAsync(() -> {
+                shaurmaService.save(shaurma);
+                return shaurma.getId();
+            }).thenApply(id -> ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(id).toUri())
+            .thenComposeAsync(created -> CompletableFuture
+                .completedFuture(ResponseEntity.created(created).build()));
     }
 
     @Admin

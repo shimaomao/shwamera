@@ -84,7 +84,7 @@ public class IngredientController {
         return CompletableFuture.completedFuture(get(id));
     }
 
-    // TODO: 10/20/17 XML
+
     @Async
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_XML_VALUE)
     public CompletableFuture<ResponseEntity<?>> getShaurmaByIdInXML(@PathVariable("id") final Long id) {
@@ -118,7 +118,7 @@ public class IngredientController {
         return CompletableFuture.completedFuture(ResponseEntity.ok(ingredientService.getAll()));
     }
 
-    // TODO: 10/20/17 XML
+
     @Async
     @GetMapping(produces = MediaType.APPLICATION_XML_VALUE)
     public CompletableFuture<ResponseEntity<Collection<Ingredient>>> getAllIngredientsInXML() {

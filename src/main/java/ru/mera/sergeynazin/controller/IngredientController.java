@@ -4,6 +4,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ru.mera.sergeynazin.controller.advice.Admin;
@@ -27,23 +28,25 @@ public class IngredientController {
         this.ingredientService = ingredientService;
     }
 
-// BEGIN_INCLUDE(IngredientController.@Admin)
+    // BEGIN_INCLUDE(IngredientController.@Admin)
     // BEGIN_INCLUDE(IngredientController.POSTCreateNew)
 
     @Admin
     @Async
-    @PostMapping(consumes = { MediaType.APPLICATION_JSON_VALUE }, produces = { MediaType.APPLICATION_JSON_VALUE })
+    @PostMapping(value = "/create/{ingredient_name}", consumes = { MediaType.APPLICATION_JSON_VALUE }, produces = { MediaType.APPLICATION_JSON_VALUE })
     public CompletableFuture<ResponseEntity<?>> createNewIngredientInJSON(final Principal principal,
-                                                                          @RequestBody final Ingredient transientEntity) {
-        return CompletableFuture.completedFuture(createNew(transientEntity));
+                                                                          @PathVariable("ingredient_name") final String name,
+                                                                          @Validated @RequestBody final Ingredient transientEntity) {
+        return CompletableFuture.completedFuture(createNew(name, transientEntity));
     }
 
     @Admin
     @Async
     @PostMapping(consumes = { MediaType.APPLICATION_XML_VALUE }, produces = { MediaType.APPLICATION_XML_VALUE })
     public CompletableFuture<ResponseEntity<?>> createNewIngredientInXML(final Principal principal,
-                                                                         @RequestBody final Ingredient transientEntity) {
-        return CompletableFuture.completedFuture(createNew(transientEntity));
+                                                                         @PathVariable("ingredient_name") final String name,
+                                                                         @Validated @RequestBody final Ingredient transientEntity) {
+        return CompletableFuture.completedFuture(createNew(name, transientEntity));
     }
 
     /**
@@ -55,11 +58,12 @@ public class IngredientController {
      * that describes the status of the request while referring
      * to the new resource(s)
      */
-    private ResponseEntity<?> createNew(final Ingredient ingredient) {
+    private ResponseEntity<?> createNew(final String name, final Ingredient ingredient) {
+        ingredient.setName(name);
         ingredientService.save(ingredient);
         final URI created = ServletUriComponentsBuilder
             .fromCurrentRequest()
-            .path("/{id}")
+            .replacePath("/{id}")
             .buildAndExpand(ingredient.getId()).toUri();
         return ResponseEntity.created(created).body(ingredient);
     }
@@ -69,16 +73,18 @@ public class IngredientController {
     @Admin
     @Async
     @PutMapping(value = "update/{id}", produces = { MediaType.APPLICATION_JSON_VALUE }, consumes = { MediaType.APPLICATION_JSON_VALUE })
-    public CompletableFuture<ResponseEntity<?>> updateIngredientInJSON(@PathVariable("id") final Long id,
-                                                                       @RequestBody final Ingredient ingredient) {
+    public CompletableFuture<ResponseEntity<?>> updateIngredientInJSON(final Principal principal,
+                                                                       @@PathVariable("id") final Long id,
+                                                                       @Validated @RequestBody final Ingredient ingredient) {
         return CompletableFuture.completedFuture(updateEgMerge(id, ingredient));
     }
 
     @Admin
     @Async
     @PutMapping(value = "update/{id}", produces = { MediaType.APPLICATION_XML_VALUE } , consumes = { MediaType.APPLICATION_XML_VALUE })
-    public CompletableFuture<ResponseEntity<?>> updateIngredientInXML(@PathVariable("id") final Long id,
-                                                                      @RequestBody final Ingredient ingredient) {
+    public CompletableFuture<ResponseEntity<?>> updateIngredientInXML(final Principal principal,
+                                                                      @PathVariable("id") final Long id,
+                                                                      @Validated @RequestBody final Ingredient ingredient) {
         return CompletableFuture.completedFuture(updateEgMerge(id, ingredient));
     }
 
@@ -103,14 +109,16 @@ public class IngredientController {
     @Admin
     @Async
     @DeleteMapping(value = "/delete/{id}", consumes = { MediaType.APPLICATION_JSON_VALUE }, produces = { MediaType.APPLICATION_JSON_VALUE })
-    public CompletableFuture<ResponseEntity<?>> deleteIngredientInJSON(@PathVariable("id") final Long id) {
+    public CompletableFuture<ResponseEntity<?>> deleteIngredientInJSON(final Principal principal,
+                                                                       @PathVariable("id") final Long id) {
         return CompletableFuture.completedFuture(delete(id));
     }
 
     @Admin
     @Async
     @DeleteMapping(value = "/delete/{id}", consumes = { MediaType.APPLICATION_XML_VALUE }, produces = { MediaType.APPLICATION_XML_VALUE })
-    public CompletableFuture<ResponseEntity<?>> deleteIngredientInXML(@PathVariable("id") final Long id) {
+    public CompletableFuture<ResponseEntity<?>> deleteIngredientInXML(final Principal principal,
+                                                                      @PathVariable("id") final Long id) {
         return CompletableFuture.completedFuture(delete(id));
     }
 
@@ -122,7 +130,7 @@ public class IngredientController {
             }).orElseThrow(() -> NotFoundException.throwNew(id));
     }
     // END_INCLUDE(IngredientController.DELETEFromDb)
-// END_INCLUDE(IngredientController.@Admin)
+    // END_INCLUDE(IngredientController.@Admin)
 
 
 
@@ -161,6 +169,7 @@ public class IngredientController {
         return CompletableFuture.completedFuture(ResponseEntity.ok(ingredientService.getAll()));
     }
     // END_INCLUDE(IngredientController.GETAll)
+
 
     /**
      * Helper methods

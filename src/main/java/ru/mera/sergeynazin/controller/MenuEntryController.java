@@ -11,6 +11,7 @@ import ru.mera.sergeynazin.model.MenuEntry;
 import ru.mera.sergeynazin.service.MenuEntryService;
 import ru.mera.sergeynazin.service.ShaurmaService;
 
+import java.security.Principal;
 import java.util.Collection;
 import java.util.concurrent.CompletableFuture;
 
@@ -47,14 +48,16 @@ public class MenuEntryController {
     @Admin
     @Async
     @PostMapping(value = "/shaurma/add/{id}", produces = { MediaType.APPLICATION_JSON_VALUE } )
-    public CompletableFuture<ResponseEntity<?>> addAsJSON(@PathVariable("id") final Long id) {
+    public CompletableFuture<ResponseEntity<?>> addAsJSON(final Principal principal,
+                                                          @PathVariable("id") final Long id) {
         return CompletableFuture.completedFuture(add(id));
     }
 
     @Admin
     @Async
     @PostMapping(value = "/shaurma/add/{id}")
-    public CompletableFuture<ResponseEntity<?>> addAsXML(@PathVariable("id") final Long id) {
+    public CompletableFuture<ResponseEntity<?>> addAsXML(final Principal principal,
+                                                         @PathVariable("id") final Long id) {
         return CompletableFuture.completedFuture(add(id));
     }
     /**
@@ -71,14 +74,16 @@ public class MenuEntryController {
     @Admin
     @Async
     @DeleteMapping(value = "/delete/{id}", produces = { MediaType.APPLICATION_JSON_VALUE } )
-    public CompletableFuture<ResponseEntity<?>> deleteAsJSON(@PathVariable("id") final Long id) {
+    public CompletableFuture<ResponseEntity<?>> deleteAsJSON(final Principal principal,
+                                                             @PathVariable("id") final Long id) {
         return CompletableFuture.completedFuture(delete(id));
     }
 
     @Admin
     @Async
     @DeleteMapping(value = "/delete/{id}", produces = { MediaType.APPLICATION_XML_VALUE } )
-    public CompletableFuture<ResponseEntity<?>> deleteAsXML(@PathVariable("id") final Long id) {
+    public CompletableFuture<ResponseEntity<?>> deleteAsXML(final Principal principal,
+                                                            @PathVariable("id") final Long id) {
         return CompletableFuture.completedFuture(delete(id));
     }
 

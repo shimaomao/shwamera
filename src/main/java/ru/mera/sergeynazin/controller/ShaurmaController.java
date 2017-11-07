@@ -5,6 +5,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ru.mera.sergeynazin.controller.advice.Admin;
@@ -47,14 +48,14 @@ public class ShaurmaController {
     @Admin
     @Async
     @GetMapping(produces = { MediaType.APPLICATION_JSON_VALUE } )
-    public CompletableFuture<ResponseEntity<Collection<Shaurma>>> getAllInJSON() {
+    public CompletableFuture<ResponseEntity<Collection<Shaurma>>> getAllInJSON(final Principal principal) {
         return CompletableFuture.completedFuture(ResponseEntity.ok(shaurmaService.getAll()));
     }
 
     @Admin
     @Async
     @GetMapping(produces = { MediaType.APPLICATION_XML_VALUE } )
-    public CompletableFuture<ResponseEntity<Collection<Shaurma>>> getAllInXML() {
+    public CompletableFuture<ResponseEntity<Collection<Shaurma>>> getAllInXML(final Principal principal) {
         return CompletableFuture.completedFuture(ResponseEntity.ok(shaurmaService.getAll()));
     }
     // END_INCLUDE(ShaurmaController.GETAll)
@@ -64,14 +65,14 @@ public class ShaurmaController {
     @Admin
     @Async
     @PostMapping(value = "/create", consumes = { MediaType.APPLICATION_JSON_VALUE }, produces = { MediaType.APPLICATION_JSON_VALUE })
-    public CompletableFuture<ResponseEntity<?>> createInJSON(final Principal principal, @RequestBody final Shaurma shaurma) {
+    public CompletableFuture<ResponseEntity<?>> createInJSON(final Principal principal, @Validated @RequestBody final Shaurma shaurma) {
         return create(shaurma);
     }
 
     @Admin
     @Async
     @PostMapping(value = "/create", consumes = { MediaType.APPLICATION_XML_VALUE }, produces = { MediaType.APPLICATION_XML_VALUE })
-    public CompletableFuture<ResponseEntity<?>> createInXML(final Principal principal, @RequestBody final Shaurma shaurma) {
+    public CompletableFuture<ResponseEntity<?>> createInXML(final Principal principal, @Validated @RequestBody final Shaurma shaurma) {
         return create(shaurma);
     }
 
@@ -100,14 +101,18 @@ public class ShaurmaController {
     @Admin
     @Async
     @PutMapping(value = "/update/{id}", produces = { MediaType.APPLICATION_JSON_VALUE } , consumes = { MediaType.APPLICATION_JSON_VALUE } )
-    public CompletableFuture<ResponseEntity<?>> updateOrCreateInJSON(@PathVariable("id") final Long id, @RequestBody final Shaurma shaurma) {
+    public CompletableFuture<ResponseEntity<?>> updateOrCreateInJSON(final Principal principal,
+                                                                     @PathVariable("id") final Long id,
+                                                                     @Validated @RequestBody final Shaurma shaurma) {
         return CompletableFuture.completedFuture(updateOrCreate(id, shaurma));
     }
 
     @Admin
     @Async
     @PutMapping(value = "/update/{id}", produces = { MediaType.APPLICATION_XML_VALUE } , consumes = { MediaType.APPLICATION_XML_VALUE } )
-    public CompletableFuture<ResponseEntity<?>> updateOrCreateInXML(@PathVariable("id") final Long id, @RequestBody final Shaurma shaurma) {
+    public CompletableFuture<ResponseEntity<?>> updateOrCreateInXML(final Principal principal,
+                                                                    @PathVariable("id") final Long id,
+                                                                    @Validated @RequestBody final Shaurma shaurma) {
         return CompletableFuture.completedFuture(updateOrCreate(id, shaurma));
     }
 
@@ -143,14 +148,14 @@ public class ShaurmaController {
     @Admin
     @Async
     @DeleteMapping(value = "/delete/{id}", produces = { MediaType.APPLICATION_JSON_VALUE } )
-    public CompletableFuture<ResponseEntity<?>> deleteShaurmaInJSON(@PathVariable("id") final Long id) {
+    public CompletableFuture<ResponseEntity<?>> deleteShaurmaInJSON(final Principal principal, @PathVariable("id") final Long id) {
         return CompletableFuture.completedFuture(delete(id));
     }
 
     @Admin
     @Async
     @DeleteMapping(value = "/delete/{id}", produces = { MediaType.APPLICATION_XML_VALUE } )
-    public CompletableFuture<ResponseEntity<?>> deleteShaurmaInXML(@PathVariable("id") final Long id) {
+    public CompletableFuture<ResponseEntity<?>> deleteShaurmaInXML(final Principal principal, @PathVariable("id") final Long id) {
         return CompletableFuture.completedFuture(delete(id));
     }
 
@@ -216,13 +221,13 @@ public class ShaurmaController {
     // BEGIN_INCLUDE(ShaurmaController.POSTCreateNew)
     @Async
     @PostMapping(consumes = { MediaType.APPLICATION_JSON_VALUE }, produces = { MediaType.APPLICATION_JSON_VALUE })
-    public CompletableFuture<ResponseEntity<?>> addInJSON(@RequestBody final Shaurma shaurma) {
+    public CompletableFuture<ResponseEntity<?>> addInJSON(@Validated @RequestBody final Shaurma shaurma) {
         return CompletableFuture.completedFuture(add(shaurma));
     }
 
     @Async
     @PostMapping(consumes = { MediaType.APPLICATION_XML_VALUE }, produces = { MediaType.APPLICATION_XML_VALUE })
-    public CompletableFuture<ResponseEntity<?>> addInXML(@RequestBody final Shaurma shaurma) {
+    public CompletableFuture<ResponseEntity<?>> addInXML(@Validated @RequestBody final Shaurma shaurma) {
         return CompletableFuture.completedFuture(add(shaurma));
     }
 

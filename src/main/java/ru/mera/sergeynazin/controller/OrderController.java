@@ -4,6 +4,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ru.mera.sergeynazin.controller.advice.Admin;
@@ -15,6 +16,7 @@ import ru.mera.sergeynazin.service.OrderService;
 import ru.mera.sergeynazin.service.ShaurmaService;
 
 import java.net.URI;
+import java.security.Principal;
 import java.util.Collection;
 import java.util.concurrent.CompletableFuture;
 
@@ -47,14 +49,14 @@ public class OrderController {
     @Admin
     @Async
     @GetMapping(value = "/{order_number}", produces = { MediaType.APPLICATION_JSON_VALUE } )
-    public CompletableFuture<ResponseEntity<?>> getOrderInfoByOrderNumberInJSON(@PathVariable("order_number") final String orderNumber) {
+    public CompletableFuture<ResponseEntity<?>> getOrderInfoByOrderNumberInJSON(final Principal principal, @PathVariable("order_number") final String orderNumber) {
         return CompletableFuture.completedFuture(get(orderNumber));
     }
 
     @Admin
     @Async
     @GetMapping(value = "/{order_number}", produces = { MediaType.APPLICATION_XML_VALUE } )
-    public CompletableFuture<ResponseEntity<?>> getOrderInfoByOrderNumberInXML(@PathVariable("order_number") final String orderNumber) {
+    public CompletableFuture<ResponseEntity<?>> getOrderInfoByOrderNumberInXML(final Principal principal, @PathVariable("order_number") final String orderNumber) {
         return CompletableFuture.completedFuture(get(orderNumber));
     }
 
@@ -73,28 +75,28 @@ public class OrderController {
     @Admin
     @Async
     @GetMapping(value = "/all", produces = { MediaType.APPLICATION_JSON_VALUE } )
-    public CompletableFuture<ResponseEntity<Collection<Order>>> getAllOrdersInJSON() {
+    public CompletableFuture<ResponseEntity<Collection<Order>>> getAllOrdersInJSON(final Principal principal) {
         return CompletableFuture.completedFuture(ResponseEntity.ok(orderService.getAll()));
     }
 
     @Admin
     @Async
     @GetMapping(value = "/all", produces = { MediaType.APPLICATION_XML_VALUE } )
-    public CompletableFuture<ResponseEntity<Collection<Order>>> getAllOrdersInXML() {
+    public CompletableFuture<ResponseEntity<Collection<Order>>> getAllOrdersInXML(final Principal principal) {
         return CompletableFuture.completedFuture(ResponseEntity.ok(orderService.getAll()));
     }
 
     @Admin
     @Async
     @DeleteMapping(value = "/{id}", produces = { MediaType.APPLICATION_JSON_VALUE } )
-    public CompletableFuture<ResponseEntity<?>> deleteOrderInJSON(@PathVariable("id") final Long id) {
+    public CompletableFuture<ResponseEntity<?>> deleteOrderInJSON(final Principal principal, @PathVariable("id") final Long id) {
         return CompletableFuture.completedFuture(delete(id));
     }
 
     @Admin
     @Async
     @DeleteMapping(value = "/{id}", produces = { MediaType.APPLICATION_XML_VALUE } )
-    public CompletableFuture<ResponseEntity<?>> deleteOrderInXML(@PathVariable("id") final Long id) {
+    public CompletableFuture<ResponseEntity<?>> deleteOrderInXML(final Principal principal, @PathVariable("id") final Long id) {
         return CompletableFuture.completedFuture(delete(id));
     }
 
@@ -120,7 +122,7 @@ public class OrderController {
      */
     @Async
     @PostMapping(consumes = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE } )
-    public CompletableFuture<ResponseEntity<?>> createNewOrder(@RequestBody final Order order) {
+    public CompletableFuture<ResponseEntity<?>> createNewOrder(@Validated @RequestBody final Order order) {
         orderService.save(order);
         final URI created = ServletUriComponentsBuilder
             .fromCurrentRequest()
@@ -175,14 +177,14 @@ public class OrderController {
     @Async
     @PutMapping(value = "/{order_id}/add", produces = { MediaType.APPLICATION_JSON_VALUE } )
     public CompletableFuture<ResponseEntity<?>> updateOrderInJSON(@PathVariable("order_id") final Long orderId,
-                                                                  @RequestBody final Shaurma shaurma) {
+                                                                  @Validated @RequestBody final Shaurma shaurma) {
         return CompletableFuture.completedFuture(updateOrCreateOrderFromConstructor(orderId, shaurma));
     }
 
     @Async
     @PutMapping(value = "/{order_id}/add", produces = { MediaType.APPLICATION_XML_VALUE } )
     public CompletableFuture<ResponseEntity<?>> updateOrderInXML(@PathVariable("order_id") final Long orderId,
-                                                                 @RequestBody final Shaurma shaurma) {
+                                                                 @Validated @RequestBody final Shaurma shaurma) {
         return CompletableFuture.completedFuture(updateOrCreateOrderFromConstructor(orderId, shaurma));
     }
 

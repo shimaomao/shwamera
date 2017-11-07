@@ -3,6 +3,7 @@ package ru.mera.sergeynazin.model;
 import org.hibernate.annotations.Nationalized;
 
 import javax.persistence.*;
+import javax.validation.constraints.*;
 import java.util.Objects;
 
 // FIXME: 10/20/17 hashCode + equals
@@ -17,10 +18,16 @@ public class Ingredient {
 
     @Column(length = 45, unique = true, nullable = false)
     @Nationalized
+    @NotNull(message = " Ingredient name cannot be NULL ")
+    @Size(min = 3, message = " Ingredient name should be more then 3 symbols ")
     private String name;
 
     @org.hibernate.annotations.Type(type = "big_decimal")
     @Column(precision = 7, scale = 2)
+    @NotNull(message = " Ingredient cost should not be NULL ")
+    @Positive(message = " Cost of Ingredient should be between 0.00 and 99,999.99 ")
+    @DecimalMax(value = "99999.99", message = " Decimal cost of Ingredient should not be more than 99,999.99 ") // TODO: 11/7/17 delete
+    @DecimalMin(value = "1.00", message = " Decimal cost of Ingredient should not be less than 1.00 ") // TODO: 11/7/17 delete
     private Double cost;
 
 

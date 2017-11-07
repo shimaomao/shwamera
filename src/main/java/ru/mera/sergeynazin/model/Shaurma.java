@@ -1,5 +1,6 @@
 package ru.mera.sergeynazin.model;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
 import org.hibernate.annotations.Nationalized;
 
 import javax.persistence.*;
@@ -30,6 +31,7 @@ public class Shaurma {
 
     @org.hibernate.annotations.Type(type = "big_decimal")
     @Column(name = "cost", precision = 7, scale = 2)
+    @JsonGetter
     public Double getCost() {
         DoubleAdder doubleAdder = new DoubleAdder();
 

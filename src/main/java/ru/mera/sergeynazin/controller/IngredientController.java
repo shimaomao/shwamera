@@ -12,14 +12,13 @@ import ru.mera.sergeynazin.model.Ingredient;
 import ru.mera.sergeynazin.service.IngredientService;
 
 import java.net.URI;
+import java.security.Principal;
 import java.util.Collection;
-import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
-import java.util.function.Function;
 
 @EnableAsync
 @RestController
-@RequestMapping("/ingredients")
+@RequestMapping("/ingredient")
 public class IngredientController {
 
     private IngredientService ingredientService;
@@ -28,124 +27,140 @@ public class IngredientController {
         this.ingredientService = ingredientService;
     }
 
+// BEGIN_INCLUDE(IngredientController.@Admin)
+    // BEGIN_INCLUDE(IngredientController.POSTCreateNew)
+
+    @Admin
+    @Async
+    @PostMapping(consumes = { MediaType.APPLICATION_JSON_VALUE }, produces = { MediaType.APPLICATION_JSON_VALUE })
+    public CompletableFuture<ResponseEntity<?>> createNewIngredientInJSON(final Principal principal,
+                                                                          @RequestBody final Ingredient transientEntity) {
+        return CompletableFuture.completedFuture(createNew(transientEntity));
+    }
+
+    @Admin
+    @Async
+    @PostMapping(consumes = { MediaType.APPLICATION_XML_VALUE }, produces = { MediaType.APPLICATION_XML_VALUE })
+    public CompletableFuture<ResponseEntity<?>> createNewIngredientInXML(final Principal principal,
+                                                                         @RequestBody final Ingredient transientEntity) {
+        return CompletableFuture.completedFuture(createNew(transientEntity));
+    }
+
     /**
      * Convenience method for shaurmamaker for to add new ingredient to db
-     * @param ingredientName ...
-     * @param ingredient xml body
+     * @param ingredient body
      * @return 201 (Created) or 200 OK (for Caching at front) response
      * containing a Location header field that provides an identifier
      * for the primary resource created and a representation
      * that describes the status of the request while referring
      * to the new resource(s)
      */
+    private ResponseEntity<?> createNew(final Ingredient ingredient) {
+        ingredientService.save(ingredient);
+        final URI created = ServletUriComponentsBuilder
+            .fromCurrentRequest()
+            .path("/{id}")
+            .buildAndExpand(ingredient.getId()).toUri();
+        return ResponseEntity.created(created).body(ingredient);
+    }
+    // END_INCLUDE(IngredientController.POSTCreateNew)
+
+    // BEGIN_INCLUDE(IngredientController.PUTUpdate)
     @Admin
     @Async
-    @PostMapping(value = "/ingredients/create/{ingredient_name}", consumes = { MediaType.APPLICATION_XML_VALUE }, produces = { MediaType.APPLICATION_XML_VALUE })
-    public CompletableFuture<ResponseEntity<?>> createNewIngredient(@PathVariable("ingredient_name") final String ingredientName,
-                                                                    @RequestBody final Ingredient ingredient) {
-        return CompletableFuture.completedFuture(
-            ingredientService.optionalIsExist(ingredient.getId())
-            .flatMap(i -> ingredientService.optionalIsExist(ingredientName))
-            .map(i -> ResponseEntity.unprocessableEntity().body(ingredient))
-            .orElseGet(() -> {
-                ingredient.setName(ingredientName);
-                ingredientService.save(ingredient);
-                final URI created = ServletUriComponentsBuilder
-                    .fromCurrentRequest()
-                    .replacePath("/{id}")
-                    .buildAndExpand(ingredient.getId()).toUri();
-                return ResponseEntity.created(created).body(ingredient);
-            }));
+    @PutMapping(value = "update/{id}", produces = { MediaType.APPLICATION_JSON_VALUE }, consumes = { MediaType.APPLICATION_JSON_VALUE })
+    public CompletableFuture<ResponseEntity<?>> updateIngredientInJSON(@PathVariable("id") final Long id,
+                                                                       @RequestBody final Ingredient ingredient) {
+        return CompletableFuture.completedFuture(updateEgMerge(id, ingredient));
     }
 
-    // FIXME:// FIXME:// FIXME:// FIXME:// FIXME:// FIXME:
-    // FIXME:
-    // FIXME:   Ничего не понятно с методами ниже. Нужны разъясниея
-    // FIXME:
-    // FIXME:// FIXME:// FIXME:// FIXME:// FIXME:// FIXME:
-
+    @Admin
     @Async
-    @PostMapping(value = "/ingredients/add/{ingredient_name}", consumes = { MediaType.APPLICATION_JSON_VALUE }, produces = { MediaType.APPLICATION_JSON_VALUE })
-    public CompletableFuture<ResponseEntity<?>> addIngredientToShaurma(@PathVariable("ingredient_name") final String ingredientName,
-                                                    @RequestBody final Ingredient ingredientWithId) {
-        // FIXME !!!!!!!!!!!!!!!
-        return CompletableFuture.completedFuture(
-            ingredientService.optionalIsExist(ingredientName)
-            .map(ingredient -> ResponseEntity.ok().build()) //FIXME: НЕПОНЯТНО!
-            .orElseGet(() -> {
-                //ingredientService
-                return ResponseEntity.noContent().build();
-            }));
+    @PutMapping(value = "update/{id}", produces = { MediaType.APPLICATION_XML_VALUE } , consumes = { MediaType.APPLICATION_XML_VALUE })
+    public CompletableFuture<ResponseEntity<?>> updateIngredientInXML(@PathVariable("id") final Long id,
+                                                                      @RequestBody final Ingredient ingredient) {
+        return CompletableFuture.completedFuture(updateEgMerge(id, ingredient));
     }
 
-    @Async
-    @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public CompletableFuture<ResponseEntity<?>> getShaurmaByIdInJSON(@PathVariable("id") final Long id) {
-        return CompletableFuture.completedFuture(get(id));
-    }
-
-
-    @Async
-    @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_XML_VALUE)
-    public CompletableFuture<ResponseEntity<?>> getShaurmaByIdInXML(@PathVariable("id") final Long id) {
-        return CompletableFuture.completedFuture(get(id));
-    }
-
-    private ResponseEntity<?> get(final Long id) {
+    /**
+     * Updates the state of the Ingredient (presumably just cost)
+     * @param id of the supplied entity
+     * @param newDetached stateful entity with state to be supplied to database
+     * @return 404 or 200
+     * @throws NotFoundException 404
+     */
+    private ResponseEntity<?> updateEgMerge(final Long id, final Ingredient newDetached) throws NotFoundException {
         return ingredientService.optionalIsExist(id)
-            .map(ResponseEntity::ok)
-            .orElse(ResponseEntity.notFound().build());
+            .map(oldPersistent -> {
+                newDetached.setId(id);
+                return ResponseEntity.ok(ingredientService.merge(newDetached));
+            }).orElseThrow(() -> NotFoundException.throwNew(id));
     }
+    // END_INCLUDE(IngredientController.PUTUpdate)
 
 
-
-
-        CompletableFuture.supplyAsync(() -> ingredientService.optionalIsExist(ingredient.getId()))
-            .thenApplyAsync(new Function<Optional<Ingredient>, Integer>() {
-        @Override
-        public Integer apply(Optional<Ingredient> ingredient1) {
-            ingredient1
-                .map()
-                .orElseGet()
-            return 1;
-        }
-    })
-        .
-
-    @Async
-    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public CompletableFuture<ResponseEntity<Collection<Ingredient>>> getAllIngredientsInJSON() {
-        return CompletableFuture.completedFuture(ResponseEntity.ok(ingredientService.getAll()));
-    }
-
-
-    @Async
-    @GetMapping(produces = MediaType.APPLICATION_XML_VALUE)
-    public CompletableFuture<ResponseEntity<Collection<Ingredient>>> getAllIngredientsInXML() {
-        return CompletableFuture.completedFuture(ResponseEntity.ok(ingredientService.getAll()));
-    }
-
+    // BEGIN_INCLUDE(IngredientController.DELETEFromDb)
     @Admin
     @Async
-    @DeleteMapping(value = "/ingredients/remove/{id}", consumes = { MediaType.APPLICATION_JSON_VALUE }, produces = { MediaType.APPLICATION_JSON_VALUE })
+    @DeleteMapping(value = "/delete/{id}", consumes = { MediaType.APPLICATION_JSON_VALUE }, produces = { MediaType.APPLICATION_JSON_VALUE })
     public CompletableFuture<ResponseEntity<?>> deleteIngredientInJSON(@PathVariable("id") final Long id) {
         return CompletableFuture.completedFuture(delete(id));
     }
 
     @Admin
     @Async
-    @DeleteMapping(value = "/ingredients/remove/{id}", consumes = { MediaType.APPLICATION_XML_VALUE }, produces = { MediaType.APPLICATION_XML_VALUE })
+    @DeleteMapping(value = "/delete/{id}", consumes = { MediaType.APPLICATION_XML_VALUE }, produces = { MediaType.APPLICATION_XML_VALUE })
     public CompletableFuture<ResponseEntity<?>> deleteIngredientInXML(@PathVariable("id") final Long id) {
         return CompletableFuture.completedFuture(delete(id));
     }
 
-    private ResponseEntity<?> delete(final Long id) {
+    private ResponseEntity<?> delete(final Long id) throws NotFoundException {
         return ingredientService.optionalIsExist(id)
             .map(ingredient -> {
                 ingredientService.delete(ingredient);
                 return ResponseEntity.ok(ingredient);
-            }).orElse(ResponseEntity.notFound().build());
+            }).orElseThrow(() -> NotFoundException.throwNew(id));
     }
+    // END_INCLUDE(IngredientController.DELETEFromDb)
+// END_INCLUDE(IngredientController.@Admin)
+
+
+
+    // BEGIN_INCLUDE(IngredientController.GETById)
+    @Async
+    @GetMapping(value = "/{id}", produces = { MediaType.APPLICATION_JSON_VALUE } )
+    public CompletableFuture<ResponseEntity<?>> getIngredientByIdInJSON(@PathVariable("id") final Long id) {
+        return CompletableFuture.completedFuture(get(id));
+    }
+
+
+    @Async
+    @GetMapping(value = "/{id}", produces = { MediaType.APPLICATION_XML_VALUE } )
+    public CompletableFuture<ResponseEntity<?>> getIngredientByIdInXML(@PathVariable("id") final Long id) {
+        return CompletableFuture.completedFuture(get(id));
+    }
+
+    private ResponseEntity<?> get(final Long id) throws NotFoundException {
+        return ingredientService.optionalIsExist(id)
+            .map(ResponseEntity::ok)
+            .orElseThrow(() -> NotFoundException.throwNew(id));
+    }
+    // END_INCLUDE(IngredientController.GetById)
+
+
+    // BEGIN_INCLUDE(IngredientController.GETAll)
+    @Async
+    @GetMapping(produces = { MediaType.APPLICATION_JSON_VALUE } )
+    public CompletableFuture<ResponseEntity<Collection<Ingredient>>> getAllIngredientsInJSON() {
+        return CompletableFuture.completedFuture(ResponseEntity.ok(ingredientService.getAll()));
+    }
+
+    @Async
+    @GetMapping(produces = { MediaType.APPLICATION_XML_VALUE } )
+    public CompletableFuture<ResponseEntity<Collection<Ingredient>>> getAllIngredientsInXML() {
+        return CompletableFuture.completedFuture(ResponseEntity.ok(ingredientService.getAll()));
+    }
+    // END_INCLUDE(IngredientController.GETAll)
 
     /**
      * Helper methods

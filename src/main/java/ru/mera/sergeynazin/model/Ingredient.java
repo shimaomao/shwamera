@@ -15,7 +15,7 @@ public class Ingredient {
     @Column(unique = true, nullable = false, updatable = false)
     private Long id;
 
-    @Column(length = 45)
+    @Column(length = 45, unique = true, nullable = false)
     @Nationalized
     private String name;
 
@@ -24,7 +24,7 @@ public class Ingredient {
     private Double cost;
 
 
-    // TODO: 10/23/17 Do I need it empty constructor?
+
     public Ingredient() {
     }
 
@@ -64,13 +64,12 @@ public class Ingredient {
         Ingredient ingredient = (Ingredient) o;
 
         return Objects.equals(this.name, ingredient.name)
-            && Objects.equals(this.id, ingredient.id)
-            && Objects.equals(this.cost, ingredient.cost);
+            && Objects.equals(this.id, ingredient.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.name, this.id, this.cost);
+        return Objects.hash(this.name, this.id);
     }
 
 }

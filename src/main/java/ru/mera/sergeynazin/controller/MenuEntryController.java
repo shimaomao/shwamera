@@ -11,7 +11,6 @@ import ru.mera.sergeynazin.model.MenuEntry;
 import ru.mera.sergeynazin.service.MenuEntryService;
 import ru.mera.sergeynazin.service.ShaurmaService;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.concurrent.CompletableFuture;
 
@@ -33,21 +32,21 @@ public class MenuEntryController {
     }
 
     @Async
-    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(produces = { MediaType.APPLICATION_JSON_VALUE } )
     public CompletableFuture<ResponseEntity<Collection<MenuEntry>>> getAllMenuEntrysInJSON() {
         return CompletableFuture.completedFuture(ResponseEntity.ok(menuEntryService.getAll()));
     }
 
 
     @Async
-    @GetMapping(produces = MediaType.APPLICATION_XML_VALUE)
+    @GetMapping(produces = { MediaType.APPLICATION_XML_VALUE } )
     public CompletableFuture<ResponseEntity<Collection<MenuEntry>>> getAllMenuEntrysInXML() {
         return CompletableFuture.completedFuture(ResponseEntity.ok(menuEntryService.getAll()));
     }
 
     @Admin
     @Async
-    @PostMapping(value = "/shaurma/add/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/shaurma/add/{id}", produces = { MediaType.APPLICATION_JSON_VALUE } )
     public CompletableFuture<ResponseEntity<?>> addAsJSON(@PathVariable("id") final Long id) {
         return CompletableFuture.completedFuture(add(id));
     }
@@ -61,25 +60,24 @@ public class MenuEntryController {
     /**
      * Convenience method for shaurmamaker. Supposedly this will add predefined shaurma to menu
      * @param id shaurma unique id from db
-     * @return error on Shaurma not found or 200 code with newly added to menu shaurma body todo maybe switch to MenuEntry body??
+     * @return 404 or 200 code with newly added to menu shaurma body todo maybe switch to MenuEntry body??
      */
-    private ResponseEntity<?> add(final Long id) {
-        ArrayList<Object> arr = new ArrayList<Object>();
+    private ResponseEntity<?> add(final Long id) throws NotFoundException {
         return shaurmaService.optionalIsExist(id)
             .map(ResponseEntity ::ok)
-            .orElse(ResponseEntity.notFound().build());
+            .orElseThrow(() -> NotFoundException.throwNew(id));
     }
 
     @Admin
     @Async
-    @DeleteMapping(value = "/delete/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @DeleteMapping(value = "/delete/{id}", produces = { MediaType.APPLICATION_JSON_VALUE } )
     public CompletableFuture<ResponseEntity<?>> deleteAsJSON(@PathVariable("id") final Long id) {
         return CompletableFuture.completedFuture(delete(id));
     }
 
     @Admin
     @Async
-    @DeleteMapping(value = "/delete/{id}", produces = MediaType.APPLICATION_XML_VALUE)
+    @DeleteMapping(value = "/delete/{id}", produces = { MediaType.APPLICATION_XML_VALUE } )
     public CompletableFuture<ResponseEntity<?>> deleteAsXML(@PathVariable("id") final Long id) {
         return CompletableFuture.completedFuture(delete(id));
     }
@@ -89,12 +87,12 @@ public class MenuEntryController {
      * @param id MenuEntry id from db
      * @return 404 or 200 code with deleted from menu menuEntry body
      */
-    private ResponseEntity<?> delete(final Long id) {
+    private ResponseEntity<?> delete(final Long id) throws NotFoundException {
         return menuEntryService.optionalIsExist(id)
             .map(menuEntry -> {
                 menuEntryService.delete(menuEntry);
                 return ResponseEntity.ok(menuEntry);
-            }).orElse(ResponseEntity.notFound().build());
+            }).orElseThrow(() -> NotFoundException.throwNew(id));
     }
 
     /**

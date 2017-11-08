@@ -13,7 +13,43 @@
 
     <!--@Async-->
     <task:annotation-driven />
+    <!--JSR-303 Bean Validation API. Expected to be Hibernate Validator todo (check the classpath: to make sure it's there) -->
+    <bean id="validator"
+          class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean"/>
 
+
+    <!--Exception Handling-->
+<!--
+    TODO: Delete if will not implement
+    <bean id="simpleMappingExceptionResolver" class="ru.mera.sergeynazin.controller.advice.MySimpleMappingExceptionResolver">
+        <property name="exceptionMappings">
+            <map>
+                <entry key="Exception" value="generic_error"></entry>
+            </map>
+        </property>
+        <property name="defaultErrorView" value="generic_error"/>
+    </bean>
+-->
+    <!--FIXME: Isn't it enabled by default-->
+    <!-- Configure to plugin JSON as request and response in method handler -->
+<!--
+    <bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter">
+        <property name="messageConverters">
+            <list>
+                <ref bean="jsonMessageConverter"/>
+                <ref bean="xmlMessageConverter"/>
+            </list>
+        </property>
+    </bean>
+-->
+
+    <!-- Configure bean to convert JSON/XML to POJO and vice versa -->
+<!--
+    <bean id="jsonMessageConverter" class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter" />
+    <bean id="xmlMessageConverter" class="org.springframework.http.converter.xml.MappingJackson2XmlHttpMessageConverter" />
+-->
+
+    <!--MyBeans-->
     <bean id="ingredientController" class="ru.mera.sergeynazin.controller.IngredientController">
         <property name="ingredientService" ref="ingredientServiceImpl" />
     </bean>

@@ -122,7 +122,7 @@ public class OrderController {
      */
     @Async
     @PostMapping(consumes = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE } )
-    public CompletableFuture<ResponseEntity<?>> createNewOrder(@Validated @RequestBody final Order order) {
+    public CompletableFuture<ResponseEntity<?>> createNewOrder(@Valid @RequestBody final Order order) {
         orderService.save(order);
         final URI created = ServletUriComponentsBuilder
             .fromCurrentRequest()
@@ -177,14 +177,14 @@ public class OrderController {
     @Async
     @PutMapping(value = "/{order_id}/add", produces = { MediaType.APPLICATION_JSON_VALUE } )
     public CompletableFuture<ResponseEntity<?>> updateOrderInJSON(@PathVariable("order_id") final Long orderId,
-                                                                  @Validated @RequestBody final Shaurma shaurma) {
+                                                                  @Valid @RequestBody final Shaurma shaurma) {
         return CompletableFuture.completedFuture(updateOrCreateOrderFromConstructor(orderId, shaurma));
     }
 
     @Async
     @PutMapping(value = "/{order_id}/add", produces = { MediaType.APPLICATION_XML_VALUE } )
     public CompletableFuture<ResponseEntity<?>> updateOrderInXML(@PathVariable("order_id") final Long orderId,
-                                                                 @Validated @RequestBody final Shaurma shaurma) {
+                                                                 @Valid @RequestBody final Shaurma shaurma) {
         return CompletableFuture.completedFuture(updateOrCreateOrderFromConstructor(orderId, shaurma));
     }
 

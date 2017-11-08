@@ -61,15 +61,9 @@ public class Ingredient {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || this.getClass() != o.getClass()) {
-            return false;
-        }
-
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
         Ingredient ingredient = (Ingredient) o;
-
         return Objects.equals(this.name, ingredient.name)
             && Objects.equals(this.id, ingredient.id);
     }

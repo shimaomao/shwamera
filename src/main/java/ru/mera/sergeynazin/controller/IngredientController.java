@@ -4,7 +4,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.EnableAsync;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ru.mera.sergeynazin.controller.advice.Admin;
@@ -12,6 +11,7 @@ import ru.mera.sergeynazin.controller.advice.NotFoundException;
 import ru.mera.sergeynazin.model.Ingredient;
 import ru.mera.sergeynazin.service.IngredientService;
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.security.Principal;
 import java.util.Collection;
@@ -36,7 +36,7 @@ public class IngredientController {
     @PostMapping(value = "/create/{ingredient_name}", consumes = { MediaType.APPLICATION_JSON_VALUE }, produces = { MediaType.APPLICATION_JSON_VALUE })
     public CompletableFuture<ResponseEntity<?>> createNewIngredientInJSON(final Principal principal,
                                                                           @PathVariable("ingredient_name") final String name,
-                                                                          @Validated @RequestBody final Ingredient transientEntity) {
+                                                                          @Valid @RequestBody final Ingredient transientEntity) {
         return CompletableFuture.completedFuture(createNew(name, transientEntity));
     }
 
@@ -45,7 +45,7 @@ public class IngredientController {
     @PostMapping(consumes = { MediaType.APPLICATION_XML_VALUE }, produces = { MediaType.APPLICATION_XML_VALUE })
     public CompletableFuture<ResponseEntity<?>> createNewIngredientInXML(final Principal principal,
                                                                          @PathVariable("ingredient_name") final String name,
-                                                                         @Validated @RequestBody final Ingredient transientEntity) {
+                                                                         @Valid @RequestBody final Ingredient transientEntity) {
         return CompletableFuture.completedFuture(createNew(name, transientEntity));
     }
 
@@ -75,7 +75,7 @@ public class IngredientController {
     @PutMapping(value = "update/{id}", produces = { MediaType.APPLICATION_JSON_VALUE }, consumes = { MediaType.APPLICATION_JSON_VALUE })
     public CompletableFuture<ResponseEntity<?>> updateIngredientInJSON(final Principal principal,
                                                                        @@PathVariable("id") final Long id,
-                                                                       @Validated @RequestBody final Ingredient ingredient) {
+                                                                       @Valid @RequestBody final Ingredient ingredient) {
         return CompletableFuture.completedFuture(updateEgMerge(id, ingredient));
     }
 
@@ -84,7 +84,7 @@ public class IngredientController {
     @PutMapping(value = "update/{id}", produces = { MediaType.APPLICATION_XML_VALUE } , consumes = { MediaType.APPLICATION_XML_VALUE })
     public CompletableFuture<ResponseEntity<?>> updateIngredientInXML(final Principal principal,
                                                                       @PathVariable("id") final Long id,
-                                                                      @Validated @RequestBody final Ingredient ingredient) {
+                                                                      @Valid @RequestBody final Ingredient ingredient) {
         return CompletableFuture.completedFuture(updateEgMerge(id, ingredient));
     }
 

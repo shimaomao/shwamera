@@ -1,6 +1,7 @@
 package ru.mera.sergeynazin.model;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.Nationalized;
 
 import javax.persistence.*;
@@ -8,6 +9,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.atomic.DoubleAdder;
 
+@JsonIgnoreProperties({ "cost" })
 @Entity
 @Table(name = "shaurma")
 public class Shaurma {
@@ -31,7 +33,7 @@ public class Shaurma {
 
     @org.hibernate.annotations.Type(type = "big_decimal")
     @Column(name = "cost", precision = 7, scale = 2)
-    @JsonGetter
+    @JsonGetter("cost")
     public Double getCost() {
         DoubleAdder doubleAdder = new DoubleAdder();
 
@@ -73,22 +75,14 @@ public class Shaurma {
         this.ingredientSet = ingredientSet;
     }
 
-
-
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
         Shaurma shaurma = (Shaurma) o;
-
-        return Objects.equals(this.name, shaurma.name)
-            && Objects.equals(this.id, shaurma.id)
-            && Objects.equals(this.ingredientSet, shaurma.ingredientSet);
+        return  Objects.equals(this.id, shaurma.id) &&
+                Objects.equals(this.name, shaurma.name) &&
+                Objects.equals(this.ingredientSet, shaurma.ingredientSet);
     }
 
     @Override

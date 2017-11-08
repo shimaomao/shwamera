@@ -10,7 +10,7 @@
     <!-- DispatcherServlet Context: определяет настройки одного сервлета; бины,
         которые доступны только ему -->
 
-    <!-- Spring MVC annotations(@RestController etc.) -->
+    <!-- ENABLING Spring MVC annotations(@RestController etc.) -->
     <annotation-driven/>
 
     <!-- they say statistics, pictures, css, .js, potentially are good to go

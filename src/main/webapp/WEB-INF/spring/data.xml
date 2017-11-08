@@ -49,7 +49,7 @@
             <props>
                 <!-- @author sergeynazin. Defines whether my getSession()
                 in JpaRepository will return a local threaded Session or else -->
-                <!--FIXME: Some say this statement BREAKS Spring from setting proper session managment and only suitable for Hibernate solely-->
+                <!--FIXME: Some say this statement BREAKS Spring from setting proper session management and only suitable for Hibernate solely-->
                 <prop key="hibernate.current_session_context_class">thread</prop>
 
                 <!-- Print all SQL to stdout. -->
@@ -66,7 +66,7 @@
         </property>
     </bean>
 
-<!--TODO: DELETE !! Do we need this postprocessor (expesially for Hib-te 5.x?) ?-->
+    <!-- @Repository translation-->
     <bean id="persistenceExceptionTranslationPostProcessor"
           class="org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor"/>
 
@@ -91,11 +91,11 @@
         <property name="clazz" ref="menuEntry" />
     </bean>
 
+    <!-- scoped as prototype to be garbage collected after repository initialization -->
+    <bean id="menuEntry" class="ru.mera.sergeynazin.model.MenuEntry" scope="prototype" />
+    <bean id="ingredient" class="ru.mera.sergeynazin.model.Ingredient" scope="prototype" />
 
-    <bean id="menuEntry" class="ru.mera.sergeynazin.model.MenuEntry" />
-    <bean id="ingredient" class="ru.mera.sergeynazin.model.Ingredient" />
-
-    <bean id="order" class="ru.mera.sergeynazin.model.Order" />
-    <bean id="shaurma" class="ru.mera.sergeynazin.model.Shaurma" />
+    <bean id="order" class="ru.mera.sergeynazin.model.Order" scope="prototype" />
+    <bean id="shaurma" class="ru.mera.sergeynazin.model.Shaurma" scope="prototype" />
 
 </beans>

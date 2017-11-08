@@ -5,6 +5,12 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(HttpStatus.NOT_FOUND)
 public class NotFoundException extends RuntimeException {
+
+
+    public HttpStatus getStatus() {
+        return HttpStatus.NOT_FOUND;
+    }
+
     public NotFoundException(final String name) {
         super("Entity with ID " + name + " NOT found !");
     }

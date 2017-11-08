@@ -12,7 +12,7 @@ public class MenuEntry {
     private Long id;
 
     // TODO: Do I need @Column(columnDefinition = "string") ????
-    //@MapsId // TODO: they say this one may cause problems
+    //@MapsId // TODO: they say this one may cause problems or even just incorrect to use here. Didn't managed to explore
     //@JoinColumn(name = "shaurma_id", referencedColumnName = "id")
     @OneToOne(cascade = CascadeType.ALL, optional = false)
     @PrimaryKeyJoinColumn(name = "shaurma_id", referencedColumnName = "id")

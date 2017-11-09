@@ -15,10 +15,10 @@ import java.util.Optional;
  * */
 
 public interface MenuEntryService {
-    void save(MenuEntry transientEntity);
-    List<MenuEntry> getAll();
     MenuEntry loadAsPersistent(Long id);
-    void update(MenuEntry detachedEntity);
-    void delete(MenuEntry persistentOrDetachedEntity);
+    void save(MenuEntry transient_);
+    List<MenuEntry> getAll();
+    void update(MenuEntry detached);
+    void delete(MenuEntry detached);
     Optional<MenuEntry> optionalIsExist(Long id);
 }

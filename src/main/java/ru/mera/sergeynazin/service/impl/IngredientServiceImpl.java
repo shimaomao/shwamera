@@ -11,7 +11,7 @@ import javax.persistence.criteria.Root;
 import java.util.List;
 import java.util.Optional;
 
-@Transactional(readOnly = true, noRollbackFor = Exception.class)
+@Transactional(readOnly = true)
 public class IngredientServiceImpl implements IngredientService {
 
     private JpaRepository repository;
@@ -22,8 +22,8 @@ public class IngredientServiceImpl implements IngredientService {
 
     @Transactional
     @Override
-    public void save(final Ingredient transientEntity) {
-        repository.create(transientEntity);
+    public void save(final Ingredient transient_) {
+        repository.create(transient_);
     }
 
     @SuppressWarnings({"unchecked"})
@@ -37,19 +37,19 @@ public class IngredientServiceImpl implements IngredientService {
 
     @Transactional
     @Override
-    public void update(final Ingredient detachedEntity) {
-        repository.update(detachedEntity);
+    public void update(final Ingredient detached) {
+        repository.update(detached);
     }
 
     @Override
-    public Ingredient merge(Ingredient detachedEntity) {
-        return repository.mergeStateWithDbEntity(detachedEntity);
+    public Ingredient merge(Ingredient transientOrDetached) {
+        return repository.mergeStateWithDbEntity(transientOrDetached);
     }
 
     @Transactional
     @Override
-    public void delete(final Ingredient persistentOrDetachedEntity) {
-        repository.delete(persistentOrDetachedEntity);
+    public void delete(final Ingredient detached) {
+        repository.delete(detached);
     }
 
 

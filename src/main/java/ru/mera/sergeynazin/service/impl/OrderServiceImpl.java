@@ -11,7 +11,7 @@ import javax.persistence.criteria.Root;
 import java.util.List;
 import java.util.Optional;
 
-@Transactional(readOnly = true, noRollbackFor = Exception.class)
+@Transactional(readOnly = true)
 public class OrderServiceImpl implements OrderService {
 
     private JpaRepository repository;
@@ -22,8 +22,8 @@ public class OrderServiceImpl implements OrderService {
 
     @Transactional
     @Override
-    public void save(final Order transientEntity) {
-        repository.create(transientEntity);
+    public void save(final Order transient_) {
+        repository.create(transient_);
     }
 
     @Override
@@ -42,14 +42,14 @@ public class OrderServiceImpl implements OrderService {
 
     @Transactional
     @Override
-    public void update(final Order detachedEntity) {
-        repository.update(detachedEntity);
+    public void update(final Order detached) {
+        repository.update(detached);
     }
 
     @Transactional
     @Override
-    public void delete(final Order persistentOrDetachedEntity) {
-        repository.delete(persistentOrDetachedEntity);
+    public void delete(final Order detached) {
+        repository.delete(detached);
     }
 
     /**

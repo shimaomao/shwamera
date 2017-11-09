@@ -15,11 +15,11 @@ import java.util.Optional;
  * */
 
 public interface OrderService {
-    void save(Order transientEntity);
-    List<Order> getAll();
     Order loadAsPersistent(Long id);
-    void update(Order detachedEntity);
-    void delete(Order persistentOrDetachedEntity);
+    void save(Order transient_);
+    List<Order> getAll();
+    void update(Order detached);
+    void delete(Order detached);
     Optional<Order> optionalIsExist(Long id);
     Optional<Order> optionalIsExist(String orderNumber);
 }

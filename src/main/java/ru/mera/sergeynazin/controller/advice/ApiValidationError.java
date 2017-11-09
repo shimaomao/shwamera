@@ -2,13 +2,13 @@ package ru.mera.sergeynazin.controller.advice;
 
 import java.util.Objects;
 
-class ApiValidationError extends ApiSubError {
+public class ApiValidationError extends ApiSubError {
     private String object;
     private String field;
     private Object rejectedValue;
     private String message;
 
-    ApiValidationError(String object, String message) {
+    public ApiValidationError(String object, String message) {
         this.object = object;
         this.message = message;
     }
@@ -25,10 +25,10 @@ class ApiValidationError extends ApiSubError {
         if (this == o) return true;
         if (!(o instanceof ApiValidationError)) return false;
         ApiValidationError that = (ApiValidationError) o;
-        return Objects.equals(this.object, that.object) &&
-            Objects.equals(this.field, that.field) &&
-            Objects.equals(this.rejectedValue, that.rejectedValue) &&
-            Objects.equals(this.message, that.message);
+        return  Objects.equals(this.object, that.object) &&
+                Objects.equals(this.field, that.field) &&
+                Objects.equals(this.rejectedValue, that.rejectedValue) &&
+                Objects.equals(this.message, that.message);
     }
 
     @Override

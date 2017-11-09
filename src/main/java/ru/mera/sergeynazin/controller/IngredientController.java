@@ -12,6 +12,8 @@ import ru.mera.sergeynazin.model.Ingredient;
 import ru.mera.sergeynazin.service.IngredientService;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.net.URI;
 import java.security.Principal;
 import java.util.Collection;
@@ -35,6 +37,8 @@ public class IngredientController {
     @Async
     @PostMapping(value = "/create/{ingredient_name}", consumes = { MediaType.APPLICATION_JSON_VALUE }, produces = { MediaType.APPLICATION_JSON_VALUE })
     public CompletableFuture<ResponseEntity<?>> createNewIngredientInJSON(final Principal principal,
+                                                                          @NotNull(message = " Ingredient name cannot be NULL ")
+                                                                          @Size(min = 3, message = " Ingredient name should be more then 3 symbols ")
                                                                           @PathVariable("ingredient_name") final String name,
                                                                           @Valid @RequestBody final Ingredient transientEntity) {
         return CompletableFuture.completedFuture(createNew(name, transientEntity));
@@ -74,7 +78,7 @@ public class IngredientController {
     @Async
     @PutMapping(value = "update/{id}", produces = { MediaType.APPLICATION_JSON_VALUE }, consumes = { MediaType.APPLICATION_JSON_VALUE })
     public CompletableFuture<ResponseEntity<?>> updateIngredientInJSON(final Principal principal,
-                                                                       @@PathVariable("id") final Long id,
+                                                                       @PathVariable("id") final Long id,
                                                                        @Valid @RequestBody final Ingredient ingredient) {
         return CompletableFuture.completedFuture(updateEgMerge(id, ingredient));
     }

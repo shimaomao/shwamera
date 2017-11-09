@@ -14,7 +14,7 @@ import java.util.Optional;
  * Only for shaurmamaker
  */
 
-@Transactional(readOnly = true, noRollbackFor = Exception.class)
+@Transactional(readOnly = true)
 public class MenuEntryServiceImpl implements MenuEntryService {
 
     private JpaRepository repository;
@@ -25,8 +25,8 @@ public class MenuEntryServiceImpl implements MenuEntryService {
 
     @Transactional
     @Override
-    public void save(final MenuEntry transientEntity) {
-        repository.create(transientEntity);
+    public void save(final MenuEntry transient_) {
+        repository.create(transient_);
     }
 
     @Override
@@ -45,14 +45,14 @@ public class MenuEntryServiceImpl implements MenuEntryService {
 
     @Transactional
     @Override
-    public void update(final MenuEntry detachedEntity) {
-        repository.update(detachedEntity);
+    public void update(final MenuEntry detached) {
+        repository.update(detached);
     }
 
     @Transactional
     @Override
-    public void delete(final MenuEntry persistentOrDetachedEntity) {
-        repository.delete(persistentOrDetachedEntity);
+    public void delete(final MenuEntry detached) {
+        repository.delete(detached);
     }
 
     /**

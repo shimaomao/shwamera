@@ -15,11 +15,11 @@ import java.util.Optional;
  * */
 
 public interface ShaurmaService {
-    void save(Shaurma transientEntity);
-    List<Shaurma> getAll();
     Shaurma loadAsPersistent(Long id);
-    void update(Shaurma detachedEntity);
-    Shaurma merge(Shaurma detachedEntity);
-    void delete(Shaurma persistentOrDetachedEntity);
+    void save(Shaurma transient_);
+    List<Shaurma> getAll();
+    void update(Shaurma detached);
+    Shaurma merge(Shaurma transientOrDetached);
+    void delete(Shaurma detached);
     Optional<Shaurma> optionalIsExist(Long id);
 }

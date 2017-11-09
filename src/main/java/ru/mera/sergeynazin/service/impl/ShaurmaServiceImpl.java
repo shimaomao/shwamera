@@ -10,7 +10,7 @@ import javax.persistence.criteria.Root;
 import java.util.List;
 import java.util.Optional;
 
-@Transactional(readOnly = true, noRollbackFor = Exception.class)
+@Transactional(readOnly = true)
 public class ShaurmaServiceImpl implements ShaurmaService {
 
     private JpaRepository repository;
@@ -21,8 +21,8 @@ public class ShaurmaServiceImpl implements ShaurmaService {
 
     @Transactional
     @Override
-    public void save(final Shaurma transientEntity) {
-        repository.create(transientEntity);
+    public void save(final Shaurma transient_) {
+        repository.create(transient_);
     }
 
     @Override
@@ -41,19 +41,19 @@ public class ShaurmaServiceImpl implements ShaurmaService {
 
     @Transactional
     @Override
-    public void update(final Shaurma detachedEntity) {
-        repository.update(detachedEntity);
+    public void update(final Shaurma detached) {
+        repository.update(detached);
     }
 
     @Override
-    public Shaurma merge(Shaurma detachedEntity) {
-        return repository.mergeStateWithDbEntity(detachedEntity);
+    public Shaurma merge(Shaurma transientOrDetached) {
+        return repository.mergeStateWithDbEntity(transientOrDetached);
     }
 
     @Transactional
     @Override
-    public void delete(final Shaurma persistentOrDetachedEntity) {
-        repository.delete(persistentOrDetachedEntity);
+    public void delete(final Shaurma detached) {
+        repository.delete(detached);
     }
 
     /**

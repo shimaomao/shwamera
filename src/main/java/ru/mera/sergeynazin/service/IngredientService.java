@@ -16,11 +16,11 @@ import java.util.Optional;
 
 
 public interface IngredientService {
-    void save(Ingredient transientEntity);
+    void save(Ingredient transient_);
     List<Ingredient> getAll();
-    void update(Ingredient detachedEntity);
-    Ingredient merge(Ingredient detachedEntity);
-    void delete(Ingredient persistentOrDetachedEntity);
+    void update(Ingredient detached);
+    Ingredient merge(Ingredient transientOrDetached);
+    void delete(Ingredient detached);
     Optional<Ingredient> optionalIsExist(String name);
     Optional<Ingredient> optionalIsExist(Long id);
 }

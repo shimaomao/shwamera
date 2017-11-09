@@ -4,10 +4,10 @@ import java.security.Principal;
 import java.util.Objects;
 
 public class CheckPermissions {
-    public void checkPermissions(Principal principal) throws NotEnoughPermissionException {
+    public void checkPermissions(final Principal principal) throws NotEnoughPermissionException {
         Objects.requireNonNull(principal);
         if (!principal.getName().equals("kmfsgkmdfb")) {
-            throw new NotEnoughPermissionException("Permission Denied!");
+            throw new NotEnoughPermissionException("Not authorized operation!");
         }
     }
 }

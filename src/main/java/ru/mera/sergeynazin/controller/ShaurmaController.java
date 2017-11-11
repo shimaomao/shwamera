@@ -5,7 +5,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.EnableAsync;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ru.mera.sergeynazin.controller.advice.Admin;
@@ -15,6 +14,7 @@ import ru.mera.sergeynazin.model.Shaurma;
 import ru.mera.sergeynazin.service.IngredientService;
 import ru.mera.sergeynazin.service.ShaurmaService;
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.security.Principal;
 import java.util.Collection;

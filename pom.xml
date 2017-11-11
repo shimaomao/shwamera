@@ -270,20 +270,22 @@
             <artifactId>hibernate-validator-annotation-processor</artifactId>
             <version>6.0.4.Final</version>
         </dependency>
-
+<!--
         <dependency>
             <groupId>org.hibernate.validator</groupId>
             <artifactId>hibernate-validator-cdi</artifactId>
             <version>6.0.4.Final</version>
-        </dependency>
+        </dependency>-->
+<!--
 
-        <!--JSR-380-->
-        <!-- https://mvnrepository.com/artifact/javax.el/javax.el-api -->
+        &lt;!&ndash;JSR-380&ndash;&gt;
+        &lt;!&ndash; https://mvnrepository.com/artifact/javax.el/javax.el-api &ndash;&gt;
         <dependency>
             <groupId>javax.el</groupId>
             <artifactId>javax.el-api</artifactId>
             <version>3.0.1-b04</version>
         </dependency>
+-->
 
 
         <dependency>
@@ -318,14 +320,14 @@
 			<version>1.2</version>
             <scope>provided</scope>
 		</dependency>
-
-        <!-- https://mvnrepository.com/artifact/javax.validation/validation-api -->
+<!--
+        &lt;!&ndash; https://mvnrepository.com/artifact/javax.validation/validation-api &ndash;&gt;
         <dependency>
             <groupId>javax.validation</groupId>
             <artifactId>validation-api</artifactId>
             <version>2.0.0.Final</version>
             <scope>provided</scope>
-        </dependency>
+        </dependency>-->
 
 
 		<!-- Log4j -->

@@ -2,8 +2,6 @@ package ru.mera.sergeynazin.controller.advice;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.Ordered;
-import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +22,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Order(Ordered.HIGHEST_PRECEDENCE)
+// TODO: 11/11/17 resolve Order vs Priority
+//@Order(Ordered.HIGHEST_PRECEDENCE)
 @Priority(Integer.MIN_VALUE)
 @RestControllerAdvice
 public class ExceptionHandlers extends ResponseEntityExceptionHandler {

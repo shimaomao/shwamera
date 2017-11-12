@@ -1,18 +1,13 @@
 package ru.mera.sergeynazin;
 
-import org.slf4j.ILoggerFactory;
-import org.slf4j.LoggerFactory;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
-
 public class App {
-    public static void main(String[] args) {
-        // FIXME: Nope!
-        ILoggerFactory loggerFactory = LoggerFactory.getILoggerFactory();
+/*    public static void main(final String[] args) {
 
-        ApplicationContext context = new ClassPathXmlApplicationContext();
+        ApplicationContext context = new ClassPathXmlApplicationContext("applicationContext.xml");
 
+       *//* GenericApplicationContext context = new GenericApplicationContext();
+        new XmlBeanDefinitionReader(context).loadBeanDefinitions("applicationContext.xml");
+        context.refresh();*//*
 
-
-    }
+    }*/
 }

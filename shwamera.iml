@@ -8,7 +8,6 @@
           <file>file://$MODULE_DIR$/src/main/webapp/WEB-INF/spring/data.xml</file>
         </fileset>
         <fileset id="fileset2" name="Servlet Context" removed="false">
-          <file>file://$MODULE_DIR$/src/main/webapp/WEB-INF/spring/local.xml</file>
           <file>file://$MODULE_DIR$/src/main/webapp/WEB-INF/spring/servlet-context.xml</file>
           <file>file://$MODULE_DIR$/src/main/webapp/WEB-INF/spring/security.xml</file>
           <file>file://$MODULE_DIR$/src/main/webapp/WEB-INF/spring/controllers.xml</file>
@@ -28,7 +27,7 @@
     <facet type="hibernate" name="Hibernate">
       <configuration>
         <datasource-map>
-          <unit-entry name="sessionFactory" value="dataSource" />
+          <unit-entry name="sessionFactory" />
           <unit-entry name="src:main:webapp:WEB-INF:hibernate.cfg.xml" />
         </datasource-map>
         <naming-strategy-map />

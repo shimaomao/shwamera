@@ -158,11 +158,11 @@ public class OrderController {
             .map(shaurma -> {
                 final Order newOrder = orderService.optionalIsExist(orderId)
                     .map(order -> {
-                        order.getShaurmaSet().add(shaurma);
+                        order.getShaurmaList().add(shaurma);
                         return order;
                     }).orElseGet(() -> {
-                        // @see controllers.xml -> switched to null value shaurma set
-                        currentOrder.getShaurmaSet().add(shaurma);
+                        // @see controllers.xml -> switched to null value shaurma list
+                        currentOrder.getShaurmaList().add(shaurma);
                         orderService.save(currentOrder);
                         return currentOrder;
                     });
@@ -203,11 +203,11 @@ public class OrderController {
                     .allMatch(ingredient -> ingredientService.optionalIsExist(ingredient.getId()).isPresent())) {
                     return ResponseEntity.unprocessableEntity().body(shaurma);
                 }
-                order.getShaurmaSet().add(shaurma);
+                order.getShaurmaList().add(shaurma);
                 return ResponseEntity.ok(order);
             }).orElseGet(() -> {
-                // @see controllers.xml -> switched to null value shaurma set
-                currentOrder.getShaurmaSet().add(shaurma);
+                // @see controllers.xml -> switched to null value shaurma list
+                currentOrder.getShaurmaList().add(shaurma);
                 orderService.save(currentOrder);
                 final URI created = ServletUriComponentsBuilder
                     .fromCurrentRequest()

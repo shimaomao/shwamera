@@ -240,7 +240,7 @@ public class ShaurmaController {
      * @return 200
      */
     private ResponseEntity<?> add(final Shaurma shaurma) {
-        currentOrder.getShaurmaSet().add(shaurma);
+        currentOrder.getShaurmaList().add(shaurma);
         return ResponseEntity.ok(shaurma);
     }
     // END_INCLUDE(ShaurmaController.POSTCreateNew)
@@ -266,11 +266,11 @@ public class ShaurmaController {
      * @throws NotFoundException 404
      */
     private ResponseEntity<?> remove(final Long id) throws NotFoundException {
-        currentOrder.getShaurmaSet()
+        currentOrder.getShaurmaList()
             .parallelStream()
             .forEach(shaurma -> {
                 if (id.equals(shaurma.getId())) {
-                    currentOrder.getShaurmaSet().remove(shaurma);
+                    currentOrder.getShaurmaList().remove(shaurma);
                 }
             });
         return ResponseEntity.noContent().build();

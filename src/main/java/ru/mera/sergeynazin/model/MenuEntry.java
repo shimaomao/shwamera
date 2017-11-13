@@ -22,7 +22,6 @@ public class MenuEntry {
     @Column(precision = 7, scale = 2, nullable = false)
     private Double price;
 
-
     public MenuEntry() {
     }
 

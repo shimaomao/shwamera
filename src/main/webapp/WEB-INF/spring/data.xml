@@ -1,22 +1,33 @@
 <?xml  version="1.0" encoding="UTF-8"?>
 <beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns="http://www.springframework.org/schema/beans"
        xmlns:tx="http://www.springframework.org/schema/tx"
        xmlns:context="http://www.springframework.org/schema/context"
-       xmlns="http://www.springframework.org/schema/beans"
        xsi:schemaLocation="
         http://www.springframework.org/schema/beans
         http://www.springframework.org/schema/beans/spring-beans.xsd
         http://www.springframework.org/schema/tx
         http://www.springframework.org/schema/tx/spring-tx.xsd
         http://www.springframework.org/schema/context
-        http://www.springframework.org/schema/context/spring-context.xsd">
+        http://www.springframework.org/schema/context/spring-context.xsd" >
 
-
+    <!--Old-->
 <!--    <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
         <property name="locations" value="classpath:jdbc.properties, classpath:hibernate.properties"/>
     </bean>-->
+    <!--Modern-->
+<!--    <bean
+        class="org.springframework.context.support.PropertySourcesPlaceholderConfigurer">
+        <property name="locations">
+            <list>
+                <value>classpath:jdbc.properties</value>
+            </list>
+        </property>
+        <property name="ignoreUnresolvablePlaceholders" value="true"/>
+    </bean>-->
 
-    <context:property-placeholder location="classpath:jdbc.properties, classpath:hibernate.properties" />
+    <context:property-placeholder location="classpath:jdbc.properties, classpath:hibernate.properties, file:///C:/Users/sernazin/IdeaProjects/Shwamera/src/main/resources/jdbc.properties" />
+
 
     <!-- Annotations like @Transactional -->
     <tx:annotation-driven/>
@@ -44,7 +55,7 @@
     </bean>
 
     <!-- SessionFactory settings for Hibernate -->
-    <bean id="sessionFactory" class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
+    <bean id="sessionFactory" class="org.springframework.orm.hibernate5.LocalSessionFactoryBean" >
         <property name="dataSource" ref="dataSource" />
         <property name="configLocation" value="/WEB-INF/hibernate.cfg.xml" />
         <property name="hibernateProperties" >
@@ -64,6 +75,8 @@
                 <prop key="hibernate.hbm2ddl.auto">${hibernate.hbm2ddl.auto}</prop>
                 <prop key="hibernate.dialect">${hibernate.dialect}</prop>
                 <prop key="hibernate.connection.charSet">UTF-8</prop>
+                <prop key="hibernate.globally_quoted_identifiers">true</prop>
+                <prop key="hibernate.auto_quote_keyword">true</prop>
             </props>
         </property>
     </bean>
@@ -73,24 +86,28 @@
           class="org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor"/>
 
     <!-- My DATA -->
-    <bean id="repository" abstract="true" >
-        <property name="sessionFactory" ref="sessionFactory"/>
+<!--    <bean id="repository" abstract="true" >
+        <property name="sessionFactory" ref="sessionFactory" />
+    </bean>-->
+
+    <bean id="ingredientRepository" class="ru.mera.sergeynazin.repository.impl.HibernateRepositoryImpl">
+        <constructor-arg name="entity" ref="ingredient" />
+        <property name="sessionFactory" ref="sessionFactory" />
     </bean>
 
-    <bean id="ingredientRepository" class="ru.mera.sergeynazin.repository.impl.HibernateRepositoryImpl" parent="repository" >
-        <property name="clazz" ref="ingredient" />
+    <bean id="shaurmaRepository" class="ru.mera.sergeynazin.repository.impl.HibernateRepositoryImpl" >
+        <constructor-arg name="entity" ref="shaurma" />
+        <property name="sessionFactory" ref="sessionFactory" />
     </bean>
 
-    <bean id="shaurmaRepository" class="ru.mera.sergeynazin.repository.impl.HibernateRepositoryImpl" parent="repository" >
-        <property name="clazz" ref="order" />
+    <bean id="menuEntryRepository" class="ru.mera.sergeynazin.repository.impl.HibernateRepositoryImpl" >
+        <constructor-arg name="entity" ref="menuEntry" />
+        <property name="sessionFactory" ref="sessionFactory" />
     </bean>
 
-    <bean id="menuEntryRepository" class="ru.mera.sergeynazin.repository.impl.HibernateRepositoryImpl" parent="repository" >
-        <property name="clazz" ref="shaurma" />
-    </bean>
-
-    <bean id="orderRepository" class="ru.mera.sergeynazin.repository.impl.HibernateRepositoryImpl" parent="repository" >
-        <property name="clazz" ref="menuEntry" />
+    <bean id="orderRepository" class="ru.mera.sergeynazin.repository.impl.HibernateRepositoryImpl" >
+        <constructor-arg name="entity" ref="order" />
+        <property name="sessionFactory" ref="sessionFactory" />
     </bean>
 
     <!-- scoped as prototype to be garbage collected after repository initialization -->

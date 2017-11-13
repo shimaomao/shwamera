@@ -14,9 +14,9 @@
     <annotation-driven/>
 
     <!-- they say statistics, pictures, css, .js, potentially are good to go
-    in some special sepatete resource folder like webapp/resources
+    in some special separate resource folder like webapp/resources
     mapped to /resources/** -->
-    <resources mapping="/resources/**" location="/resources/"/>
+    <resources mapping="/resources/**" location="resources"/>
 
     <!-- IF JSP needed /WEB-INF/pages or /WEB-INF/pages-->
     <beans:bean

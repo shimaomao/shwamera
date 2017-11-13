@@ -1,19 +1,17 @@
 package ru.mera.sergeynazin.model;
 
-import org.hibernate.annotations.Generated;
-import org.hibernate.annotations.GenerationTime;
+import org.hibernate.annotations.Formula;
 import org.hibernate.annotations.NaturalId;
 
 import javax.persistence.*;
-import java.util.Set;
+import java.util.List;
 
 @Entity
-@Table(name = "\"order\"")
+@Table(name = "order_1")
 public class Order {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequence-generator")
-    @SequenceGenerator(name = "sequence-generator", sequenceName = "order_sequence", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(unique = true, nullable = false, updatable = false)
     private Long id;
 
@@ -22,17 +20,8 @@ public class Order {
      * implementations here, this could become a staring point for that
      */
     @NaturalId
-    @Generated(GenerationTime.INSERT)
-    @Column(        // TODO: Insertable seems to be redundant
-        name = "order_number",
-        length = 32,
-        unique = true,
-        nullable = false,
-        updatable = false,
-        columnDefinition =
-//            "VARCHAR(32) NOT NULL UNIQUE" + // TODO: Check if Hibernate constraints will be overridedn with "AS ... "
-            "AS CONCAT(CURRENT_DATE, '_', SUM( 1, (SELECT MAX(id) FROM \"order\" WHERE id LIKE CONCAT(CURRENT_DATE, '%'))))"
-    )
+    @Column(name = "order_number", length = 32, unique = true, nullable = false, updatable = false)
+    @Formula(value = "(CONCAT(CURRENT_DATE, '_', SUM( 1, (SELECT MAX(id) FROM order_1 WHERE id LIKE CONCAT(CURRENT_DATE, '%')))))")
     private String orderNumber;
 
     @org.hibernate.annotations.Type(type = "big_decimal")
@@ -47,7 +36,7 @@ public class Order {
         joinColumns = { @JoinColumn(name = "order_order_number", referencedColumnName = "id") },
         inverseJoinColumns = { @JoinColumn(name = "shaurma_id", referencedColumnName = "id") }
     )
-    private Set<Shaurma> shaurmaSet;
+    private List<Shaurma> shaurmaList;
 
 
     public Order() {
@@ -78,11 +67,11 @@ public class Order {
         this.orderNumber = orderNumber;
     }
 
-    public Set<Shaurma> getShaurmaSet() {
-        return shaurmaSet;
+    public List<Shaurma> getShaurmaList() {
+        return shaurmaList;
     }
 
-    public void setShaurmaSet(Set<Shaurma> shaurmaSet) {
-        this.shaurmaSet = shaurmaSet;
+    public void setShaurmaList(List<Shaurma> shaurmaList) {
+        this.shaurmaList = shaurmaList;
     }
 }

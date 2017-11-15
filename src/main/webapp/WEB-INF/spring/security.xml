@@ -1,17 +1,14 @@
 <beans:beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-             xmlns="http://www.springframework.org/schema/security"
              xmlns:beans="http://www.springframework.org/schema/beans"
              xmlns:mvc="http://www.springframework.org/schema/mvc"
-             xmlns:aop="http://www.springframework.org/schema/aop"
+             xmlns="http://www.springframework.org/schema/aop"
              xsi:schemaLocation="
                 http://www.springframework.org/schema/beans
                 http://www.springframework.org/schema/beans/spring-beans.xsd
                 http://www.springframework.org/schema/mvc
                 http://www.springframework.org/schema/mvc/spring-mvc.xsd
                 http://www.springframework.org/schema/aop
-                http://www.springframework.org/schema/aop/spring-aop.xsd
-	            http://www.springframework.org/schema/security
-	            http://www.springframework.org/schema/security/spring-security.xsd">
+                http://www.springframework.org/schema/aop/spring-aop.xsd" >
 
     <mvc:annotation-driven>
         <mvc:argument-resolvers>
@@ -20,23 +17,23 @@
     </mvc:annotation-driven>
 
 
-    <aop:config>
-        <aop:aspect id = "securityAspect" ref = "securityManager">
+    <config>
+        <aspect id = "securityAspect" ref = "securityManager">
 
-            <aop:pointcut id = "check"
-                          expression = "execution(public * ru.mera.sergeynazin.controller.*Controller.*(..))
+            <pointcut id = "check"
+                      expression = "execution(public * ru.mera.sergeynazin.controller.*Controller.*(..))
                             &amp;&amp; args(java.security.Principal, ..)
                             &amp;&amp; @target(ru.mera.sergeynazin.controller.advice.Admin)" />
 
-            <aop:before arg-names="principal"
-                        pointcut-ref = "check"
-                        method = "checkPermissions"/>
+            <before arg-names="principal"
+                    pointcut-ref = "check"
+                    method = "checkPermissions"/>
             <!--
             <aop:after-throwing pointcut-ref = "check"
                                 throwing = "ex"
                                 method = "notEnoughPermissions"/>-->
-        </aop:aspect>
-    </aop:config>
+        </aspect>
+    </config>
 
     <beans:bean id="securityManager" class="ru.mera.sergeynazin.controller.advice.CheckPermissions" />
 

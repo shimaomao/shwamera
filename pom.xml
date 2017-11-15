@@ -78,20 +78,43 @@
             <artifactId>spring-aop</artifactId>
             <version>${spring.version}</version>
         </dependency>
-
-        <!-- https://mvnrepository.com/artifact/org.aspectj/aspectjrt -->
+<!--
+        &lt;!&ndash; https://mvnrepository.com/artifact/org.aspectj/aspectjrt &ndash;&gt;
         <dependency>
             <groupId>org.aspectj</groupId>
             <artifactId>aspectjrt</artifactId>
             <version>1.8.12</version>
         </dependency>
 
-        <!-- https://mvnrepository.com/artifact/org.aspectj/aspectjweaver -->
+        &lt;!&ndash; https://mvnrepository.com/artifact/org.aspectj/aspectjweaver &ndash;&gt;
         <dependency>
             <groupId>org.aspectj</groupId>
             <artifactId>aspectjweaver</artifactId>
-            <version>1.8.12</version>
+            <version>1.7.2</version>
         </dependency>
+
+        &lt;!&ndash; https://mvnrepository.com/artifact/aopalliance/aopalliance &ndash;&gt;
+        <dependency>
+            <groupId>aopalliance</groupId>
+            <artifactId>aopalliance</artifactId>
+            <version>1.0</version>
+        </dependency>
+
+
+        &lt;!&ndash; https://mvnrepository.com/artifact/org.ow2.asm/asm-commons &ndash;&gt;
+        <dependency>
+            <groupId>org.ow2.asm</groupId>
+            <artifactId>asm-commons</artifactId>
+            <version>5.2</version>
+        </dependency>
+
+
+        &lt;!&ndash; https://mvnrepository.com/artifact/cglib/cglib &ndash;&gt;
+        <dependency>
+            <groupId>cglib</groupId>
+            <artifactId>cglib</artifactId>
+            <version>3.2.5</version>
+        </dependency>-->
 
 
         <!--for convenient ApiError class-->
@@ -236,7 +259,7 @@
 			<version>${spring.version}</version>
 		</dependency>
 
-		<dependency>
+<!--		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-core</artifactId>
 			<version>${spring.security.version}</version>
@@ -258,7 +281,7 @@
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-taglibs</artifactId>
 			<version>${spring.security.version}</version>
-		</dependency>
+		</dependency>-->
 
 		<!-- Hibernate -->
 
@@ -279,12 +302,20 @@
             <artifactId>hibernate-validator-annotation-processor</artifactId>
             <version>6.0.4.Final</version>
         </dependency>
-<!--
+
+        <!-- https://mvnrepository.com/artifact/javax.persistence/persistence-api -->
         <dependency>
-            <groupId>org.hibernate.validator</groupId>
-            <artifactId>hibernate-validator-cdi</artifactId>
-            <version>6.0.4.Final</version>
-        </dependency>-->
+            <groupId>javax.persistence</groupId>
+            <artifactId>persistence-api</artifactId>
+            <version>1.0.2</version>
+        </dependency>
+
+        <!--
+                <dependency>
+                    <groupId>org.hibernate.validator</groupId>
+                    <artifactId>hibernate-validator-cdi</artifactId>
+                    <version>6.0.4.Final</version>
+                </dependency>-->
 <!--
 
         &lt;!&ndash;JSR-380&ndash;&gt;

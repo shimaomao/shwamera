@@ -1,5 +1,6 @@
 package ru.mera.sergeynazin.controller;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
@@ -12,8 +13,6 @@ import ru.mera.sergeynazin.model.Ingredient;
 import ru.mera.sergeynazin.service.IngredientService;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import java.net.URI;
 import java.security.Principal;
 import java.util.Collection;
@@ -35,41 +34,39 @@ public class IngredientController {
 
     @Admin
     @Async
-    @PostMapping(value = "/create/{ingredient_name}", consumes = { MediaType.APPLICATION_JSON_VALUE }, produces = { MediaType.APPLICATION_JSON_VALUE })
+    @PostMapping(value = "/create", consumes = { MediaType.APPLICATION_JSON_VALUE }, produces = { MediaType.APPLICATION_JSON_VALUE })
     public CompletableFuture<ResponseEntity<?>> createNewIngredientInJSON(final Principal principal,
-                                                                          @NotNull(message = " Ingredient name cannot be NULL ")
-                                                                          @Size(min = 3, message = " Ingredient name should be more then 3 symbols ")
-                                                                          @PathVariable("ingredient_name") final String name,
                                                                           @Valid @RequestBody final Ingredient transientEntity) {
-        return CompletableFuture.completedFuture(createNew(name, transientEntity));
+        return CompletableFuture.completedFuture(createNew(transientEntity));
     }
 
     @Admin
     @Async
-    @PostMapping(consumes = { MediaType.APPLICATION_XML_VALUE }, produces = { MediaType.APPLICATION_XML_VALUE })
+    @PostMapping(value = "/create", consumes = { MediaType.APPLICATION_XML_VALUE }, produces = { MediaType.APPLICATION_XML_VALUE })
     public CompletableFuture<ResponseEntity<?>> createNewIngredientInXML(final Principal principal,
-                                                                         @PathVariable("ingredient_name") final String name,
                                                                          @Valid @RequestBody final Ingredient transientEntity) {
-        return CompletableFuture.completedFuture(createNew(name, transientEntity));
+        return CompletableFuture.completedFuture(createNew(transientEntity));
     }
 
     /**
      * Convenience method for shaurmamaker for to add new ingredient to db
      * @param ingredient body
      * @return 201 (Created) or 200 OK (for Caching at front) response
-     * containing a Location header field that provides an identifier
-     * for the primary resource created and a representation
-     * that describes the status of the request while referring
-     * to the new resource(s)
+     *      containing a Location header field that provides an identifier
+     *      for the primary resource created and a representation
+     *      that describes the status of the request while referring
+     *      to the new resource(s)
+     *      OR throws
+     *      422 {@link HttpStatus#UNPROCESSABLE_ENTITY}
      */
-    private ResponseEntity<?> createNew(final String name, final Ingredient ingredient) {
-        ingredient.setName(name);
-        ingredientService.save(ingredient);
+    private ResponseEntity<?> createNew(final Ingredient ingredient) {
         final URI created = ServletUriComponentsBuilder
             .fromCurrentRequest()
-            .replacePath("/{id}")
-            .buildAndExpand(ingredient.getId()).toUri();
+            .replacePath("ingredient/{id}")
+            .buildAndExpand(ingredientService.saveOrThrow(ingredient)).toUri();
         return ResponseEntity.created(created).body(ingredient);
+
+
     }
     // END_INCLUDE(IngredientController.POSTCreateNew)
 

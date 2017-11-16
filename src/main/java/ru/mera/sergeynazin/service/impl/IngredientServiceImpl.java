@@ -1,6 +1,7 @@
 package ru.mera.sergeynazin.service.impl;
 
 import org.springframework.transaction.annotation.Transactional;
+import ru.mera.sergeynazin.controller.advice.CreatingAlreadyExistentException;
 import ru.mera.sergeynazin.model.Ingredient;
 import ru.mera.sergeynazin.repository.JpaRepository;
 import ru.mera.sergeynazin.service.IngredientService;
@@ -8,6 +9,7 @@ import ru.mera.sergeynazin.service.IngredientService;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
+import java.io.Serializable;
 import java.util.List;
 import java.util.Optional;
 
@@ -73,5 +75,13 @@ public class IngredientServiceImpl implements IngredientService {
     public Optional<Ingredient> optionalIsExist(final Long id) {
         return repository.getOptionalById(id);
             // Optional.of(repository.get(id));
+    }
+
+    @Transactional
+    @Override
+    public Serializable saveOrThrow(Ingredient transient_) {
+        this.optionalIsExist(transient_.getName())
+            .map(existentDetached -> CreatingAlreadyExistentException.throwNew(transient_.getName(), existentDetached));
+        return repository.create(transient_);
     }
 }

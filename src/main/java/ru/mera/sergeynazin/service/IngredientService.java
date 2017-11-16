@@ -3,6 +3,7 @@ package ru.mera.sergeynazin.service;
 import ru.mera.sergeynazin.model.Ingredient;
 import ru.mera.sergeynazin.repository.JpaRepository;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,4 +24,6 @@ public interface IngredientService {
     void delete(Ingredient detached);
     Optional<Ingredient> optionalIsExist(String name);
     Optional<Ingredient> optionalIsExist(Long id);
+
+    Serializable saveOrThrow(Ingredient transient_);
 }

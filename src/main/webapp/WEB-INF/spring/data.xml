@@ -11,10 +11,6 @@
         http://www.springframework.org/schema/context
         http://www.springframework.org/schema/context/spring-context.xsd" >
 
-    <!--Old-->
-<!--    <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
-        <property name="locations" value="classpath:jdbc.properties, classpath:hibernate.properties"/>
-    </bean>-->
     <!--Modern-->
 <!--
     <bean class="org.springframework.context.support.PropertySourcesPlaceholderConfigurer">
@@ -41,28 +37,21 @@
         <property name="username" value="${jdbc.username}"/>
         <property name="password" value="${jdbc.password}"/>
     </bean>-->
-   <!-- <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">-->
-        <bean id="dataSource" class="org.apache.commons.dbcp2.BasicDataSource" destroy-method="close" >
-            <property name="driverClassName" value="org.postgresql.Driver"/>
-            <property name="url" value="jdbc:postgresql://localhost:5432/shwamera"/>
-            <property name="username" value="postgres"/>
-            <property name="password" value="strength"/>
-        </bean>
 
+    <bean id="dataSource" class="org.apache.commons.dbcp2.BasicDataSource" destroy-method="close" >
+        <property name="driverClassName" value="org.postgresql.Driver"/>
+        <property name="url" value="jdbc:postgresql://localhost:5432/shwamera"/>
+        <property name="username" value="postgres"/>
+        <property name="password" value="strength"/>
+    </bean>
         <!-- SessionFactory settings for Hibernate -->
     <bean id="sessionFactory" class="org.springframework.orm.hibernate5.LocalSessionFactoryBean" >
         <property name="dataSource" ref="dataSource" />
         <property name="configLocation" value="/WEB-INF/hibernate.cfg.xml" />
         <property name="hibernateProperties" >
             <props>
-
-                <!-- Print all SQL to stdout. -->
                 <prop key="hibernate.show_sql">true</prop>
                 <prop key="hibernate.format_sql">true</prop>
-
-                <!-- DO NOT Drop and then re-create schema on SessionFactory build, for testing.
-                 todo switch to "create"
-                 -->
                 <prop key="hibernate.hbm2ddl.auto">create</prop>
                 <prop key="hibernate.dialect">org.hibernate.dialect.PostgreSQL95Dialect</prop>
                 <prop key="hibernate.connection.charSet">UTF-8</prop>
@@ -103,7 +92,6 @@
     <!-- scoped as prototype to be garbage collected after repository initialization -->
     <bean id="menuEntryDecl" class="ru.mera.sergeynazin.model.MenuEntry" scope="prototype" />
     <bean id="ingredientDecl" class="ru.mera.sergeynazin.model.Ingredient" scope="prototype" />
-
     <bean id="orderDecl" class="ru.mera.sergeynazin.model.Order" scope="prototype" />
     <bean id="shaurmaDecl" class="ru.mera.sergeynazin.model.Shaurma" scope="prototype" />
 

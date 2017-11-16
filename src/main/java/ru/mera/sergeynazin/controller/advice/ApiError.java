@@ -56,7 +56,7 @@ public class ApiError {
      */
     public boolean addSubError(ApiSubError apiSubError) {
         if (subErrors == null) {
-            subErrors = new ArrayList<ApiSubError>(3);
+            subErrors = new ArrayList<>(3);
         }
         return subErrors.add(apiSubError);
     }

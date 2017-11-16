@@ -9,7 +9,8 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.atomic.DoubleAdder;
 
-@JsonIgnoreProperties({ "cost" })
+@Access(AccessType.FIELD)
+//@JsonIgnoreProperties(value = { "cost" }, ignoreUnknown = true)
 @Entity
 @Table(name = "shaurma")
 public class Shaurma {
@@ -23,14 +24,20 @@ public class Shaurma {
     @Nationalized
     private String name;
 
-    @ManyToMany(cascade = { CascadeType.ALL })
+    @ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH } )
     @JoinTable(
         name = "ingredient_has_shaurma",
         joinColumns = { @JoinColumn(name = "shaurma_id", referencedColumnName = "id") },
-        inverseJoinColumns = { @JoinColumn(name = "ingredient_id", referencedColumnName = "id") }
-    )
+        inverseJoinColumns = { @JoinColumn(name = "ingredient_id", referencedColumnName = "id") })
     private Set<Ingredient> ingredientSet;
 
+    public Shaurma() {
+    }
+
+    public void setCost(Double cost) {
+    }
+
+    @Access(AccessType.PROPERTY)
     @org.hibernate.annotations.Type(type = "big_decimal")
     @Column(name = "cost", precision = 7, scale = 2)
     @JsonGetter("cost")
@@ -48,8 +55,7 @@ public class Shaurma {
         return doubleAdder.doubleValue();
     }
 
-    public Shaurma() {
-    }
+
 
     public Long getId() {
         return id;

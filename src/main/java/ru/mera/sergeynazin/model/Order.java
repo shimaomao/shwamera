@@ -21,7 +21,8 @@ public class Order {
      */
     @NaturalId
     @Column(name = "order_number", length = 32, unique = true, nullable = false, updatable = false)
-    @Formula(value = "(CONCAT(CURRENT_DATE, '_', SUM( 1, (SELECT MAX(id) FROM order_1 WHERE id LIKE CONCAT(CURRENT_DATE, '%')))))")
+    //@Formula(value = "(CONCAT_WS('_', TO_CHAR(CURRENT_DATE, 'YYYY-MM-DD'), SUM( 1, (SELECT MAX(id) FROM order_1 WHERE id LIKE CONCAT(TO_CHAR(CURRENT_DATE, 'YYYY-MM-DD'), '%')))))")
+    //@Formula(value = "TO_CHAR(GREATEST(1,3))")
     private String orderNumber;
 
     @org.hibernate.annotations.Type(type = "big_decimal")

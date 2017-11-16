@@ -34,12 +34,6 @@
     <!-- Annotations like @Transactional -->
     <tx:annotation-driven/>
 
-    <!-- HibernateTransactionManager -->
-    <bean id="transactionManager" class="org.springframework.orm.hibernate5.HibernateTransactionManager">
-        <property name="sessionFactory" ref="sessionFactory"/>
-        <property name="dataSource" ref="dataSource"/>
-    </bean>
-
 <!-- TODO: NON Production!   -->
 <!--    <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
         <property name="driverClassName" value="${jdbc.driverClassName}"/>
@@ -47,8 +41,8 @@
         <property name="username" value="${jdbc.username}"/>
         <property name="password" value="${jdbc.password}"/>
     </bean>-->
-    <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-<!--        <bean id="dataSource" class="org.apache.commons.dbcp2.BasicDataSource" destroy-method="close" >-->
+   <!-- <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">-->
+        <bean id="dataSource" class="org.apache.commons.dbcp2.BasicDataSource" destroy-method="close" >
             <property name="driverClassName" value="org.postgresql.Driver"/>
             <property name="url" value="jdbc:postgresql://localhost:5432/shwamera"/>
             <property name="username" value="postgres"/>
@@ -61,10 +55,6 @@
         <property name="configLocation" value="/WEB-INF/hibernate.cfg.xml" />
         <property name="hibernateProperties" >
             <props>
-                <!-- @author sergeynazin. Defines whether my getSession()
-                in JpaRepository will return a local threaded Session or else -->
-                <!--FIXME: Some say this statement BREAKS Spring from setting proper session management and only suitable for Hibernate solely-->
-                <!--<prop key="hibernate.current_session_context_class">thread</prop>-->
 
                 <!-- Print all SQL to stdout. -->
                 <prop key="hibernate.show_sql">true</prop>
@@ -82,6 +72,11 @@
         </property>
     </bean>
 
+    <!-- HibernateTransactionManager -->
+    <bean id="transactionManager" class="org.springframework.orm.hibernate5.HibernateTransactionManager">
+        <constructor-arg name="sessionFactory" ref="sessionFactory"/>
+    </bean>
+
     <!-- @Repository exception translation-->
     <bean id="persistenceExceptionTranslationPostProcessor" class="org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor"/>
 
@@ -90,26 +85,26 @@
     </bean>
 
     <bean id="ingredientRepository" class="ru.mera.sergeynazin.repository.impl.HibernateRepositoryImpl" parent="repository" >
-        <constructor-arg name="entity" ref="ingredient" />
+        <constructor-arg name="entity" ref="ingredientDecl" />
     </bean>
 
     <bean id="shaurmaRepository" class="ru.mera.sergeynazin.repository.impl.HibernateRepositoryImpl" parent="repository" >
-        <constructor-arg name="entity" ref="shaurma" />
+        <constructor-arg name="entity" ref="shaurmaDecl" />
     </bean>
 
     <bean id="menuEntryRepository" class="ru.mera.sergeynazin.repository.impl.HibernateRepositoryImpl" parent="repository" >
-        <constructor-arg name="entity" ref="menuEntry" />
+        <constructor-arg name="entity" ref="menuEntryDecl" />
     </bean>
 
     <bean id="orderRepository" class="ru.mera.sergeynazin.repository.impl.HibernateRepositoryImpl" parent="repository" >
-        <constructor-arg name="entity" ref="order" />
+        <constructor-arg name="entity" ref="orderDecl" />
     </bean>
 
     <!-- scoped as prototype to be garbage collected after repository initialization -->
-    <bean id="menuEntry" class="ru.mera.sergeynazin.model.MenuEntry" scope="prototype" />
-    <bean id="ingredient" class="ru.mera.sergeynazin.model.Ingredient" scope="prototype" />
+    <bean id="menuEntryDecl" class="ru.mera.sergeynazin.model.MenuEntry" scope="prototype" />
+    <bean id="ingredientDecl" class="ru.mera.sergeynazin.model.Ingredient" scope="prototype" />
 
-    <bean id="order" class="ru.mera.sergeynazin.model.Order" scope="prototype" />
-    <bean id="shaurma" class="ru.mera.sergeynazin.model.Shaurma" scope="prototype" />
+    <bean id="orderDecl" class="ru.mera.sergeynazin.model.Order" scope="prototype" />
+    <bean id="shaurmaDecl" class="ru.mera.sergeynazin.model.Shaurma" scope="prototype" />
 
 </beans>

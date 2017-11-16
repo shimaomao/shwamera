@@ -9,6 +9,7 @@
                 http://www.springframework.org/schema/mvc/spring-mvc.xsd
                 http://www.springframework.org/schema/aop
                 http://www.springframework.org/schema/aop/spring-aop.xsd" >
+<!--
 
     <mvc:annotation-driven>
         <mvc:argument-resolvers>
@@ -16,14 +17,15 @@
         </mvc:argument-resolvers>
     </mvc:annotation-driven>
 
+-->
 
     <config>
         <aspect id = "securityAspect" ref = "securityManager">
 
             <pointcut id = "check"
                       expression = "execution(public * ru.mera.sergeynazin.controller.*Controller.*(..))
-                            &amp;&amp; args(java.security.Principal, ..)
-                            &amp;&amp; @target(ru.mera.sergeynazin.controller.advice.Admin)" />
+                            &amp;&amp; args(principal, ..)
+                            &amp;&amp; @annotation(ru.mera.sergeynazin.controller.advice.Admin)" />
 
             <before arg-names="principal"
                     pointcut-ref = "check"

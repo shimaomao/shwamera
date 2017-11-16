@@ -1,6 +1,7 @@
 package ru.mera.sergeynazin.controller.advice;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import org.springframework.http.HttpStatus;
 
 import java.time.LocalDateTime;
@@ -15,6 +16,7 @@ public class ApiError {
     private LocalDateTime timestamp;
     private String message;
     private String debugMessage;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<ApiSubError> subErrors;
 
     private ApiError() {

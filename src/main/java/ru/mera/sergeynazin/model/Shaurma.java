@@ -1,7 +1,6 @@
 package ru.mera.sergeynazin.model;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.Nationalized;
 
 import javax.persistence.*;
@@ -34,11 +33,12 @@ public class Shaurma {
     public Shaurma() {
     }
 
+    /*no-op*/
     public void setCost(Double cost) {
     }
 
+    //TODO: Migrate to BigDecimal or Currency type
     @Access(AccessType.PROPERTY)
-    @org.hibernate.annotations.Type(type = "big_decimal")
     @Column(name = "cost", precision = 7, scale = 2)
     @JsonGetter("cost")
     public Double getCost() {

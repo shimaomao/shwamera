@@ -1,12 +1,13 @@
 package ru.mera.sergeynazin.controller.advice;
 
 import java.security.Principal;
-import java.util.Objects;
 
 public class CheckPermissions {
     public void checkPermissions(final Principal principal) throws NotEnoughPermissionException {
-        Objects.requireNonNull(principal);
-        if (!principal.getName().equals("kmfsgkmdfb")) {
+        // TODO: Uncomment
+        //Objects.requireNonNull(principal);
+        //no-op//
+        if (false) {
             throw new NotEnoughPermissionException("Not authorized operation!");
         }
     }

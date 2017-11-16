@@ -43,7 +43,7 @@ public class ShaurmaController {
         this.shaurmaService = shaurmaService;
     }
 
-// BEGIN_INCLUDE(ShaurmaController.@Admin)
+    // BEGIN_INCLUDE(ShaurmaController.@Admin)
     // BEGIN_INCLUDE(ShaurmaController.GETAll)
     @Admin
     @Async
@@ -199,23 +199,6 @@ public class ShaurmaController {
 
 
     // BEGIN_INCLUDE(ShaurmaController.GETAll)
-
-    /**
-     * List all from Database
-     * @return all
-     */
-    @Async
-    @GetMapping(produces = { MediaType.APPLICATION_JSON_VALUE } )
-    public CompletableFuture<ResponseEntity<Collection<Shaurma>>> getAllShaurmasInJSON() {
-        return CompletableFuture.completedFuture(ResponseEntity.ok(shaurmaService.getAll()));
-    }
-
-    @Async
-    @GetMapping(produces = { MediaType.APPLICATION_XML_VALUE } )
-    public CompletableFuture<ResponseEntity<Collection<Shaurma>>> getAllShaurmasInXML() {
-        return CompletableFuture.completedFuture(ResponseEntity.ok(shaurmaService.getAll()));
-    }
-    // END_INCLUDE(ShaurmaController.GETAll)
 
 
     // BEGIN_INCLUDE(ShaurmaController.POSTCreateNew)

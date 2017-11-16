@@ -49,7 +49,7 @@ public class ExceptionHandlers extends ResponseEntityExceptionHandler {
         return buildResponseEntity(new ApiError(HttpStatus.FORBIDDEN, "Permission Denied!", ex));
     }
 
-    @ExceptionHandler(HttpMessageNotReadableException.class)
+    //@ExceptionHandler(HttpMessageNotReadableException.class)
     @Override
     protected ResponseEntity<Object> handleHttpMessageNotReadable(final HttpMessageNotReadableException ex, final HttpHeaders headers, final HttpStatus status, final WebRequest request) {
         logger.info("HttpMessageNotReadableException Occurred:: HttpMessage=" +request.getDescription(true)+"\n"+
@@ -74,7 +74,7 @@ public class ExceptionHandlers extends ResponseEntityExceptionHandler {
         return new ApiError(HttpStatus.FORBIDDEN, "Permission Denied!", ex);
     }
 
-    @ExceptionHandler(MethodArgumentNotValidException.class)
+    //@ExceptionHandler(MethodArgumentNotValidException.class)
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(final MethodArgumentNotValidException ex, final HttpHeaders headers, final HttpStatus status, final WebRequest request) {
         logger.info("MethodArgumentNotValidException Occurred:: request = [" + request.getContextPath() + "], " +

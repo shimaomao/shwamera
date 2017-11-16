@@ -4,6 +4,7 @@ import org.hibernate.annotations.Formula;
 import org.hibernate.annotations.NaturalId;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -25,7 +26,7 @@ public class Order {
     //@Formula(value = "TO_CHAR(GREATEST(1,3))")
     private String orderNumber;
 
-    @org.hibernate.annotations.Type(type = "big_decimal")
+    //TODO: Migrate to BigDecimal or Currency type
     @Column(precision = 7, scale = 2)
     private Double totalCost;
 
@@ -37,7 +38,7 @@ public class Order {
         joinColumns = { @JoinColumn(name = "order_order_number", referencedColumnName = "id") },
         inverseJoinColumns = { @JoinColumn(name = "shaurma_id", referencedColumnName = "id") }
     )
-    private List<Shaurma> shaurmaList;
+    private List<Shaurma> shaurmaList = new ArrayList<>();
 
 
     public Order() {

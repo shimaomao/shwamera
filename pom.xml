@@ -87,20 +87,21 @@
         </dependency>
 
 
-<!--
-        &lt;!&ndash; https://mvnrepository.com/artifact/org.aspectj/aspectjrt &ndash;&gt;
+        <!-- https://mvnrepository.com/artifact/org.aspectj/aspectjrt -->
         <dependency>
             <groupId>org.aspectj</groupId>
             <artifactId>aspectjrt</artifactId>
             <version>1.8.12</version>
         </dependency>
 
-        &lt;!&ndash; https://mvnrepository.com/artifact/org.aspectj/aspectjweaver &ndash;&gt;
+        <!-- https://mvnrepository.com/artifact/org.aspectj/aspectjweaver -->
         <dependency>
             <groupId>org.aspectj</groupId>
             <artifactId>aspectjweaver</artifactId>
-            <version>1.7.2</version>
+            <version>1.8.12</version>
         </dependency>
+
+<!--
 
         &lt;!&ndash; https://mvnrepository.com/artifact/aopalliance/aopalliance &ndash;&gt;
         <dependency>
@@ -108,7 +109,9 @@
             <artifactId>aopalliance</artifactId>
             <version>1.0</version>
         </dependency>
+-->
 
+<!--
 
         &lt;!&ndash; https://mvnrepository.com/artifact/org.ow2.asm/asm-commons &ndash;&gt;
         <dependency>
@@ -116,14 +119,17 @@
             <artifactId>asm-commons</artifactId>
             <version>5.2</version>
         </dependency>
+-->
 
+<!--
 
         &lt;!&ndash; https://mvnrepository.com/artifact/cglib/cglib &ndash;&gt;
         <dependency>
             <groupId>cglib</groupId>
             <artifactId>cglib</artifactId>
             <version>3.2.5</version>
-        </dependency>-->
+        </dependency>
+-->
 
 
         <!--for convenient ApiError class-->
@@ -268,7 +274,7 @@
 			<version>${spring.version}</version>
 		</dependency>
 
-		<dependency>
+<!--		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-core</artifactId>
 			<version>${spring.security.version}</version>
@@ -290,7 +296,7 @@
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-taglibs</artifactId>
 			<version>${spring.security.version}</version>
-		</dependency>
+		</dependency>-->
 
 		<!-- Hibernate -->
 

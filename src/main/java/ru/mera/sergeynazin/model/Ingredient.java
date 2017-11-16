@@ -22,7 +22,7 @@ public class Ingredient {
     @Size(min = 3, message = " Ingredient name should be more then 3 symbols ")
     private String name;
 
-    @org.hibernate.annotations.Type(type = "big_decimal")
+    //TODO: Migrate to BigDecimal or Currency type
     @Column(precision = 7, scale = 2)
     @NotNull(message = " Ingredient cost should not be NULL ")
     @Positive(message = " Cost of Ingredient should be between 0.00 and 99,999.99 ")

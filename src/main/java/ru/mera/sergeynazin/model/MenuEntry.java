@@ -18,7 +18,7 @@ public class MenuEntry {
     @PrimaryKeyJoinColumn(name = "shaurma_id", referencedColumnName = "id")
     private Shaurma shaurma;
 
-    @org.hibernate.annotations.Type(type = "big_decimal")
+    //TODO: Migrate to BigDecimal or Currency type
     @Column(precision = 7, scale = 2, nullable = false)
     private Double price;
 

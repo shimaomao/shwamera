@@ -3,13 +3,15 @@
        xmlns:context="http://www.springframework.org/schema/context"
        xmlns="http://www.springframework.org/schema/beans"
        xmlns:task="http://www.springframework.org/schema/task"
-       xsi:schemaLocation="
-        http://www.springframework.org/schema/beans
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
         http://www.springframework.org/schema/beans/spring-beans.xsd
 	    http://www.springframework.org/schema/context
 	    http://www.springframework.org/schema/context/spring-context.xsd
 	    http://www.springframework.org/schema/task
-	    http://www.springframework.org/schema/task/spring-task.xsd" >
+	    http://www.springframework.org/schema/task/spring-task.xsd
+	    http://www.springframework.org/schema/aop
+	    http://www.springframework.org/schema/aop/spring-aop.xsd" >
 
     <!-- Spring MVC annotations(@RestController etc.) SCANNING -->
     <context:component-scan base-package="ru.mera.sergeynazin.controller"/>
@@ -72,9 +74,10 @@
         <property name="menuEntryService" ref="menuEntryServiceImpl" />
         <property name="shaurmaService" ref="shaurmaServiceImpl" />
     </bean>
-    <bean id="orderController" class="ru.mera.sergeynazin.controller.OrderController">
+    <bean id="orderController" class="ru.mera.sergeynazin.controller.OrderController" >
         <property name="orderService" ref="orderServiceImpl" />
         <property name="shaurmaService" ref="shaurmaServiceImpl" />
+        <property name="ingredientService" ref="ingredientServiceImpl" />
         <property name="currentOrder" ref="sessionOrder" />
     </bean>
     <bean id="shaurmaController" class="ru.mera.sergeynazin.controller.ShaurmaController">
@@ -83,15 +86,24 @@
         <property name="currentOrder" ref="sessionOrder" />
     </bean>
 
-    <bean id="ingredientServiceImpl" class="ru.mera.sergeynazin.service.impl.IngredientServiceImpl" />
-    <bean id="menuEntryServiceImpl" class="ru.mera.sergeynazin.service.impl.MenuEntryServiceImpl" />
-    <bean id="orderServiceImpl" class="ru.mera.sergeynazin.service.impl.OrderServiceImpl" />
-    <bean id="shaurmaServiceImpl" class="ru.mera.sergeynazin.service.impl.ShaurmaServiceImpl" />
+    <bean id="ingredientServiceImpl" class="ru.mera.sergeynazin.service.impl.IngredientServiceImpl" >
+        <property name="repository" ref="ingredientRepository" />
+    </bean>
+    <bean id="menuEntryServiceImpl" class="ru.mera.sergeynazin.service.impl.MenuEntryServiceImpl" >
+        <property name="repository" ref="menuEntryRepository" />
+    </bean>
+    <bean id="orderServiceImpl" class="ru.mera.sergeynazin.service.impl.OrderServiceImpl" >
+        <property name="repository" ref="orderRepository" />
+    </bean>
+    <bean id="shaurmaServiceImpl" class="ru.mera.sergeynazin.service.impl.ShaurmaServiceImpl" >
+        <property name="repository" ref="shaurmaRepository" />
+    </bean>
 
     <bean id="sessionOrder" class="ru.mera.sergeynazin.model.Order" scope="session" >
         <property name="shaurmaList" >
-            <list value-type="ru.mera.sergeynazin.model.Shaurma"/>
+            <list value-type="ru.mera.sergeynazin.model.Shaurma" />
         </property>
+        <aop:scoped-proxy/>
     </bean>
 
 </beans>

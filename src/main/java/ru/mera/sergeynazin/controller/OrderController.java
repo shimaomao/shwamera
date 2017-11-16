@@ -45,6 +45,7 @@ public class OrderController {
     public void setShaurmaService(ShaurmaService shaurmaService) {
         this.shaurmaService = shaurmaService;
     }
+
     // BEGIN_INCLUDE(IngredientController.@Admin)
     @Admin
     @Async

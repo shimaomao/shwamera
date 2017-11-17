@@ -101,7 +101,7 @@ public class ExceptionHandlers extends ResponseEntityExceptionHandler {
 
 
         ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, "Wrong values have been passed", ex, errors);
-        return handleExceptionInternal(ex, apiError, headers, apiError.getStatus(), request);
+        return super.handleExceptionInternal(ex, apiError, headers, apiError.getStatus(), request);
 
     }
 

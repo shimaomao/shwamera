@@ -3,7 +3,6 @@ package ru.mera.sergeynazin.service;
 import ru.mera.sergeynazin.model.Ingredient;
 import ru.mera.sergeynazin.repository.JpaRepository;
 
-import java.io.Serializable;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,13 +16,28 @@ import java.util.Optional;
 
 
 public interface IngredientService {
+
     void save(Ingredient transient_);
     List<Ingredient> getAll();
     void update(Ingredient detached);
-    Ingredient merge(Ingredient transientOrDetached);
+    Ingredient mergeOrSave(Ingredient transientOrDetached);
     void delete(Ingredient detached);
+
+    // GET
+
     Optional<Ingredient> optionalIsExist(String name);
     Optional<Ingredient> optionalIsExist(Long id);
+    Ingredient getOrThrow(Long id);
 
-    Serializable saveOrThrow(Ingredient transient_);
+    // POST
+    Long saveOrThrowExist(Ingredient transient_);
+
+    // PUT
+    Ingredient mergeOrThrowNotFound(Ingredient newDetached);
+
+    // DELETE
+    Ingredient deleteOrThrow(Long id);
+
+    // helpers
+    boolean validateExistsOrThrow(Ingredient... ingredients);
 }

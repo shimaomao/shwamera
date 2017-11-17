@@ -13,47 +13,51 @@ import java.util.Optional;
 @Transactional(readOnly = true)
 public class ShaurmaServiceImpl implements ShaurmaService {
 
-    private JpaRepository repository;
+    private JpaRepository shaurmaRepository, ingredientRepository;
 
-    public void setRepository(final JpaRepository repository) {
-        this.repository = repository;
+    public void setShaurmaRepository(final JpaRepository shaurmaRepository) {
+        this.shaurmaRepository = shaurmaRepository;
+    }
+
+    public void setIngredientRepository(final JpaRepository ingredientRepository) {
+        this.ingredientRepository = ingredientRepository;
     }
 
     @Transactional
     @Override
     public void save(final Shaurma transient_) {
-        repository.create(transient_);
+        shaurmaRepository.create(transient_);
     }
 
     @Override
     public Shaurma loadAsPersistent(final Long id) {
-        return repository.getById(id);
+        return shaurmaRepository.getById(id);
     }
 
     @SuppressWarnings({"unchecked"})
     @Override
     public List<Shaurma> getAll() {
-        final CriteriaQuery<Shaurma>  criteriaQuery = repository.myCriteriaQuery();
+        final CriteriaQuery<Shaurma>  criteriaQuery = shaurmaRepository.myCriteriaQuery();
         final Root<Shaurma> root = criteriaQuery.from(Shaurma.class);
         criteriaQuery.select(root);
-        return repository.getByCriteriaQuery(criteriaQuery);
+        return shaurmaRepository.getByCriteriaQuery(criteriaQuery);
     }
 
     @Transactional
     @Override
     public void update(final Shaurma detached) {
-        repository.update(detached);
+        shaurmaRepository.update(detached);
     }
 
     @Override
     public Shaurma merge(Shaurma transientOrDetached) {
-        return repository.mergeStateWithDbEntity(transientOrDetached);
+        return shaurmaRepository.mergeStateWithDbEntity(transientOrDetached);
     }
 
     @Transactional
     @Override
     public void delete(final Shaurma detached) {
-        repository.delete(detached);
+        shaurmaRepository.delete(detached);
     }
 
     /**
@@ -64,7 +68,16 @@ public class ShaurmaServiceImpl implements ShaurmaService {
      */
     @Override
     public Optional<Shaurma> optionalIsExist(final Long id) {
-        return repository.getOptionalById(id);
-            //Optional.of(repository.getOptionalById(id));
+        return shaurmaRepository.getOptionalById(id);
+            //Optional.of(shaurmaRepository.getOptionalById(id));
+    }
+
+    @Override
+    public Long saveValidOrThrow(Shaurma transient_) {
+        transient_.getIngredientSet()
+            .parallelStream()
+            .filter(ingredient -> {
+                ingredientRepository.
+            })
     }
 }

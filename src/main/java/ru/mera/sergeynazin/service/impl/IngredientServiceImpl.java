@@ -2,6 +2,7 @@ package ru.mera.sergeynazin.service.impl;
 
 import org.springframework.transaction.annotation.Transactional;
 import ru.mera.sergeynazin.controller.advice.CreatingAlreadyExistentException;
+import ru.mera.sergeynazin.controller.advice.NotFoundException;
 import ru.mera.sergeynazin.model.Ingredient;
 import ru.mera.sergeynazin.repository.JpaRepository;
 import ru.mera.sergeynazin.service.IngredientService;
@@ -9,7 +10,6 @@ import ru.mera.sergeynazin.service.IngredientService;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
-import java.io.Serializable;
 import java.util.List;
 import java.util.Optional;
 
@@ -44,7 +44,7 @@ public class IngredientServiceImpl implements IngredientService {
     }
 
     @Override
-    public Ingredient merge(Ingredient transientOrDetached) {
+    public Ingredient mergeOrSave(Ingredient transientOrDetached) {
         return repository.mergeStateWithDbEntity(transientOrDetached);
     }
 
@@ -77,11 +77,44 @@ public class IngredientServiceImpl implements IngredientService {
             // Optional.of(repository.get(id));
     }
 
+    @Override
+    public Ingredient getOrThrow(final Long id) {
+        return (Ingredient) repository.getOptionalById(id)
+            .orElseThrow(() -> NotFoundException.throwNew(id));
+    }
+
     @Transactional
     @Override
-    public Serializable saveOrThrow(Ingredient transient_) {
-        this.optionalIsExist(transient_.getName())
+    public Long saveOrThrowExist(final Ingredient transient_) {
+        optionalIsExist(transient_.getName())
             .map(existentDetached -> CreatingAlreadyExistentException.throwNew(transient_.getName(), existentDetached));
-        return repository.create(transient_);
+        return (Long) repository.create(transient_);
+    }
+
+    @Transactional
+    @Override
+    public Ingredient mergeOrThrowNotFound(final Ingredient newDetached) {
+        return repository.getOptionalById(newDetached.getId())
+            .map(oldPersistent -> repository.mergeStateWithDbEntity(newDetached))
+            .orElseThrow(() -> NotFoundException.throwNew(newDetached.getId()));
+    }
+
+    @Transactional
+    @Override
+    public Ingredient deleteOrThrow(final Long id) {
+        return (Ingredient) repository.getOptionalById(id)
+            .map(ingredient -> {
+                repository.delete(ingredient);
+                return ingredient;
+            }).orElseThrow(() -> NotFoundException.throwNew(id));
+    }
+
+    @Override
+    public boolean validateExistsOrThrow(final Ingredient... ingredients) {
+        for (Ingredient ingredient : ingredients) {
+            optionalIsExist(ingredient.getName())
+                .orElseThrow(() -> NotFoundException.throwNew(ingredient.getName()));
+        }
+        return true;
     }
 }

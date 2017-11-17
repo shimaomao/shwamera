@@ -65,7 +65,7 @@ public class MenuEntryController {
      * @param id shaurma unique id from db
      * @return 404 or 200 code with newly added to menu shaurma body todo maybe switch to MenuEntry body??
      */
-    private ResponseEntity<?> add(final Long id) throws NotFoundException {
+    private ResponseEntity<?> add(final Long id) {
         return shaurmaService.optionalIsExist(id)
             .map(ResponseEntity ::ok)
             .orElseThrow(() -> NotFoundException.throwNew(id));
@@ -92,7 +92,7 @@ public class MenuEntryController {
      * @param id MenuEntry id from db
      * @return 404 or 200 code with deleted from menu menuEntry body
      */
-    private ResponseEntity<?> delete(final Long id) throws NotFoundException {
+    private ResponseEntity<?> delete(final Long id) {
         return menuEntryService.optionalIsExist(id)
             .map(menuEntry -> {
                 menuEntryService.delete(menuEntry);

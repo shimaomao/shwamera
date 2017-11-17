@@ -67,7 +67,7 @@ public class OrderController {
      * @param orderNumber orderNumber from session
      * @return 200 or 404 (don't know how to send 410)
      */
-    private ResponseEntity<?> get(final String orderNumber) throws NotFoundException {
+    private ResponseEntity<?> get(final String orderNumber) {
         return orderService.optionalIsExist(orderNumber)
             .map(ResponseEntity::ok)
             .orElseThrow(() -> NotFoundException.throwNew(orderNumber));
@@ -106,7 +106,7 @@ public class OrderController {
      * @param id order id from db
      * @return 200 or 404
      */
-    private ResponseEntity<?> delete(final Long id) throws NotFoundException {
+    private ResponseEntity<?> delete(final Long id) {
         return orderService.optionalIsExist(id)
             .map(order -> {
                 orderService.delete(order);
@@ -154,7 +154,7 @@ public class OrderController {
      * @param shaurmaId {@link Shaurma#getId()}
      * @return 200 or 201
      */
-    private ResponseEntity<?> updateOrCreateOrderFromMenu(final Long orderId, final Long shaurmaId) throws NotFoundException {
+    private ResponseEntity<?> updateOrCreateOrderFromMenu(final Long orderId, final Long shaurmaId) {
         return shaurmaService.optionalIsExist(shaurmaId)
             .map(shaurma -> {
                 final Order newOrder = orderService.optionalIsExist(orderId)
@@ -196,7 +196,7 @@ public class OrderController {
      * @param shaurma {@link Shaurma} body
      * @return 200 or 201
      */
-    private ResponseEntity<?> updateOrCreateOrderFromConstructor(final Long orderId, final Shaurma shaurma) throws NotFoundException {
+    private ResponseEntity<?> updateOrCreateOrderFromConstructor(final Long orderId, final Shaurma shaurma) {
         return orderService.optionalIsExist(orderId)
             .map(order -> {
                 if (shaurma.getIngredientSet()

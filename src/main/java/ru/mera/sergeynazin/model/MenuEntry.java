@@ -1,13 +1,15 @@
 package ru.mera.sergeynazin.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import javax.persistence.*;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 @Entity
 @Table(name = "menu")
 public class MenuEntry {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @Id @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = "id", unique = true, nullable = false, updatable = false)
     private Long id;
 

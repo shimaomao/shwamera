@@ -1,25 +1,23 @@
 package ru.mera.sergeynazin.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import org.hibernate.annotations.Nationalized;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
 import java.util.Objects;
 
-// FIXME: 10/20/17 hashCode + equals
+@JsonInclude(JsonInclude.Include.NON_NULL)
 @Entity
 @Table(name = "ingredient")
 public class Ingredient {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @Id @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(unique = true, nullable = false, updatable = false)
     private Long id;
 
-    @Column(length = 45, unique = true, nullable = false)
-    @Nationalized
-    @NotNull(message = " Ingredient name cannot be NULL ")
-    @Size(min = 3, message = " Ingredient name should be more then 3 symbols ")
+    @Nationalized @Column(length = 45, unique = true, nullable = false)
+    @Size(min = 2, max = 45, message = " Ingredient name should between 2 and 45 symbols ")
     private String name;
 
     //TODO: Migrate to BigDecimal or Currency type
@@ -29,8 +27,6 @@ public class Ingredient {
     @DecimalMax(value = "99999.99", message = " Decimal cost of Ingredient should not be more than 99,999.99 ") // TODO: 11/7/17 delete
     @DecimalMin(value = "1.00", message = " Decimal cost of Ingredient should not be less than 1.00 ") // TODO: 11/7/17 delete
     private Double cost;
-
-
 
     public Ingredient() {
     }

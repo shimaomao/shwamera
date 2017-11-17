@@ -8,7 +8,6 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ru.mera.sergeynazin.controller.advice.Admin;
-import ru.mera.sergeynazin.controller.advice.NotFoundException;
 import ru.mera.sergeynazin.model.Ingredient;
 import ru.mera.sergeynazin.service.IngredientService;
 
@@ -63,7 +62,7 @@ public class IngredientController {
         final URI created = ServletUriComponentsBuilder
             .fromCurrentRequest()
             .replacePath("ingredient/{id}")
-            .buildAndExpand(ingredientService.saveOrThrow(ingredient)).toUri();
+            .buildAndExpand(ingredientService.saveOrThrowExist(ingredient)).toUri();
         return ResponseEntity.created(created).body(ingredient);
 
 
@@ -94,14 +93,10 @@ public class IngredientController {
      * @param id of the supplied entity
      * @param newDetached stateful entity with state to be supplied to database
      * @return 404 or 200
-     * @throws NotFoundException 404
      */
-    private ResponseEntity<?> updateEgMerge(final Long id, final Ingredient newDetached) throws NotFoundException {
-        return ingredientService.optionalIsExist(id)
-            .map(oldPersistent -> {
-                newDetached.setId(id);
-                return ResponseEntity.ok(ingredientService.merge(newDetached));
-            }).orElseThrow(() -> NotFoundException.throwNew(id));
+    private ResponseEntity<?> updateEgMerge(final Long id, final Ingredient newDetached) {
+        newDetached.setId(id);
+        return ResponseEntity.ok(ingredientService.mergeOrThrowNotFound(newDetached));
     }
     // END_INCLUDE(IngredientController.PUTUpdate)
 
@@ -123,12 +118,8 @@ public class IngredientController {
         return CompletableFuture.completedFuture(delete(id));
     }
 
-    private ResponseEntity<?> delete(final Long id) throws NotFoundException {
-        return ingredientService.optionalIsExist(id)
-            .map(ingredient -> {
-                ingredientService.delete(ingredient);
-                return ResponseEntity.ok(ingredient);
-            }).orElseThrow(() -> NotFoundException.throwNew(id));
+    private ResponseEntity<?> delete(final Long id) {
+        return ResponseEntity.ok(ingredientService.deleteOrThrow(id));
     }
     // END_INCLUDE(IngredientController.DELETEFromDb)
     // END_INCLUDE(IngredientController.@Admin)
@@ -149,10 +140,8 @@ public class IngredientController {
         return CompletableFuture.completedFuture(get(id));
     }
 
-    private ResponseEntity<?> get(final Long id) throws NotFoundException {
-        return ingredientService.optionalIsExist(id)
-            .map(ResponseEntity::ok)
-            .orElseThrow(() -> NotFoundException.throwNew(id));
+    private ResponseEntity<?> get(final Long id) {
+        return ResponseEntity.ok(ingredientService.getOrThrow(id));
     }
     // END_INCLUDE(IngredientController.GetById)
 
@@ -161,28 +150,17 @@ public class IngredientController {
     @Async
     @GetMapping(produces = { MediaType.APPLICATION_JSON_VALUE } )
     public CompletableFuture<ResponseEntity<Collection<Ingredient>>> getAllIngredientsInJSON() {
-        return CompletableFuture.completedFuture(ResponseEntity.ok(ingredientService.getAll()));
+        return CompletableFuture.completedFuture(getAll());
     }
 
     @Async
     @GetMapping(produces = { MediaType.APPLICATION_XML_VALUE } )
     public CompletableFuture<ResponseEntity<Collection<Ingredient>>> getAllIngredientsInXML() {
-        return CompletableFuture.completedFuture(ResponseEntity.ok(ingredientService.getAll()));
+        return CompletableFuture.completedFuture(getAll());
+    }
+
+    private ResponseEntity<Collection<Ingredient>> getAll() {
+        return ResponseEntity.ok(ingredientService.getAll());
     }
     // END_INCLUDE(IngredientController.GETAll)
-
-
-    /**
-     * Helper methods
-     * @param name/id identifier
-     */
-    private void checkOrThrowByName(final String name) {
-            ingredientService.optionalIsExist(name)
-                .orElseThrow(() -> new NotFoundException(name));
-    }
-
-    private void checkOrThrowById(final Long id) {
-            ingredientService.optionalIsExist(id)
-                .orElseThrow(() -> new NotFoundException(String.valueOf(id)));
-    }
 }

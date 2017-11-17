@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ApiError {
 
     private HttpStatus status;
@@ -16,7 +17,6 @@ public class ApiError {
     private LocalDateTime timestamp;
     private String message;
     private String debugMessage;
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<ApiSubError> subErrors;
 
     private ApiError() {

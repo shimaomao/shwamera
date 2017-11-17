@@ -1,18 +1,19 @@
 package ru.mera.sergeynazin.model;
 
-import org.hibernate.annotations.Formula;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import org.hibernate.annotations.NaturalId;
 
 import javax.persistence.*;
-import java.util.ArrayList;
+import javax.validation.Valid;
+import javax.validation.constraints.NotEmpty;
 import java.util.List;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 @Entity
 @Table(name = "order_1")
 public class Order {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @Id @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(unique = true, nullable = false, updatable = false)
     private Long id;
 
@@ -20,8 +21,7 @@ public class Order {
      * Even though the queries by natural Id is not used in service
      * implementations here, this could become a staring point for that
      */
-    @NaturalId
-    @Column(name = "order_number", length = 32, unique = true, nullable = false, updatable = false)
+    @NaturalId @Column(name = "order_number", length = 32, unique = true, nullable = false, updatable = false)
     //@Formula(value = "(CONCAT_WS('_', TO_CHAR(CURRENT_DATE, 'YYYY-MM-DD'), SUM( 1, (SELECT MAX(id) FROM order_1 WHERE id LIKE CONCAT(TO_CHAR(CURRENT_DATE, 'YYYY-MM-DD'), '%')))))")
     //@Formula(value = "TO_CHAR(GREATEST(1,3))")
     private String orderNumber;
@@ -36,9 +36,10 @@ public class Order {
     @JoinTable(
         name = "order_has_shaurma",
         joinColumns = { @JoinColumn(name = "order_order_number", referencedColumnName = "id") },
-        inverseJoinColumns = { @JoinColumn(name = "shaurma_id", referencedColumnName = "id") }
-    )
-    private List<Shaurma> shaurmaList = new ArrayList<>();
+        inverseJoinColumns = { @JoinColumn(name = "shaurma_id", referencedColumnName = "id") })
+    @NotEmpty(message = " Shaurma list can not be EMPTY ")
+    @Valid
+    private List<Shaurma> shaurmaList;
 
 
     public Order() {

@@ -1,26 +1,30 @@
 package ru.mera.sergeynazin.model;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import org.hibernate.annotations.Nationalized;
 
 import javax.persistence.*;
+import javax.validation.Valid;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Size;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.atomic.DoubleAdder;
 
-@Access(AccessType.FIELD)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 //@JsonIgnoreProperties(value = { "cost" }, ignoreUnknown = true)
+@Access(AccessType.FIELD)
 @Entity
 @Table(name = "shaurma")
 public class Shaurma {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @Id @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(unique = true, nullable = false, updatable = false)
     private Long id;
 
-    @Column(length = 256)
-    @Nationalized
+    @Nationalized @Column(length = 256)
+    @Size(min = 2, max = 256, message = " Shaurma name should between 2 and 256 symbols ")
     private String name;
 
     @ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH } )
@@ -28,6 +32,8 @@ public class Shaurma {
         name = "ingredient_has_shaurma",
         joinColumns = { @JoinColumn(name = "shaurma_id", referencedColumnName = "id") },
         inverseJoinColumns = { @JoinColumn(name = "ingredient_id", referencedColumnName = "id") })
+    @NotEmpty(message = " Ingredient set can not be EMPTY ")
+    @Valid
     private Set<Ingredient> ingredientSet;
 
     public Shaurma() {

@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ru.mera.sergeynazin.controller.advice.Admin;
 import ru.mera.sergeynazin.controller.advice.NotFoundException;
+import ru.mera.sergeynazin.model.Ingredient;
 import ru.mera.sergeynazin.model.Order;
 import ru.mera.sergeynazin.model.Shaurma;
 import ru.mera.sergeynazin.service.IngredientService;
@@ -49,15 +50,20 @@ public class ShaurmaController {
     @Async
     @GetMapping(produces = { MediaType.APPLICATION_JSON_VALUE } )
     public CompletableFuture<ResponseEntity<Collection<Shaurma>>> getAllInJSON(final Principal principal) {
-        return CompletableFuture.completedFuture(ResponseEntity.ok(shaurmaService.getAll()));
+        return CompletableFuture.completedFuture(getAll());
     }
 
     @Admin
     @Async
     @GetMapping(produces = { MediaType.APPLICATION_XML_VALUE } )
     public CompletableFuture<ResponseEntity<Collection<Shaurma>>> getAllInXML(final Principal principal) {
-        return CompletableFuture.completedFuture(ResponseEntity.ok(shaurmaService.getAll()));
+        return CompletableFuture.completedFuture(getAll());
     }
+
+    private ResponseEntity<Collection<Shaurma>> getAll() {
+        return ResponseEntity.ok(shaurmaService.getAll());
+    }
+
     // END_INCLUDE(ShaurmaController.GETAll)
 
 
@@ -77,10 +83,19 @@ public class ShaurmaController {
     }
 
     /**
-     * Convenience method for shaurmamaker <strong>only</strong> for to add
+     * Convenience Fancy method for fun
+     * for shaurmamaker <strong>only</strong> for to add
      * new shaurma (if frontend would add functionality)
      */
     private CompletableFuture<ResponseEntity<?>> create(final Shaurma shaurma) {
+
+        return CompletableFuture.completedFuture()
+
+         CompletableFuture.
+            supplyAsync(() ->
+                ingredientService.validateExistsOrThrow(shaurma.getIngredientSet().toArray(new Ingredient[shaurma.getIngredientSet().size()]))
+            ).
+
         return CompletableFuture
             .supplyAsync(() -> {
                 shaurmaService.save(shaurma);
@@ -159,7 +174,7 @@ public class ShaurmaController {
         return CompletableFuture.completedFuture(delete(id));
     }
 
-    private ResponseEntity<?> delete(final Long id) throws NotFoundException {
+    private ResponseEntity<?> delete(final Long id) {
         return shaurmaService.optionalIsExist(id)
             .map(shaurma -> {
                 shaurmaService.delete(shaurma);
@@ -190,7 +205,7 @@ public class ShaurmaController {
      * @return 404 or 200
      * @throws NotFoundException resource not found (e.g.404)
      */
-    private ResponseEntity<?> get(final Long id) throws NotFoundException {
+    private ResponseEntity<?> get(final Long id) {
         return shaurmaService.optionalIsExist(id)
             .map(ResponseEntity::ok)
             .orElseThrow(() -> NotFoundException.throwNew(id));
@@ -248,7 +263,7 @@ public class ShaurmaController {
      * @return 200
      * @throws NotFoundException 404
      */
-    private ResponseEntity<?> remove(final Long id) throws NotFoundException {
+    private ResponseEntity<?> remove(final Long id) {
         currentOrder.getShaurmaList()
             .parallelStream()
             .forEach(shaurma -> {

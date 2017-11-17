@@ -21,5 +21,18 @@ public interface ShaurmaService {
     void update(Shaurma detached);
     Shaurma merge(Shaurma transientOrDetached);
     void delete(Shaurma detached);
+
+
+    // GET
     Optional<Shaurma> optionalIsExist(Long id);
+    Shaurma getOrThrow(Long id);
+
+    // POST
+    Long saveValidOrThrow(Shaurma transient_);
+
+    // PUT
+    Shaurma mergeOrThrowNotFound(Shaurma newDetached);
+
+    // DELETE
+    Shaurma deleteOrThrow(Long id);
 }

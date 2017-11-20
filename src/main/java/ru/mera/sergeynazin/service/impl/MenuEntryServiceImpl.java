@@ -59,11 +59,11 @@ public class MenuEntryServiceImpl implements MenuEntryService {
      * Hibernate 5.2.x providing support of Optional so we switch to that
      * otherwise can uncomment lines below
      * @param id Primary Key
-     * @return Optional.of(MenuEntry_managed_instance)
+     * @return Optional.ofNullable(MenuEntry_managed_instance)
      */
     @Override
     public Optional<MenuEntry> optionalIsExist(final Long id) {
         return repository.getOptionalById(id);
-            // Optional.of(repository.get(id));
+            // Optional.ofNullable(repository.get(id));
     }
 }

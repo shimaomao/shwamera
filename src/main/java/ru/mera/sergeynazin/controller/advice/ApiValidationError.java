@@ -2,6 +2,7 @@ package ru.mera.sergeynazin.controller.advice;
 
 import java.util.Objects;
 
+// TODO: @JsonInclude(JsonInclude.Include.NOTNULL)
 public class ApiValidationError extends ApiSubError {
     private String object;
     private String field;

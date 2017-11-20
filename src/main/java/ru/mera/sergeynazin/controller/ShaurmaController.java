@@ -16,7 +16,6 @@ import ru.mera.sergeynazin.service.IngredientService;
 import ru.mera.sergeynazin.service.ShaurmaService;
 
 import javax.validation.Valid;
-import java.net.URI;
 import java.security.Principal;
 import java.util.Collection;
 import java.util.concurrent.CompletableFuture;
@@ -88,26 +87,18 @@ public class ShaurmaController {
      * new shaurma (if frontend would add functionality)
      */
     private CompletableFuture<ResponseEntity<?>> create(final Shaurma shaurma) {
-
-        return CompletableFuture.completedFuture()
-
-         CompletableFuture.
-            supplyAsync(() ->
-                ingredientService.validateExistsOrThrow(shaurma.getIngredientSet().toArray(new Ingredient[shaurma.getIngredientSet().size()]))
-            ).
-
         return CompletableFuture
-            .supplyAsync(() -> {
-                shaurmaService.save(shaurma);
-                return shaurma.getId();
-            }).thenApply(id ->
+            .supplyAsync(() ->
+                ingredientService.validateExistsOrThrow(shaurma.getIngredientSet().toArray(new Ingredient[shaurma.getIngredientSet().size()]))
+            ).thenApply(bool ->
+                shaurmaService.saveValid(shaurma)
+            ).thenApply(id ->
                 ServletUriComponentsBuilder
                     .fromCurrentRequest()
-                    .path("/{id}")
-                    .buildAndExpand(id).toUri())
-            .thenComposeAsync(created ->
-                CompletableFuture
-                    .completedFuture(ResponseEntity.created(created).build()));
+                    .replacePath("/shaurma/{id}")
+                    .buildAndExpand(id).toUri()
+            ).thenApply(uri ->
+                ResponseEntity.created(uri).build());
     }
     // END_INCLUDE(ShaurmaController.POSTCreateNew)
 
@@ -119,7 +110,7 @@ public class ShaurmaController {
     public CompletableFuture<ResponseEntity<?>> updateOrCreateInJSON(final Principal principal,
                                                                      @PathVariable("id") final Long id,
                                                                      @Valid @RequestBody final Shaurma shaurma) {
-        return CompletableFuture.completedFuture(updateOrCreate(id, shaurma));
+        return updateOrCreate(id, shaurma);
     }
 
     @Admin
@@ -128,7 +119,7 @@ public class ShaurmaController {
     public CompletableFuture<ResponseEntity<?>> updateOrCreateInXML(final Principal principal,
                                                                     @PathVariable("id") final Long id,
                                                                     @Valid @RequestBody final Shaurma shaurma) {
-        return CompletableFuture.completedFuture(updateOrCreate(id, shaurma));
+        return updateOrCreate(id, shaurma);
     }
 
     /**
@@ -137,24 +128,15 @@ public class ShaurmaController {
      *      если нет, то создаём новую шаурму итерируя по ингредиентам
      *      @see Session#save(Object)
      */
-    private ResponseEntity<?> updateOrCreate(final Long id, final Shaurma newDetached) {
-         return shaurmaService.optionalIsExist(id)
-            .map(oldPersistent -> {
-                newDetached.setId(id);
-                return ResponseEntity.ok(shaurmaService.merge(newDetached));
-            }).orElseGet(() -> {
-             if (newDetached.getIngredientSet()
-                 .parallelStream()
-                 .allMatch(ingredient -> ingredientService.optionalIsExist(ingredient.getId()).isPresent())) {
-                 return ResponseEntity.unprocessableEntity().body(newDetached);
-             }
-             shaurmaService.save(newDetached);
-             final URI created = ServletUriComponentsBuilder
-                 .fromCurrentRequest()
-                 .replacePath("/{id}")
-                 .buildAndExpand(newDetached.getId()).toUri();
-             return ResponseEntity.created(created).body(newDetached);
-         });
+    @SuppressWarnings({"unchecked"})
+    private CompletableFuture<ResponseEntity<?>> updateOrCreate(final Long id, final Shaurma newDetached) {
+        newDetached.setId(id);
+        return shaurmaService.optionalIsExist(id)
+            .map(shaurma -> {
+                ingredientService.validateExistsOrThrow(
+                    newDetached.getIngredientSet().toArray(new Ingredient[newDetached.getIngredientSet().size()]));
+                return CompletableFuture.completedFuture(ResponseEntity.noContent().build());
+            }).orElseGet(() -> create(newDetached));
     }
     // END_INCLUDE(ShaurmaController.PUTNewStateToDbEntity)
 

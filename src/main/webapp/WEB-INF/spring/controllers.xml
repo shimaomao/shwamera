@@ -96,8 +96,7 @@
         <property name="repository" ref="orderRepository" />
     </bean>
     <bean id="shaurmaServiceImpl" class="ru.mera.sergeynazin.service.impl.ShaurmaServiceImpl" >
-        <property name="shaurmaRepository" ref="shaurmaRepository" />
-        <property name="ingredientRepository" ref="ingredientRepository" />
+        <property name="repository" ref="shaurmaRepository" />
     </bean>
 
     <bean id="sessionOrder" class="ru.mera.sergeynazin.model.Order" scope="session" >

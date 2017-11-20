@@ -1,5 +1,6 @@
 package ru.mera.sergeynazin.service;
 
+import ru.mera.sergeynazin.model.Ingredient;
 import ru.mera.sergeynazin.model.Shaurma;
 import ru.mera.sergeynazin.repository.JpaRepository;
 
@@ -15,24 +16,23 @@ import java.util.Optional;
  * */
 
 public interface ShaurmaService {
-    Shaurma loadAsPersistent(Long id);
-    void save(Shaurma transient_);
-    List<Shaurma> getAll();
-    void update(Shaurma detached);
-    Shaurma merge(Shaurma transientOrDetached);
-    void delete(Shaurma detached);
-
+    //void delete(Shaurma detached);
 
     // GET
+    List<Shaurma> getAll()
     Optional<Shaurma> optionalIsExist(Long id);
     Shaurma getOrThrow(Long id);
 
     // POST
-    Long saveValidOrThrow(Shaurma transient_);
+    Long saveValid(Shaurma transient_);
 
     // PUT
-    Shaurma mergeOrThrowNotFound(Shaurma newDetached);
+    Shaurma mergeOrThrow(Shaurma newDetached);
 
     // DELETE
     Shaurma deleteOrThrow(Long id);
+
+    // helpers
+    boolean validateExistsOrThrow(Shaurma... shaurmas);
+
 }

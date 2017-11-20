@@ -17,14 +17,8 @@ import java.util.Optional;
 
 public interface IngredientService {
 
-    void save(Ingredient transient_);
-    List<Ingredient> getAll();
-    void update(Ingredient detached);
-    Ingredient mergeOrSave(Ingredient transientOrDetached);
-    void delete(Ingredient detached);
-
     // GET
-
+    List<Ingredient> getAll();
     Optional<Ingredient> optionalIsExist(String name);
     Optional<Ingredient> optionalIsExist(Long id);
     Ingredient getOrThrow(Long id);
@@ -33,7 +27,7 @@ public interface IngredientService {
     Long saveOrThrowExist(Ingredient transient_);
 
     // PUT
-    Ingredient mergeOrThrowNotFound(Ingredient newDetached);
+    Ingredient mergeOrThrow(Ingredient newDetached);
 
     // DELETE
     Ingredient deleteOrThrow(Long id);

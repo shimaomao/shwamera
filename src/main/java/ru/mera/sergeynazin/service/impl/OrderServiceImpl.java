@@ -57,12 +57,12 @@ public class OrderServiceImpl implements OrderService {
      * Hibernate 5.2.x providing support of Optional so we switch to that
      * otherwise can uncomment line below
      * @param id Primary Key
-     * @return Optional.of(Order_managed_instance)
+     * @return Optional.ofNullable(Order_managed_instance)
      */
     @Override
     public Optional<Order> optionalIsExist(final Long id) {
         return repository.getOptionalById(id);
-            // Optional.of(repository.get(id));
+             // Optional.ofNullable(repository.get(id));
     }
 
     @Override
@@ -72,7 +72,7 @@ public class OrderServiceImpl implements OrderService {
         final Root<Order> ingredientRoot = criteriaQuery.from(Order.class);
         criteriaQuery.select(ingredientRoot).where(criteriaBuilder.equal(ingredientRoot.get("order_number"), orderNumber));
 
-        return Optional.of(repository.getUniqueByCriteriaQuery(criteriaQuery));
+        return Optional.ofNullable(repository.getUniqueByCriteriaQuery(criteriaQuery));
     }
 
 

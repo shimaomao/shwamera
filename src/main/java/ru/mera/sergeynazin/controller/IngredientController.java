@@ -61,7 +61,7 @@ public class IngredientController {
     private ResponseEntity<?> createNew(final Ingredient ingredient) {
         final URI created = ServletUriComponentsBuilder
             .fromCurrentRequest()
-            .replacePath("ingredient/{id}")
+            .replacePath("/ingredient/{id}")
             .buildAndExpand(ingredientService.saveOrThrowExist(ingredient)).toUri();
         return ResponseEntity.created(created).body(ingredient);
 
@@ -96,7 +96,7 @@ public class IngredientController {
      */
     private ResponseEntity<?> updateEgMerge(final Long id, final Ingredient newDetached) {
         newDetached.setId(id);
-        return ResponseEntity.ok(ingredientService.mergeOrThrowNotFound(newDetached));
+        return ResponseEntity.ok(ingredientService.mergeOrThrow(newDetached));
     }
     // END_INCLUDE(IngredientController.PUTUpdate)
 

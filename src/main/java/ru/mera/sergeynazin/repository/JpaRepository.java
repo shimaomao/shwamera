@@ -14,31 +14,23 @@ import java.util.Optional;
  * made solely in Spring and by extending/implementing this interface
  * No changes needed in other layers (Like CONTROLLERS or SERVICES)
  */
-public interface JpaRepository {
+public interface JpaRepository extends Repository {
 
-    // create or save
+    // CREATE e.g. SAVE
     <T> Serializable create(T transientEntity);
 
-
-    // update
-    <T> void update(T detachedEntity);
+    // UPDATE
+    //<T> void update(T detachedEntity);
     <T> T mergeStateWithDbEntity(T detachedEntity);
 
-    // delete
-    <T> void delete(T persistentOrDetachedEntity);
-
-
-    // read
-    <T> T getById(Serializable id);
-
-    <T> Optional<T> getOptionalById(Serializable id);
-
+    // READ
     <T> T getUniqueByCriteriaQuery(CriteriaQuery<T> criteriaQuery);
-
     <T> List getByCriteriaQuery(CriteriaQuery<T> criteriaQuery);
+
 
     // helpers
     <T> CriteriaQuery<T> myCriteriaQuery();
     CriteriaBuilder myCriteriaBuilder();
 
+    <T> Optional<T> getOptionalById(Serializable id);
 }

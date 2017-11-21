@@ -19,18 +19,18 @@ public interface IngredientService {
 
     // GET
     List<Ingredient> getAll();
-    Optional<Ingredient> optionalIsExist(String name);
-    Optional<Ingredient> optionalIsExist(Long id);
+    Optional<Ingredient> getOptionalIsExist(String name);
+    Optional<Ingredient> getOptionalIsExist(Long id);
     Ingredient getOrThrow(Long id);
 
     // POST
-    Long saveOrThrowExist(Ingredient transient_);
+    Long postOrThrow(Ingredient transient_);
 
     // PUT
-    Ingredient mergeOrThrow(Ingredient newDetached);
+    Ingredient putOrThrow(Ingredient newDetached);
 
     // DELETE
-    Ingredient deleteOrThrow(Long id);
+    Ingredient deleteByIdOrThrow(Long id);
 
     // helpers
     boolean validateExistsOrThrow(Ingredient... ingredients);

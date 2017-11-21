@@ -5,15 +5,19 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ru.mera.sergeynazin.controller.advice.Admin;
+import ru.mera.sergeynazin.controller.advice.CreatingAlreadyExistentException;
 import ru.mera.sergeynazin.controller.advice.NotFoundException;
 import ru.mera.sergeynazin.model.MenuEntry;
 import ru.mera.sergeynazin.service.MenuEntryService;
 import ru.mera.sergeynazin.service.ShaurmaService;
 
+import java.net.URI;
 import java.security.Principal;
 import java.util.Collection;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Function;
 
 @EnableAsync
 @RestController
@@ -66,9 +70,23 @@ public class MenuEntryController {
      * @return 404 or 200 code with newly added to menu shaurma body todo maybe switch to MenuEntry body??
      */
     private ResponseEntity<?> add(final Long id) {
-        return shaurmaService.optionalIsExist(id)
-            .map(ResponseEntity ::ok)
-            .orElseThrow(() -> NotFoundException.throwNew(id));
+        return shaurmaService.getOptionalIsExist(id)
+            .map(shaurma ->
+                menuEntryService.getOptionalIsExist(id)
+                    .map((Function<MenuEntry, ResponseEntity<?>>) menuEntry -> {
+                        throw new CreatingAlreadyExistentException(id, menuEntry);
+                    }).orElseGet(() -> {
+                        final MenuEntry entry = new MenuEntry();
+                        entry.setShaurma(shaurma);
+                        entry.setPrice(shaurma.getCost());
+                        menuEntryService.save(entry);
+                        final URI uri = ServletUriComponentsBuilder
+                            .fromCurrentRequest()
+                            .replacePath("")
+                            .build().toUri();
+                        return ResponseEntity.created(uri).build();
+                    })
+            ).orElseThrow(() -> NotFoundException.throwNew(id));
     }
 
     @Admin
@@ -96,22 +114,7 @@ public class MenuEntryController {
         return menuEntryService.optionalIsExist(id)
             .map(menuEntry -> {
                 menuEntryService.delete(menuEntry);
-                return ResponseEntity.ok(menuEntry);
+                return ResponseEntity.noContent().build();
             }).orElseThrow(() -> NotFoundException.throwNew(id));
-    }
-
-    /**
-     * Helper methods
-     * @param id identifier
-     */
-    // FIXME: There are methods in Hibernate API which looks up for entire DB by primary ke switch to them!
-    private void checkOrThrowShaurma(final Long id) {
-            shaurmaService.optionalIsExist(id)
-                .orElseThrow(() -> new NotFoundException(String.valueOf(id)));
-    }
-
-    private void checkOrThrowMenuEntry(final Long id) {
-            menuEntryService.optionalIsExist(id)
-                .orElseThrow(() -> new NotFoundException(String.valueOf(id)));
     }
 }

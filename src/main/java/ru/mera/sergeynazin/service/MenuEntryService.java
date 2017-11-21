@@ -15,10 +15,9 @@ import java.util.Optional;
  * */
 
 public interface MenuEntryService {
-    MenuEntry loadAsPersistent(Long id);
     void save(MenuEntry transient_);
     List<MenuEntry> getAll();
-    void update(MenuEntry detached);
     void delete(MenuEntry detached);
     Optional<MenuEntry> optionalIsExist(Long id);
+    Optional<MenuEntry> getOptionalIsExist(Long shaurmaId);
 }

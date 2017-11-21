@@ -7,14 +7,25 @@ public interface Repository {
 
     // ADD
     <T> T add(T transientEntity);
-    <T> List<T> addAll(Collection<T> transientEntities);
+    /**
+     * Adds to the source all the elements
+     * that are contained in the specified collection.
+     * @param transientEntities collection containing
+     * elements to be added to the source
+     */
+    <T> List addAll(Collection<T> transientEntities);
 
     // REMOVE
     <T> void remove(T persistentOrDetachedEntity);
-    void removeAll();
-    void removeAll(Collection<?> entities);
+
+    /**
+     * Removes from the source all of its elements
+     * that are contained in the specified collection.
+     * @param persistentOrDetachedEntities collection
+     * containing elements to be removed from the source
+     */
+    <T> void removeAll(Collection<T> persistentOrDetachedEntities);
 
     // helpers
     long count();
-    <T> boolean contains(T entity);
 }

@@ -16,7 +16,10 @@ import ru.mera.sergeynazin.service.IngredientService;
 import ru.mera.sergeynazin.service.ShaurmaService;
 
 import javax.validation.Valid;
+import java.net.URI;
+import java.security.NoSuchAlgorithmException;
 import java.security.Principal;
+import java.security.SecureRandom;
 import java.util.Collection;
 import java.util.concurrent.CompletableFuture;
 
@@ -71,14 +74,14 @@ public class ShaurmaController {
     @Async
     @PostMapping(value = "/create", consumes = { MediaType.APPLICATION_JSON_VALUE }, produces = { MediaType.APPLICATION_JSON_VALUE })
     public CompletableFuture<ResponseEntity<?>> createInJSON(final Principal principal, @Valid @RequestBody final Shaurma shaurma) {
-        return create(shaurma);
+        return CompletableFuture.completedFuture(create(shaurma));
     }
 
     @Admin
     @Async
     @PostMapping(value = "/create", consumes = { MediaType.APPLICATION_XML_VALUE }, produces = { MediaType.APPLICATION_XML_VALUE })
     public CompletableFuture<ResponseEntity<?>> createInXML(final Principal principal, @Valid @RequestBody final Shaurma shaurma) {
-        return create(shaurma);
+        return CompletableFuture.completedFuture(create(shaurma));
     }
 
     /**
@@ -86,19 +89,12 @@ public class ShaurmaController {
      * for shaurmamaker <strong>only</strong> for to add
      * new shaurma (if frontend would add functionality)
      */
-    private CompletableFuture<ResponseEntity<?>> create(final Shaurma shaurma) {
-        return CompletableFuture
-            .supplyAsync(() ->
-                ingredientService.validateExistsOrThrow(shaurma.getIngredientSet().toArray(new Ingredient[shaurma.getIngredientSet().size()]))
-            ).thenApply(bool ->
-                shaurmaService.saveValid(shaurma)
-            ).thenApply(id ->
-                ServletUriComponentsBuilder
-                    .fromCurrentRequest()
-                    .replacePath("/shaurma/{id}")
-                    .buildAndExpand(id).toUri()
-            ).thenApply(uri ->
-                ResponseEntity.created(uri).build());
+    private ResponseEntity<Object> create(final Shaurma shaurma) {
+        final URI uri = ServletUriComponentsBuilder
+            .fromCurrentRequest()
+            .replacePath("/shaurma/{id}")
+            .buildAndExpand(shaurmaService.postOrThrow(shaurma)).toUri();
+        return ResponseEntity.created(uri).build();
     }
     // END_INCLUDE(ShaurmaController.POSTCreateNew)
 
@@ -110,7 +106,7 @@ public class ShaurmaController {
     public CompletableFuture<ResponseEntity<?>> updateOrCreateInJSON(final Principal principal,
                                                                      @PathVariable("id") final Long id,
                                                                      @Valid @RequestBody final Shaurma shaurma) {
-        return updateOrCreate(id, shaurma);
+        return CompletableFuture.completedFuture(updateOrCreate(id, shaurma));
     }
 
     @Admin
@@ -119,23 +115,22 @@ public class ShaurmaController {
     public CompletableFuture<ResponseEntity<?>> updateOrCreateInXML(final Principal principal,
                                                                     @PathVariable("id") final Long id,
                                                                     @Valid @RequestBody final Shaurma shaurma) {
-        return updateOrCreate(id, shaurma);
+        return CompletableFuture.completedFuture(updateOrCreate(id, shaurma));
     }
 
     /**
      * проверяем сущ-ет ли шаурма с таким Id
      *      есди да то новый стейт из объекта копируем в старый и возвращаем новую шаурму
      *      если нет, то создаём новую шаурму итерируя по ингредиентам
-     *      @see Session#save(Object)
+     *      @see Session#merge(Object)
      */
     @SuppressWarnings({"unchecked"})
-    private CompletableFuture<ResponseEntity<?>> updateOrCreate(final Long id, final Shaurma newDetached) {
+    private ResponseEntity<?> updateOrCreate(final Long id, final Shaurma newDetached) {
         newDetached.setId(id);
-        return shaurmaService.optionalIsExist(id)
+        return shaurmaService.getOptionalIsExist(newDetached.getId())
             .map(shaurma -> {
-                ingredientService.validateExistsOrThrow(
-                    newDetached.getIngredientSet().toArray(new Ingredient[newDetached.getIngredientSet().size()]));
-                return CompletableFuture.completedFuture(ResponseEntity.noContent().build());
+                shaurmaService.putOrThrow(newDetached);
+                return ResponseEntity.noContent().build();
             }).orElseGet(() -> create(newDetached));
     }
     // END_INCLUDE(ShaurmaController.PUTNewStateToDbEntity)
@@ -157,11 +152,8 @@ public class ShaurmaController {
     }
 
     private ResponseEntity<?> delete(final Long id) {
-        return shaurmaService.optionalIsExist(id)
-            .map(shaurma -> {
-                shaurmaService.delete(shaurma);
-                return ResponseEntity.ok(shaurma);
-            }).orElseThrow(() -> NotFoundException.throwNew(id));
+        shaurmaService.deleteByIdOrThrow(id);
+        return ResponseEntity.noContent().build();
     }
     // END_INCLUDE(ShaurmaController.DELETEFromDatabase)
 // END_INCLUDE(ShaurmaController.@Admin)
@@ -188,9 +180,7 @@ public class ShaurmaController {
      * @throws NotFoundException resource not found (e.g.404)
      */
     private ResponseEntity<?> get(final Long id) {
-        return shaurmaService.optionalIsExist(id)
-            .map(ResponseEntity::ok)
-            .orElseThrow(() -> NotFoundException.throwNew(id));
+        return ResponseEntity.ok(shaurmaService.getOrThrow(id));
     }
     // END_INCLUDE(ShaurmaController.GETById)
 
@@ -201,13 +191,13 @@ public class ShaurmaController {
     // BEGIN_INCLUDE(ShaurmaController.POSTCreateNew)
     @Async
     @PostMapping(consumes = { MediaType.APPLICATION_JSON_VALUE }, produces = { MediaType.APPLICATION_JSON_VALUE })
-    public CompletableFuture<ResponseEntity<?>> addInJSON(@Valid @RequestBody final Shaurma shaurma) {
+    public CompletableFuture<ResponseEntity<?>> addInJSON(@Valid @RequestBody final Shaurma shaurma) throws NoSuchAlgorithmException {
         return CompletableFuture.completedFuture(add(shaurma));
     }
 
     @Async
     @PostMapping(consumes = { MediaType.APPLICATION_XML_VALUE }, produces = { MediaType.APPLICATION_XML_VALUE })
-    public CompletableFuture<ResponseEntity<?>> addInXML(@Valid @RequestBody final Shaurma shaurma) {
+    public CompletableFuture<ResponseEntity<?>> addInXML(@Valid @RequestBody final Shaurma shaurma) throws NoSuchAlgorithmException {
         return CompletableFuture.completedFuture(add(shaurma));
     }
 
@@ -219,9 +209,21 @@ public class ShaurmaController {
      * @param shaurma an entity
      * @return 200
      */
-    private ResponseEntity<?> add(final Shaurma shaurma) {
+    private ResponseEntity<?> add(final Shaurma shaurma) throws NoSuchAlgorithmException {
+        ingredientService.validateExistsOrThrow(shaurma.getIngredientSet().toArray(new Ingredient[shaurma.getIngredientSet().size()]));
+        final SecureRandom random = SecureRandom.getInstanceStrong();
+        final byte[] values = new byte[20];
+        random.nextBytes(values);
+        final Long id = random.nextLong();
+        shaurma.setId(id);
         currentOrder.getShaurmaList().add(shaurma);
-        return ResponseEntity.ok(shaurma);
+
+        final URI uri = ServletUriComponentsBuilder
+            .fromCurrentRequest()
+            .replacePath("order/shaurma/{id}")
+            .buildAndExpand(id).toUri();
+        // TODO: 11/21/17 getCost() needs to be serialized
+        return ResponseEntity.created(uri).body(shaurma);
     }
     // END_INCLUDE(ShaurmaController.POSTCreateNew)
 
@@ -246,23 +248,11 @@ public class ShaurmaController {
      * @throws NotFoundException 404
      */
     private ResponseEntity<?> remove(final Long id) {
-        currentOrder.getShaurmaList()
-            .parallelStream()
-            .forEach(shaurma -> {
-                if (id.equals(shaurma.getId())) {
-                    currentOrder.getShaurmaList().remove(shaurma);
-                }
-            });
-        return ResponseEntity.noContent().build();
+        final Shaurma shaurma = new Shaurma();
+        shaurma.setId(id);
+        if (currentOrder.getShaurmaList().remove(shaurma))
+            return ResponseEntity.noContent().build();
+        else return ResponseEntity.notFound().build();
     }
     // END_INCLUDE(ShaurmaController.DELETEFromDatabase)
-
-    /**
-     * Helper method
-     * @param id identifier
-     */
-    private void checkOrThrow(final Long id) {
-            shaurmaService.optionalIsExist(id)
-                .orElseThrow(() -> new NotFoundException(String.valueOf(id)));
-    }
 }

@@ -16,7 +16,7 @@ import java.util.Optional;
  */
 public interface JpaRepository extends Repository {
 
-    // CREATE e.g. SAVE
+    // CREATE
     <T> Serializable create(T transientEntity);
 
     // UPDATE
@@ -26,11 +26,10 @@ public interface JpaRepository extends Repository {
     // READ
     <T> T getUniqueByCriteriaQuery(CriteriaQuery<T> criteriaQuery);
     <T> List getByCriteriaQuery(CriteriaQuery<T> criteriaQuery);
-
+    <T> Optional<T> getOptionalById(Serializable id);
 
     // helpers
     <T> CriteriaQuery<T> myCriteriaQuery();
     CriteriaBuilder myCriteriaBuilder();
 
-    <T> Optional<T> getOptionalById(Serializable id);
 }

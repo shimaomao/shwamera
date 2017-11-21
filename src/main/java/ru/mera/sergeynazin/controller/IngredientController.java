@@ -62,7 +62,7 @@ public class IngredientController {
         final URI created = ServletUriComponentsBuilder
             .fromCurrentRequest()
             .replacePath("/ingredient/{id}")
-            .buildAndExpand(ingredientService.saveOrThrowExist(ingredient)).toUri();
+            .buildAndExpand(ingredientService.postOrThrow(ingredient)).toUri();
         return ResponseEntity.created(created).body(ingredient);
 
 
@@ -96,7 +96,7 @@ public class IngredientController {
      */
     private ResponseEntity<?> updateEgMerge(final Long id, final Ingredient newDetached) {
         newDetached.setId(id);
-        return ResponseEntity.ok(ingredientService.mergeOrThrow(newDetached));
+        return ResponseEntity.ok(ingredientService.putOrThrow(newDetached));
     }
     // END_INCLUDE(IngredientController.PUTUpdate)
 
@@ -119,7 +119,8 @@ public class IngredientController {
     }
 
     private ResponseEntity<?> delete(final Long id) {
-        return ResponseEntity.ok(ingredientService.deleteOrThrow(id));
+        ingredientService.deleteByIdOrThrow(id);
+        return ResponseEntity.noContent().build();
     }
     // END_INCLUDE(IngredientController.DELETEFromDb)
     // END_INCLUDE(IngredientController.@Admin)

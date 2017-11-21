@@ -32,7 +32,7 @@ public class Order {
 
 
     // TODO: TypeConverter from String to int
-    @ManyToMany(cascade = { CascadeType.ALL })
+    @ManyToMany(cascade = { CascadeType.ALL }, fetch = FetchType.EAGER)
     @JoinTable(
         name = "order_has_shaurma",
         joinColumns = { @JoinColumn(name = "order_order_number", referencedColumnName = "id") },
@@ -77,4 +77,8 @@ public class Order {
     public void setShaurmaList(List<Shaurma> shaurmaList) {
         this.shaurmaList = shaurmaList;
     }
+
+
+
+
 }

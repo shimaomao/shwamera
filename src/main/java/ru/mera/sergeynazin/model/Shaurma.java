@@ -27,7 +27,7 @@ public class Shaurma {
     @Size(min = 2, max = 256, message = " Shaurma name should between 2 and 256 symbols ")
     private String name;
 
-    @ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH } )
+    @ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH }, fetch = FetchType.EAGER)
     @JoinTable(
         name = "ingredient_has_shaurma",
         joinColumns = { @JoinColumn(name = "shaurma_id", referencedColumnName = "id") },
@@ -92,13 +92,11 @@ public class Shaurma {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Shaurma shaurma = (Shaurma) o;
-        return  Objects.equals(this.id, shaurma.id) &&
-                Objects.equals(this.name, shaurma.name) &&
-                Objects.equals(this.ingredientSet, shaurma.ingredientSet);
+        return  Objects.equals(this.id, shaurma.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.name, this.id, this.ingredientSet);
+        return Objects.hash(this.name);
     }
 }

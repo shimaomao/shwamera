@@ -10,6 +10,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @SuppressWarnings({"unchecked"})
 public interface HibernateRepository extends JpaRepository, GenericRepository {
@@ -21,6 +22,7 @@ public interface HibernateRepository extends JpaRepository, GenericRepository {
 
     @Override
     default <T> Serializable create(final T transientEntity) {
+        Objects.requireNonNull(transientEntity, "Tried to save NULL entity");
         return getSession().save(transientEntity);
     }
 //
@@ -42,6 +44,7 @@ public interface HibernateRepository extends JpaRepository, GenericRepository {
     @SuppressWarnings({"unchecked"})
     @Override
     default <T> T mergeStateWithDbEntity(final T newStatefulEntityWithId) {
+        Objects.requireNonNull(newStatefulEntityWithId, "Tried to merge NULL entity");
         return (T) getSession().merge(newStatefulEntityWithId);
     }
 
@@ -53,55 +56,45 @@ public interface HibernateRepository extends JpaRepository, GenericRepository {
 
     @Override
     default <T> T add(final T transientEntity) {
-        if(!contains(transientEntity)) {
-            getSession().persist(transientEntity);
-            return transientEntity;
-        } else
-            return (T) getSession().merge(transientEntity);
+        Objects.requireNonNull(transientEntity, "Tried to add NULL entity");
+        return (T) mergeStateWithDbEntity(transientEntity);
     }
 
     @Override
-    default <T> List<T> addAll(final Collection<T> transientEntities) {
-        throw new UnsupportedOperationException("Stub method! (for now...)");
+    default <T> List addAll(final Collection<T> transientEntities) {
+        Objects.requireNonNull(transientEntities, "Tried to add NULL collection");
+        return transientEntities.parallelStream()
+            .map(this::add)
+            .collect(Collectors.toList());
     }
 
     @Override
     default <T> void remove(final T persistentOrDetachedEntity) {
+        Objects.requireNonNull(persistentOrDetachedEntity, "Tried to remove NULL entity");
         getSession().delete(persistentOrDetachedEntity);
         //if (!contains(persistentOrDetachedEntity)) throw new NotFoundException(Objects.toString(persistentOrDetachedEntity, "Can not toString type " + persistentOrDetachedEntity.getClass())+" object notFound to Delete it")
     }
 
     @Override
-    default void removeAll() {
-        throw new UnsupportedOperationException("Stub method! (for now...)");
-    }
-
-    @Override
-    default void removeAll(final Collection<?> entities) {
-        throw new UnsupportedOperationException("Stub method! (for now...)");
+    default <T> void removeAll(final Collection<T> persistentOrDetachedEntities) {
+        Objects.requireNonNull(persistentOrDetachedEntities, "Tried to delete NULL collection");
+        persistentOrDetachedEntities.parallelStream()
+            .forEach(this::remove);
     }
 
     @Override
     default <T> List getByCriteriaQuery(final CriteriaQuery<T> criteriaQuery) {
+        Objects.requireNonNull(criteriaQuery, "NULL Criteria passed as parameter");
         return getSession()
-            .createQuery(Objects.requireNonNull(criteriaQuery))
+            .createQuery(criteriaQuery)
             .getResultList();
     }
 
     @Override
     default <T> T getUniqueByCriteriaQuery(final CriteriaQuery<T> criteriaQuery) {
+        Objects.requireNonNull(criteriaQuery, "NULL Criteria passed as parameter");
         return AbstractProducedQuery.uniqueElement(
-            getSession().createQuery(Objects.requireNonNull(criteriaQuery)).getResultList());
-    }
-
-    @Override
-    default <T> CriteriaQuery<T> myCriteriaQuery() {
-        return getSession().getCriteriaBuilder().createQuery(getClazz());
-    }
-
-    @Override
-    default CriteriaBuilder myCriteriaBuilder() {
-        return getSession().getCriteriaBuilder();
+            getSession().createQuery(criteriaQuery).getResultList());
     }
 
     @Override
@@ -111,25 +104,6 @@ public interface HibernateRepository extends JpaRepository, GenericRepository {
         cq.select(qb.count(cq.from(getClazz())));
         //cq.where(/*could be ant condition*/);
         return getUniqueByCriteriaQuery(cq);
-    }
-
-    @Override
-    default <T> boolean contains(final T entity) {
-//        CriteriaBuilder cb = myCriteriaBuilder();
-//        CriteriaQuery<T> query = cb.createQuery(getClazz());
-//        Root<T> root = query.from(getClazz());
-//        query.where(
-//            cb.function(
-//                "CONTAINS", Boolean.class,
-//                //assuming 'id' is the property on the Person Java object that is mapped to the last_name column on the Person table.
-//                root.<String>get("id"),
-//                //Add a named parameter called containsCondition
-//                cb.parameter(String.class, "containsCondition")));
-//
-//        TypedQuery<T> tq = getSession().createQuery(query);
-//        tq.setParameter("containsCondition", "%näh%");
-//        List<T> people = tq.getResultList();
-        throw new UnsupportedOperationException("Stub method! (for now...)");
     }
 
     /**
@@ -143,5 +117,15 @@ public interface HibernateRepository extends JpaRepository, GenericRepository {
     default <T> Optional<T> getOptionalById(final Serializable id) {
         return (Optional<T>) getSession().byId(getClazz()).loadOptional(Objects.requireNonNull(id));
         // Optional.ofNullable(getSession().get(getClazz(),Objects.requireNonNull(id)));
+    }
+
+    @Override
+    default <T> CriteriaQuery<T> myCriteriaQuery() {
+        return getSession().getCriteriaBuilder().createQuery(getClazz());
+    }
+
+    @Override
+    default CriteriaBuilder myCriteriaBuilder() {
+        return getSession().getCriteriaBuilder();
     }
 }

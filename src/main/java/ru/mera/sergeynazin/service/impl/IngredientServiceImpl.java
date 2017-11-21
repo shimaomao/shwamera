@@ -1,5 +1,6 @@
 package ru.mera.sergeynazin.service.impl;
 
+import org.hibernate.Hibernate;
 import org.springframework.transaction.annotation.Transactional;
 import ru.mera.sergeynazin.controller.advice.CreatingAlreadyExistentException;
 import ru.mera.sergeynazin.controller.advice.NotFoundException;
@@ -27,19 +28,24 @@ public class IngredientServiceImpl implements IngredientService {
     @Override
     public List<Ingredient> getAll() {
         final CriteriaQuery<Ingredient> criteriaQuery = repository.myCriteriaQuery();
-        final Root<Ingredient> root = criteriaQuery.from(Ingredient.class);
-        criteriaQuery.select(root);
+        final Root<Ingredient> from = criteriaQuery.from(Ingredient.class);
+        criteriaQuery.select(from);
         return repository.getByCriteriaQuery(criteriaQuery);
     }
 
     @Override
-    public Optional<Ingredient> optionalIsExist(final String name) {
+    public Optional<Ingredient> getOptionalIsExist(final String name) {
         final CriteriaBuilder criteriaBuilder = repository.myCriteriaBuilder();
         final CriteriaQuery<Ingredient> criteriaQuery = criteriaBuilder.createQuery(Ingredient.class);
         final Root<Ingredient> ingredientRoot = criteriaQuery.from(Ingredient.class);
         criteriaQuery.select(ingredientRoot).where(criteriaBuilder.equal(ingredientRoot.get("name"), name));
 
-        return Optional.ofNullable(repository.getUniqueByCriteriaQuery(criteriaQuery));
+        final Ingredient nullable = repository.getUniqueByCriteriaQuery(criteriaQuery);
+
+        //TODO Temporary for testing
+        Hibernate.initialize(nullable);
+
+        return Optional.ofNullable(nullable);
     }
 
     /**
@@ -49,37 +55,37 @@ public class IngredientServiceImpl implements IngredientService {
      * @return Optional.ofNullable(Ingredient_managed_instance)
      */
     @Override
-    public Optional<Ingredient> optionalIsExist(final Long id) {
+    public Optional<Ingredient> getOptionalIsExist(final Long id) {
         return repository.getOptionalById(id);
             // Optional.ofNullable(repository.get(id));
     }
 
     @Override
     public Ingredient getOrThrow(final Long id) {
-        return (Ingredient) repository.getOptionalById(id)
+        return getOptionalIsExist(id)
             .orElseThrow(() -> NotFoundException.throwNew(id));
     }
 
     @Transactional
     @Override
-    public Long saveOrThrowExist(final Ingredient transient_) {
-        optionalIsExist(transient_.getName())
+    public Long postOrThrow(final Ingredient transient_) {
+        getOptionalIsExist(transient_.getName())
             .map(existentDetached -> CreatingAlreadyExistentException.throwNew(transient_.getName(), existentDetached));
         return (Long) repository.create(transient_);
     }
 
     @Transactional
     @Override
-    public Ingredient mergeOrThrow(final Ingredient newDetached) {
-        return repository.getOptionalById(newDetached.getId())
+    public Ingredient putOrThrow(final Ingredient newDetached) {
+        return getOptionalIsExist(newDetached.getId())
             .map(oldPersistent -> repository.mergeStateWithDbEntity(newDetached))
             .orElseThrow(() -> NotFoundException.throwNew(newDetached.getId()));
     }
 
     @Transactional
     @Override
-    public Ingredient deleteOrThrow(final Long id) {
-        return (Ingredient) repository.getOptionalById(id)
+    public Ingredient deleteByIdOrThrow(final Long id) {
+        return getOptionalIsExist(id)
             .map(ingredient -> {
                 repository.remove(ingredient);
                 return ingredient;
@@ -90,7 +96,7 @@ public class IngredientServiceImpl implements IngredientService {
     public boolean validateExistsOrThrow(final Ingredient... ingredients) {
         Stream.of(ingredients)
             .parallel()
-            .filter(ingredient -> !optionalIsExist(ingredient.getName()).isPresent())
+            .filter(ingredient -> !getOptionalIsExist(ingredient.getName()).isPresent())
             .map(Ingredient::getName)
             .reduce((n1, n2) -> n1 +", "+ n2)
             .ifPresent(NotFoundException::throwNew);

@@ -93,10 +93,12 @@
         <property name="repository" ref="menuEntryRepository" />
     </bean>
     <bean id="orderServiceImpl" class="ru.mera.sergeynazin.service.impl.OrderServiceImpl" >
-        <property name="repository" ref="orderRepository" />
+        <property name="orderRepository" ref="orderRepository" />
+        <property name="shaurmaRepository" ref="shaurmaRepository" />
     </bean>
     <bean id="shaurmaServiceImpl" class="ru.mera.sergeynazin.service.impl.ShaurmaServiceImpl" >
-        <property name="repository" ref="shaurmaRepository" />
+        <property name="shaurmaRepository" ref="shaurmaRepository" />
+        <property name="ingredientRepository" ref="ingredientRepository" />
     </bean>
 
     <bean id="sessionOrder" class="ru.mera.sergeynazin.model.Order" scope="session" >

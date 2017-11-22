@@ -5,7 +5,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ru.mera.sergeynazin.controller.advice.Admin;
 import ru.mera.sergeynazin.controller.advice.CreatingAlreadyExistentException;
 import ru.mera.sergeynazin.controller.advice.NotFoundException;
@@ -80,13 +79,17 @@ public class MenuEntryController {
                         entry.setShaurma(shaurma);
                         entry.setPrice(shaurma.getCost());
                         menuEntryService.save(entry);
-                        final URI uri = ServletUriComponentsBuilder
+                        // TODO: MOCKED -> Delete
+                        /*final URI uri = ServletUriComponentsBuilder
                             .fromCurrentRequest()
                             .replacePath("")
-                            .build().toUri();
+                            .build().toUri();*/
+
+                        final URI uri = URI.create("SAMPLE_PATH/");
+
                         return ResponseEntity.created(uri).build();
                     })
-            ).orElseThrow(() -> NotFoundException.throwNew(id));
+            ).orElseThrow(() -> NotFoundException.getNew(id));
     }
 
     @Admin
@@ -115,6 +118,6 @@ public class MenuEntryController {
             .map(menuEntry -> {
                 menuEntryService.delete(menuEntry);
                 return ResponseEntity.noContent().build();
-            }).orElseThrow(() -> NotFoundException.throwNew(id));
+            }).orElseThrow(() -> NotFoundException.getNew(id));
     }
 }

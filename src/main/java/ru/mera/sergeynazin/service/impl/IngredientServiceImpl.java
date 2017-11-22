@@ -61,39 +61,47 @@ public class IngredientServiceImpl implements IngredientService {
     }
 
     @Override
-    public Ingredient getOrThrow(final Long id) {
+    public Ingredient getOrThrow(final Long id) throws NotFoundException {
         return getOptionalIsExist(id)
-            .orElseThrow(() -> NotFoundException.throwNew(id));
+            .orElseThrow(() -> NotFoundException.getNew(id));
     }
 
     @Transactional
     @Override
-    public Long postOrThrow(final Ingredient transient_) {
-        getOptionalIsExist(transient_.getName())
-            .map(existentDetached -> CreatingAlreadyExistentException.throwNew(transient_.getName(), existentDetached));
-        return (Long) repository.create(transient_);
+    public Ingredient postOrThrow(final Ingredient transient_) throws CreatingAlreadyExistentException {
+
+        if (getOptionalIsExist(transient_.getName()).isPresent())
+            throw new CreatingAlreadyExistentException(transient_.getName(), transient_);
+
+
+        /*getOptionalIsExist(transient_.getName())
+            .ifPresent(existentDetached -> CreatingAlreadyExistentException.throwNew(transient_.getName(), existentDetached));*/
+        /*final Long id = (Long) repository.create(transient_);
+        transient_.setId(id);*/
+        return repository.mergeStateWithDbEntity(transient_);
+        //return (Long)
     }
 
     @Transactional
     @Override
-    public Ingredient putOrThrow(final Ingredient newDetached) {
+    public Ingredient putOrThrow(final Ingredient newDetached) throws NotFoundException {
         return getOptionalIsExist(newDetached.getId())
             .map(oldPersistent -> repository.mergeStateWithDbEntity(newDetached))
-            .orElseThrow(() -> NotFoundException.throwNew(newDetached.getId()));
+            .orElseThrow(() -> NotFoundException.getNew(newDetached.getId()));
     }
 
     @Transactional
     @Override
-    public Ingredient deleteByIdOrThrow(final Long id) {
+    public Ingredient deleteByIdOrThrow(final Long id) throws NotFoundException {
         return getOptionalIsExist(id)
             .map(ingredient -> {
                 repository.remove(ingredient);
                 return ingredient;
-            }).orElseThrow(() -> NotFoundException.throwNew(id));
+            }).orElseThrow(() -> NotFoundException.getNew(id));
     }
 
     @Override
-    public boolean validateExistsOrThrow(final Ingredient... ingredients) {
+    public boolean validateExistsOrThrow(final Ingredient... ingredients) throws NotFoundException {
         Stream.of(ingredients)
             .parallel()
             .filter(ingredient -> !getOptionalIsExist(ingredient.getName()).isPresent())

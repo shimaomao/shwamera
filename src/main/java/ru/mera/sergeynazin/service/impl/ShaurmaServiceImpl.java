@@ -48,14 +48,15 @@ public class ShaurmaServiceImpl implements ShaurmaService {
     @Override
     public Shaurma getOrThrow(final Long id) throws NotFoundException {
         return getOptionalIsExist(id)
-            .orElseThrow(() -> NotFoundException.throwNew(id));
+            .orElseThrow(() -> NotFoundException.getNew(id));
     }
 
     @Transactional
     @Override
-    public Long postOrThrow(final Shaurma transient_) throws NotFoundException {
+    public Shaurma postOrThrow(final Shaurma transient_) throws NotFoundException {
         checkNestedCollection(transient_.getIngredientSet(), this::isNestedNotExist);
-        return (Long) shaurmaRepository.create(transient_);
+        return shaurmaRepository.mergeStateWithDbEntity(transient_);
+            //(Long) shaurmaRepository.create(transient_);
     }
 
     @Transactional
@@ -72,7 +73,7 @@ public class ShaurmaServiceImpl implements ShaurmaService {
             .map(shaurma -> {
                 shaurmaRepository.remove(shaurma);
                 return shaurma;
-            }).orElseThrow(() -> NotFoundException.throwNew(id));
+            }).orElseThrow(() -> NotFoundException.getNew(id));
     }
 
     @Override

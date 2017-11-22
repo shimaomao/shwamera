@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
 
+
 public interface SpringRepository {
 
     void deleteAllInBatch();

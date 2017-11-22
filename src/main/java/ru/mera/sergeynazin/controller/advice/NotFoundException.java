@@ -30,19 +30,35 @@ public class NotFoundException extends RuntimeException {
         super("Entities with id-s " + Arrays.toString(id) + " NOT found !");
     }
 
-    public static NotFoundException throwNew(final String name) {
+    public static NotFoundException getNew(final String name) {
         return new NotFoundException(name);
     }
 
-    public static NotFoundException throwNew(final Serializable id) {
+    public static NotFoundException getNew(final Serializable id) {
         return new NotFoundException(id);
     }
 
-    public static NotFoundException throwNew(final String... name) {
+    public static NotFoundException getNew(final String... name) {
         return new NotFoundException(name);
     }
 
-    public static NotFoundException throwNew(final Serializable... id) {
+    public static NotFoundException getNew(final Serializable... id) {
         return new NotFoundException(id);
+    }
+
+    public static void throwNew(final Serializable... id) {
+        throw new NotFoundException(id);
+    }
+
+    public static void throwNew(final Serializable id) {
+        throw new NotFoundException(id);
+    }
+
+    public static void throwNew(final String... id) {
+        throw new NotFoundException(id);
+    }
+
+    public static void throwNew(final String id) {
+        throw new NotFoundException(id);
     }
 }

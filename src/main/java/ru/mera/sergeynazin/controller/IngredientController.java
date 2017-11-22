@@ -6,7 +6,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ru.mera.sergeynazin.controller.advice.Admin;
 import ru.mera.sergeynazin.model.Ingredient;
 import ru.mera.sergeynazin.service.IngredientService;
@@ -59,13 +58,16 @@ public class IngredientController {
      *      422 {@link HttpStatus#UNPROCESSABLE_ENTITY}
      */
     private ResponseEntity<?> createNew(final Ingredient ingredient) {
-        final URI created = ServletUriComponentsBuilder
+        final Ingredient newOne = ingredientService.postOrThrow(ingredient);
+        // TODO: MOCKED -> Delete
+        /*final URI uri = ServletUriComponentsBuilder
             .fromCurrentRequest()
             .replacePath("/ingredient/{id}")
-            .buildAndExpand(ingredientService.postOrThrow(ingredient)).toUri();
-        return ResponseEntity.created(created).body(ingredient);
+            .buildAndExpand(ingredientService.postOrThrow(ingredient)).toUri();*/
 
+        final URI uri = URI.create("SAMPLE_PATH/"+newOne.getId());
 
+        return ResponseEntity.created(uri).body(newOne);
     }
     // END_INCLUDE(IngredientController.POSTCreateNew)
 

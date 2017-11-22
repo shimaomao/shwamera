@@ -49,6 +49,13 @@ public class ExceptionHandlers extends ResponseEntityExceptionHandler {
         return buildResponseEntity(new ApiError(HttpStatus.FORBIDDEN, "Permission Denied!", ex));
     }
 
+    @ExceptionHandler(CreatingAlreadyExistentException.class)
+    public ResponseEntity<?> handleCreatingAlreadyExistentException(final HttpServletRequest request, final CreatingAlreadyExistentException ex) {
+        logger.info("CreatingAlreadyExistentException Occurred:: URL=" +request.getRequestURL()+"\n"+
+            "Message=\""+ex.getLocalizedMessage()+"\"");
+        return buildResponseEntity(new ApiError(HttpStatus.UNPROCESSABLE_ENTITY, "Such Entity already exists", ex));
+    }
+
     //@ExceptionHandler(HttpMessageNotReadableException.class)
     @Override
     protected ResponseEntity<Object> handleHttpMessageNotReadable(final HttpMessageNotReadableException ex, final HttpHeaders headers, final HttpStatus status, final WebRequest request) {

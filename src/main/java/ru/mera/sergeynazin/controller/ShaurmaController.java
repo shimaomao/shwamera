@@ -6,7 +6,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ru.mera.sergeynazin.controller.advice.Admin;
 import ru.mera.sergeynazin.controller.advice.NotFoundException;
 import ru.mera.sergeynazin.model.Ingredient;
@@ -90,11 +89,17 @@ public class ShaurmaController {
      * new shaurma (if frontend would add functionality)
      */
     private ResponseEntity<Object> create(final Shaurma shaurma) {
-        final URI uri = ServletUriComponentsBuilder
+        // TODO: MOCKED -> Delete
+        /*final URI uri = ServletUriComponentsBuilder
             .fromCurrentRequest()
             .replacePath("/shaurma/{id}")
-            .buildAndExpand(shaurmaService.postOrThrow(shaurma)).toUri();
-        return ResponseEntity.created(uri).build();
+            .buildAndExpand(shaurmaService.postOrThrow(shaurma)).toUri();*/
+
+        final Shaurma body = shaurmaService.postOrThrow(shaurma);
+
+        final URI uri = URI.create("SAMPLE_PATH/" + body.getId());
+
+        return ResponseEntity.created(uri).body(body);
     }
     // END_INCLUDE(ShaurmaController.POSTCreateNew)
 
@@ -217,11 +222,14 @@ public class ShaurmaController {
         final Long id = random.nextLong();
         shaurma.setId(id);
         currentOrder.getShaurmaList().add(shaurma);
-
-        final URI uri = ServletUriComponentsBuilder
+        // TODO: MOCKED -> Delete
+        /*final URI uri = ServletUriComponentsBuilder
             .fromCurrentRequest()
             .replacePath("order/shaurma/{id}")
-            .buildAndExpand(id).toUri();
+            .buildAndExpand(id).toUri();*/
+
+        final URI uri = URI.create("SAMPLE_PATH/");
+
         // TODO: 11/21/17 getCost() needs to be serialized
         return ResponseEntity.created(uri).body(shaurma);
     }

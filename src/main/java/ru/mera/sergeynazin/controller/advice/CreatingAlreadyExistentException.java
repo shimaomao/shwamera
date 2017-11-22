@@ -41,23 +41,44 @@ public class CreatingAlreadyExistentException extends RuntimeException {
         super("Entity with id " + id + " ALREADY exist !");
     }
 
-    public static CreatingAlreadyExistentException throwNew(final String name) {
+    public static CreatingAlreadyExistentException getNew(final String name) {
         return new CreatingAlreadyExistentException(name);
     }
 
-    public static CreatingAlreadyExistentException throwNew(final Serializable id) {
+    public static CreatingAlreadyExistentException getNew(final Serializable id) {
         return new CreatingAlreadyExistentException(id);
     }
 
-    public static CreatingAlreadyExistentException throwNew(final Object foundExistent) {
+    public static CreatingAlreadyExistentException getNew(final Object foundExistent) {
         return new CreatingAlreadyExistentException(foundExistent);
     }
 
-    public static CreatingAlreadyExistentException throwNew(final String name, final Object foundExistent) {
+    public static CreatingAlreadyExistentException getNew(final String name, final Object foundExistent) {
         return new CreatingAlreadyExistentException(name, foundExistent);
     }
 
-    public static CreatingAlreadyExistentException throwNew(final Serializable id, final Object foundExistent) {
+    public static CreatingAlreadyExistentException getNew(final Serializable id, final Object foundExistent) {
         return new CreatingAlreadyExistentException(id, foundExistent);
     }
+
+    public static void throwNew(final String name) {
+        throw new CreatingAlreadyExistentException(name);
+    }
+
+    public static void throwNew(final Serializable id) {
+        throw new CreatingAlreadyExistentException(id);
+    }
+
+    public static void throwNew(final Object foundExistent) {
+        throw new CreatingAlreadyExistentException(foundExistent);
+    }
+
+    public static void throwNew(final String name, final Object foundExistent) {
+        throw new CreatingAlreadyExistentException(name, foundExistent);
+    }
+
+    public static void throwNew(final Serializable id, final Object foundExistent) {
+        throw new CreatingAlreadyExistentException(id, foundExistent);
+    }
+
 }

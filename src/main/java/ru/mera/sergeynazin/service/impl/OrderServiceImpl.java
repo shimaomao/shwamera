@@ -68,13 +68,13 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public Order getOrThrow(final Long id) throws NotFoundException {
         return getOptionalIsExist(id)
-            .orElseThrow(() -> NotFoundException.throwNew(id));
+            .orElseThrow(() -> NotFoundException.getNew(id));
     }
 
     @Override
     public Order getOrThrow(String orderNumber) throws NotFoundException {
         return getOptionalIsExist(orderNumber)
-            .orElseThrow(() -> NotFoundException.throwNew(orderNumber));
+            .orElseThrow(() -> NotFoundException.getNew(orderNumber));
     }
 
     @Transactional
@@ -99,7 +99,7 @@ public class OrderServiceImpl implements OrderService {
             .map(shaurma -> {
                 orderRepository.remove(shaurma);
                 return shaurma;
-            }).orElseThrow(() -> NotFoundException.throwNew(id));
+            }).orElseThrow(() -> NotFoundException.getNew(id));
     }
 
     @Override

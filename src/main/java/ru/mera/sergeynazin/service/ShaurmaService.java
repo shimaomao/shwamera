@@ -37,7 +37,7 @@ public interface ShaurmaService {
      * @param transient_ entity
      * @return id after performed INSERT statement
      */
-    Long postOrThrow(Shaurma transient_);
+    Shaurma postOrThrow(Shaurma transient_);
 
     // PUT
     Shaurma putOrThrow(Shaurma newDetached);

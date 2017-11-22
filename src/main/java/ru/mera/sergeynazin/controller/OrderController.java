@@ -5,7 +5,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ru.mera.sergeynazin.controller.advice.Admin;
 import ru.mera.sergeynazin.controller.advice.NotFoundException;
 import ru.mera.sergeynazin.model.Order;
@@ -113,10 +112,14 @@ public class OrderController {
     @Async
     @PostMapping(consumes = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE } )
     public CompletableFuture<ResponseEntity<?>> saveCurrentOrder(/*PAYMENT PARAMETERS*/) {
-        final URI uri = ServletUriComponentsBuilder
+        // TODO: MOCKED -> Delete
+        /*final URI uri = ServletUriComponentsBuilder
             .fromCurrentRequest()
             .path("/{order_number}")
-            .buildAndExpand(orderService.postOrThrow(currentOrder)).toUri();
+            .buildAndExpand(orderService.postOrThrow(currentOrder)).toUri();*/
+
+        final URI uri = URI.create("SAMPLE_PATH/");
+
         // FIXME: 11/21/17 Check payment
         return CompletableFuture.completedFuture(ResponseEntity.accepted().location(uri).build());
     }
@@ -140,8 +143,8 @@ public class OrderController {
                 .map(shaurma -> {
                     shaurma.getIngredientSet().add(ingredient);
                     return ResponseEntity.ok(shaurma);
-                }).orElseThrow(() -> NotFoundException.throwNew(id))
-            ).orElseThrow(() -> NotFoundException.throwNew(ingredientName)));
+                }).orElseThrow(() -> NotFoundException.getNew(id))
+            ).orElseThrow(() -> NotFoundException.getNew(ingredientName)));
     }
 
 
@@ -198,7 +201,7 @@ public class OrderController {
 //                    .replacePath("/{order_number}")
 //                    .buildAndExpand(newOrder.getOrderNumber()).toUri();
 //                return ResponseEntity.created(created).body(newOrder);
-//            }).orElseThrow(() -> NotFoundException.throwNew(shaurmaId));
+//            }).orElseThrow(() -> NotFoundException.getNew(shaurmaId));
 //    }
 //
 //

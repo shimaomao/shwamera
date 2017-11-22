@@ -18,8 +18,4 @@ public interface DataAccessObject {
     // DELETE
     <T> void delete(T persistentOrDetachedEntity);
     void deleteById(Serializable id);
-
-
-
-
 }

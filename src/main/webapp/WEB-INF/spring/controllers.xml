@@ -90,7 +90,8 @@
         <property name="repository" ref="ingredientRepository" />
     </bean>
     <bean id="menuEntryServiceImpl" class="ru.mera.sergeynazin.service.impl.MenuEntryServiceImpl" >
-        <property name="repository" ref="menuEntryRepository" />
+        <property name="menuEntryRepository" ref="menuEntryRepository" />
+        <property name="shaurmaRepository" ref="shaurmaRepository" />
     </bean>
     <bean id="orderServiceImpl" class="ru.mera.sergeynazin.service.impl.OrderServiceImpl" >
         <property name="orderRepository" ref="orderRepository" />

@@ -1,8 +1,12 @@
 package ru.mera.sergeynazin.controller.advice;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import java.util.Objects;
 
-// TODO: @JsonInclude(JsonInclude.Include.NOTNULL)
+@JsonAutoDetect(fieldVisibility=JsonAutoDetect.Visibility.ANY)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ApiValidationError extends ApiSubError {
     private String object;
     private String field;

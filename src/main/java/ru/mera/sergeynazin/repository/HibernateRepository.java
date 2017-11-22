@@ -12,7 +12,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-@SuppressWarnings({"unchecked"})
 public interface HibernateRepository extends JpaRepository, GenericRepository {
 
 
@@ -25,16 +24,6 @@ public interface HibernateRepository extends JpaRepository, GenericRepository {
         Objects.requireNonNull(transientEntity, "Tried to save NULL entity");
         return getSession().save(transientEntity);
     }
-//
-//    @Override
-//    default <T> void delete(final T persistentOrDetachedEntity) {
-//        getSession().delete(persistentOrDetachedEntity);
-//    }
-//
-//    @Override
-//    default <T> void update(final T detachedEntity) {
-//        getSession().update(detachedEntity);
-//    }
 
     /**
      * @param newStatefulEntityWithId new Stateful Entity With ID
@@ -47,12 +36,6 @@ public interface HibernateRepository extends JpaRepository, GenericRepository {
         Objects.requireNonNull(newStatefulEntityWithId, "Tried to merge NULL entity");
         return (T) getSession().merge(newStatefulEntityWithId);
     }
-
-//    @Override
-//    default <T> T getById(final Serializable id) {
-//        return getSession().get(getClazz(), Objects.requireNonNull(id));
-//    }
-
 
     @Override
     default <T> T add(final T transientEntity) {
@@ -72,7 +55,6 @@ public interface HibernateRepository extends JpaRepository, GenericRepository {
     default <T> void remove(final T persistentOrDetachedEntity) {
         Objects.requireNonNull(persistentOrDetachedEntity, "Tried to remove NULL entity");
         getSession().delete(persistentOrDetachedEntity);
-        //if (!contains(persistentOrDetachedEntity)) throw new NotFoundException(Objects.toString(persistentOrDetachedEntity, "Can not toString type " + persistentOrDetachedEntity.getClass())+" object notFound to Delete it")
     }
 
     @Override
@@ -115,7 +97,8 @@ public interface HibernateRepository extends JpaRepository, GenericRepository {
     @SuppressWarnings({"unchecked"})
     @Override
     default <T> Optional<T> getOptionalById(final Serializable id) {
-        return (Optional<T>) getSession().byId(getClazz()).loadOptional(Objects.requireNonNull(id));
+        Objects.requireNonNull(id, "NULL identifier passed as parameter");
+        return (Optional<T>) getSession().byId(getClazz()).loadOptional(id);
         // Optional.ofNullable(getSession().get(getClazz(),Objects.requireNonNull(id)));
     }
 

@@ -24,7 +24,14 @@ public interface IngredientService {
     Ingredient getOrThrow(Long id);
 
     // POST
-    Long postOrThrow(Ingredient transient_);
+
+    /**
+     * @param transient_ stateful entity
+     * @return new Statefull eagerly loaded entity
+     * @apiNote Switched to return walue of the Entity type
+     *          for convenience
+     */
+    Ingredient postOrThrow(Ingredient transient_);
 
     // PUT
     Ingredient putOrThrow(Ingredient newDetached);
